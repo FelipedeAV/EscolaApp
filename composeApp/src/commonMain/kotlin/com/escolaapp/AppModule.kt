@@ -1,0 +1,35 @@
+package com.escolaapp
+
+import com.escolaapp.data.gateway.ApiClient
+import com.escolaapp.data.repository.AttendanceRepository
+import com.escolaapp.data.repository.AuthRepository
+import com.escolaapp.data.repository.GradeRepository
+import com.escolaapp.data.repository.NoticeRepository
+import com.escolaapp.data.repository.StudentRepository
+import com.escolaapp.presentation.attendance.AttendanceViewModel
+import com.escolaapp.presentation.dashboard.DashboardViewModel
+import com.escolaapp.presentation.grades.GradesViewModel
+import com.escolaapp.presentation.login.LoginViewModel
+import com.escolaapp.presentation.notices.NoticesViewModel
+import org.koin.compose.viewmodel.dsl.viewModel
+import org.koin.dsl.module
+
+val appModule = module {
+
+    // ApiClient
+    single { ApiClient() }
+
+    // Repositories
+    single { AuthRepository(get()) }
+    single { StudentRepository(get()) }
+    single { GradeRepository(get()) }
+    single { AttendanceRepository(get()) }
+    single { NoticeRepository(get()) }
+
+    // ViewModels
+    viewModel { LoginViewModel(get()) }
+    viewModel { DashboardViewModel(get()) }
+    viewModel { GradesViewModel(get()) }
+    viewModel { AttendanceViewModel(get()) }
+    viewModel { NoticesViewModel(get()) }
+}

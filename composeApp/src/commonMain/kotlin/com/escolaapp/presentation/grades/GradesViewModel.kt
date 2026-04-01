@@ -4,6 +4,8 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.data.repository.GradeRepository
 import com.escolaapp.domain.model.Grade
+import com.escolaapp.navigation.NavigationEvent
+import com.escolaapp.navigation.NavigationViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,13 +13,14 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class GradesUiState(
-    val isLoading: Boolean  = false,
+    val isLoading: Boolean = false,
     val grades: List<Grade> = emptyList(),
-    val error: String?      = null
+    val error: String? = null,
 )
 
 class GradesViewModel(
-    private val gradeRepository: GradeRepository
+    private val gradeRepository: GradeRepository,
+    private val navigationViewModel: NavigationViewModel,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(GradesUiState())
@@ -31,17 +34,23 @@ class GradesViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        grades    = grades
+                        grades = grades,
                     )
                 }
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error     = "Erro ao carregar notas"
+                        error = "Erro ao carregar notas",
                     )
                 }
             }
+        }
+    }
+
+    fun navigateBack() {
+        screenModelScope.launch {
+            navigationViewModel.emit(NavigationEvent.Back)
         }
     }
 }

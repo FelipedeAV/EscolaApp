@@ -6,6 +6,7 @@ import com.escolaapp.data.repository.AuthRepository
 import com.escolaapp.data.repository.GradeRepository
 import com.escolaapp.data.repository.NoticeRepository
 import com.escolaapp.data.repository.StudentRepository
+import com.escolaapp.navigation.NavigationViewModel
 import com.escolaapp.presentation.attendance.AttendanceViewModel
 import com.escolaapp.presentation.dashboard.DashboardViewModel
 import com.escolaapp.presentation.grades.GradesViewModel
@@ -25,10 +26,13 @@ val appModule = module {
     single { AttendanceRepository(get()) }
     single { NoticeRepository(get()) }
 
+    // Navigation
+    single { NavigationViewModel() }
+
     // ViewModels
-    factory { LoginViewModel(get()) }
-    factory { DashboardViewModel(get()) }
-    factory { GradesViewModel(get()) }
-    factory { AttendanceViewModel(get()) }
-    factory { NoticesViewModel(get()) }
+    factory { LoginViewModel(get(), get()) }
+    factory { DashboardViewModel(get(), get()) }
+    factory { GradesViewModel(get(), get()) }
+    factory { AttendanceViewModel(get(), get()) }
+    factory { NoticesViewModel(get(), get()) }
 }

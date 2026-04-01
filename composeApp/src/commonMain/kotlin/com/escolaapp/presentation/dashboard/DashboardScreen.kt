@@ -23,9 +23,6 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import cafe.adriel.voyager.navigator.LocalNavigator
 import cafe.adriel.voyager.navigator.currentOrThrow
-import com.escolaapp.presentation.attendance.AttendanceScreen
-import com.escolaapp.presentation.grades.GradesScreen
-import com.escolaapp.presentation.notices.NoticesScreen
 import org.koin.compose.koinInject
 
 data class DashboardScreen(
@@ -99,18 +96,18 @@ data class DashboardScreen(
             Spacer(Modifier.height(8.dp))
 
             Button(
-                onClick = { navigator.push(GradesScreen(token, guardianId)) },
-                modifier = Modifier.fillMaxWidth()
+                onClick = { viewModel.navigateToGrades(token, guardianId) },
+                modifier = Modifier.fillMaxWidth(),
             ) { Text("Ver Notas") }
 
             Button(
-                onClick = { navigator.push(AttendanceScreen(token, guardianId)) },
-                modifier = Modifier.fillMaxWidth()
+                onClick = { viewModel.navigateToAttendance(token, guardianId) },
+                modifier = Modifier.fillMaxWidth(),
             ) { Text("Ver Frequência") }
 
             Button(
-                onClick = { navigator.push(NoticesScreen(token)) },
-                modifier = Modifier.fillMaxWidth()
+                onClick = { viewModel.navigateToNotices(token) },
+                modifier = Modifier.fillMaxWidth(),
             ) { Text("Ver Avisos") }
         }
     }

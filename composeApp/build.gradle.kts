@@ -62,7 +62,9 @@ kotlin {
             implementation(libs.kotlinx.serialization.json)
 
             // Navigation
-            implementation(libs.navigation.compose)
+            implementation(libs.voyager.navigator)
+            implementation(libs.voyager.koin)
+            implementation(libs.voyager.transitions)
         }
 
         commonTest.dependencies {

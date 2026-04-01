@@ -11,7 +11,6 @@ import com.escolaapp.presentation.dashboard.DashboardViewModel
 import com.escolaapp.presentation.grades.GradesViewModel
 import com.escolaapp.presentation.login.LoginViewModel
 import com.escolaapp.presentation.notices.NoticesViewModel
-import org.koin.compose.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 
 val appModule = module {
@@ -27,9 +26,9 @@ val appModule = module {
     single { NoticeRepository(get()) }
 
     // ViewModels
-    viewModel { LoginViewModel(get()) }
-    viewModel { DashboardViewModel(get()) }
-    viewModel { GradesViewModel(get()) }
-    viewModel { AttendanceViewModel(get()) }
-    viewModel { NoticesViewModel(get()) }
+    factory { LoginViewModel(get()) }
+    factory { DashboardViewModel(get()) }
+    factory { GradesViewModel(get()) }
+    factory { AttendanceViewModel(get()) }
+    factory { NoticesViewModel(get()) }
 }

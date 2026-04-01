@@ -24,92 +24,100 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
-import org.koin.compose.viewmodel.koinViewModel
+import cafe.adriel.voyager.core.screen.Screen
+import cafe.adriel.voyager.navigator.LocalNavigator
+import cafe.adriel.voyager.navigator.currentOrThrow
+import com.escolaapp.presentation.dashboard.DashboardScreen
+import org.koin.compose.koinInject
 
-@Composable
-fun LoginScreen(
-    onLoginSuccess: (token: String, guardianId: Int, name: String) -> Unit,
-) {
-    val viewModel: LoginViewModel = koinViewModel()
-    val uiState by viewModel.uiState.collectAsState()
+class LoginScreen : Screen {
 
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    @Composable
+    override fun Content() {
+        val navigator = LocalNavigator.currentOrThrow
+        val viewModel: LoginViewModel = koinInject()
+        val uiState by viewModel.uiState.collectAsState()
 
-    LaunchedEffect(uiState.isSuccess) {
-        if (uiState.isSuccess) {
-            onLoginSuccess(
-                uiState.token!!,
-                uiState.guardianId!!,
-                uiState.name!!,
-            )
-        }
-    }
+        var email by remember { mutableStateOf("") }
+        var password by remember { mutableStateOf("") }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally,
-    ) {
-        Text(
-            text = "EscolaApp",
-            style = MaterialTheme.typography.headlineMedium,
-        )
-
-        Spacer(Modifier.height(8.dp))
-
-        Text(
-            text = "Acompanhamento escolar",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-        )
-
-        Spacer(Modifier.height(32.dp))
-
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("E-mail") },
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-        )
-
-        Spacer(Modifier.height(12.dp))
-
-        OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
-            label = { Text("Senha") },
-            visualTransformation = PasswordVisualTransformation(),
-            singleLine = true,
-            modifier = Modifier.fillMaxWidth(),
-        )
-
-        Spacer(Modifier.height(8.dp))
-
-        uiState.error?.let {
-            Text(
-                text = it,
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall,
-            )
-            Spacer(Modifier.height(8.dp))
-        }
-
-        Button(
-            onClick = { viewModel.login(email, password) },
-            enabled = !uiState.isLoading,
-            modifier = Modifier.fillMaxWidth(),
-        ) {
-            if (uiState.isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.size(20.dp),
-                    color = MaterialTheme.colorScheme.onPrimary,
+        LaunchedEffect(uiState.isSuccess) {
+            if (uiState.isSuccess) {
+                navigator.replace(
+                    DashboardScreen(
+                        token = uiState.token!!,
+                        guardianId = uiState.guardianId!!,
+                        name = uiState.name!!
+                    )
                 )
-            } else {
-                Text("Entrar")
+            }
+        }
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(horizontal = 24.dp),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "EscolaApp",
+                style = MaterialTheme.typography.headlineMedium
+            )
+
+            Spacer(Modifier.height(8.dp))
+
+            Text(
+                text = "Acompanhamento escolar",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+
+            Spacer(Modifier.height(32.dp))
+
+            OutlinedTextField(
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("E-mail") },
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(Modifier.height(12.dp))
+
+            OutlinedTextField(
+                value = password,
+                onValueChange = { password = it },
+                label = { Text("Senha") },
+                visualTransformation = PasswordVisualTransformation(),
+                singleLine = true,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Spacer(Modifier.height(8.dp))
+
+            uiState.error?.let {
+                Text(
+                    text = it,
+                    color = MaterialTheme.colorScheme.error,
+                    style = MaterialTheme.typography.bodySmall
+                )
+                Spacer(Modifier.height(8.dp))
+            }
+
+            Button(
+                onClick = { viewModel.login(email, password) },
+                enabled = !uiState.isLoading,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                if (uiState.isLoading) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(20.dp),
+                        color = MaterialTheme.colorScheme.onPrimary
+                    )
+                } else {
+                    Text("Entrar")
+                }
             }
         }
     }

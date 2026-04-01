@@ -1,7 +1,7 @@
 package com.escolaapp.presentation.grades
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.data.repository.GradeRepository
 import com.escolaapp.domain.model.Grade
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -11,34 +11,34 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 data class GradesUiState(
-    val isLoading: Boolean    = false,
-    val grades: List<Grade>   = emptyList(),
-    val error: String?        = null,
+    val isLoading: Boolean  = false,
+    val grades: List<Grade> = emptyList(),
+    val error: String?      = null
 )
 
 class GradesViewModel(
-    private val gradeRepository: GradeRepository,
-) : ViewModel() {
+    private val gradeRepository: GradeRepository
+) : ScreenModel {
 
     private val _uiState = MutableStateFlow(GradesUiState())
     val uiState: StateFlow<GradesUiState> = _uiState.asStateFlow()
 
     fun loadGrades(token: String, studentId: Int) {
-        viewModelScope.launch {
+        screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
                 val grades = gradeRepository.getGradesByStudent(token, studentId)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        grades    = grades,
+                        grades    = grades
                     )
                 }
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error     = "Erro ao carregar notas",
+                        error     = "Erro ao carregar notas"
                     )
                 }
             }

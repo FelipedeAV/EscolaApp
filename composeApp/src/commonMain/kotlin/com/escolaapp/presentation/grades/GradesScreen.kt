@@ -20,80 +20,84 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import org.koin.compose.viewmodel.koinViewModel
+import cafe.adriel.voyager.core.screen.Screen
+import org.koin.compose.koinInject
 
-@Composable
-fun GradesScreen(
-    token: String,
-    studentId: Int,
-) {
-    val viewModel: GradesViewModel = koinViewModel()
-    val uiState by viewModel.uiState.collectAsState()
+data class GradesScreen(
+    val token: String,
+    val studentId: Int
+) : Screen {
 
-    LaunchedEffect(Unit) {
-        viewModel.loadGrades(token, studentId)
-    }
+    @Composable
+    override fun Content() {
+        val viewModel: GradesViewModel = koinInject()
+        val uiState by viewModel.uiState.collectAsState()
 
-    if (uiState.isLoading) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,
-        ) {
-            CircularProgressIndicator()
+        LaunchedEffect(Unit) {
+            viewModel.loadGrades(token, studentId)
         }
-        return
-    }
 
-    uiState.error?.let {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(text = it, color = MaterialTheme.colorScheme.error)
+        if (uiState.isLoading) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+            return
         }
-        return
-    }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
-    ) {
-        Text(
-            text = "Notas",
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.padding(bottom = 16.dp),
-        )
+        uiState.error?.let {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = it, color = MaterialTheme.colorScheme.error)
+            }
+            return
+        }
 
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            items(uiState.grades) { grade ->
-                Card(modifier = Modifier.fillMaxWidth()) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
-                    ) {
-                        Column {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp)
+        ) {
+            Text(
+                text = "Notas",
+                style = MaterialTheme.typography.headlineSmall,
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
+
+            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(uiState.grades) { grade ->
+                    Card(modifier = Modifier.fillMaxWidth()) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column {
+                                Text(
+                                    text = grade.subject,
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                                Text(
+                                    text = "${grade.bimester}º Bimestre",
+                                    style = MaterialTheme.typography.bodySmall,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
                             Text(
-                                text = grade.subject,
-                                style = MaterialTheme.typography.titleMedium,
-                            )
-                            Text(
-                                text = "${grade.bimester}º Bimestre",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                text = grade.value.toString(),
+                                style = MaterialTheme.typography.titleLarge,
+                                color = if (grade.value >= 6.0)
+                                    MaterialTheme.colorScheme.primary
+                                else
+                                    MaterialTheme.colorScheme.error
                             )
                         }
-                        Text(
-                            text = grade.value.toString(),
-                            style = MaterialTheme.typography.titleLarge,
-                            color = if (grade.value >= 6.0)
-                                MaterialTheme.colorScheme.primary
-                            else
-                                MaterialTheme.colorScheme.error,
-                        )
                     }
                 }
             }

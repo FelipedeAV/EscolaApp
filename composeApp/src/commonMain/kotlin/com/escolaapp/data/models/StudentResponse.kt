@@ -8,5 +8,5 @@ data class StudentResponse(
     val id: Int,
     val name: String,
     val classroom: String,
-    @SerialName("guardian_id") val guardianId: Int,
+    @SerialName("user_id") val userId: Int,
 )

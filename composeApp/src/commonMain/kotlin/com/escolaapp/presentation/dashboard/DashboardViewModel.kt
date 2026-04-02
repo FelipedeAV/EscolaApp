@@ -14,34 +14,34 @@ import kotlinx.coroutines.launch
 
 data class DashboardUiState(
     val isLoading: Boolean = false,
-    val student: Student? = null,
-    val error: String? = null,
+    val student: Student?  = null,
+    val error: String?     = null
 )
 
 class DashboardViewModel(
     private val studentRepository: StudentRepository,
-    private val navigationViewModel: NavigationViewModel,
+    private val navigationViewModel: NavigationViewModel
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(DashboardUiState())
     val uiState: StateFlow<DashboardUiState> = _uiState.asStateFlow()
 
-    fun loadStudent(token: String, studentId: Int) {
+    fun loadStudent(token: String, userId: Int) {
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
-                val student = studentRepository.getStudentById(token, studentId)
+                val student = studentRepository.getStudentById(token, userId)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        student = student,
+                        student   = student
                     )
                 }
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "Erro ao carregar dados do aluno",
+                        error     = "Erro ao carregar dados do aluno"
                     )
                 }
             }
@@ -52,8 +52,8 @@ class DashboardViewModel(
         screenModelScope.launch {
             navigationViewModel.emit(
                 NavigationEvent.ToGrades(
-                    token = token,
-                    studentId = studentId,
+                    token     = token,
+                    studentId = studentId
                 )
             )
         }
@@ -63,8 +63,8 @@ class DashboardViewModel(
         screenModelScope.launch {
             navigationViewModel.emit(
                 NavigationEvent.ToAttendance(
-                    token = token,
-                    studentId = studentId,
+                    token     = token,
+                    studentId = studentId
                 )
             )
         }
@@ -75,6 +75,24 @@ class DashboardViewModel(
             navigationViewModel.emit(
                 NavigationEvent.ToNotices(token = token)
             )
+        }
+    }
+
+    fun navigateToAddGrade(token: String) {
+        screenModelScope.launch {
+            navigationViewModel.emit(NavigationEvent.ToAddGrade(token = token))
+        }
+    }
+
+    fun navigateToAddAttendance(token: String) {
+        screenModelScope.launch {
+            navigationViewModel.emit(NavigationEvent.ToAddAttendance(token = token))
+        }
+    }
+
+    fun navigateToAddNotice(token: String) {
+        screenModelScope.launch {
+            navigationViewModel.emit(NavigationEvent.ToAddNotice(token = token))
         }
     }
 }

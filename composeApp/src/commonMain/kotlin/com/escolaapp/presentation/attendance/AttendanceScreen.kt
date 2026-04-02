@@ -1,56 +1,113 @@
 package com.escolaapp.presentation.attendance
 
-import cafe.adriel.voyager.core.model.ScreenModel
-import cafe.adriel.voyager.core.model.screenModelScope
-import com.escolaapp.data.repository.AttendanceRepository
-import com.escolaapp.domain.model.Attendance
-import com.escolaapp.navigation.NavigationEvent
-import com.escolaapp.navigation.NavigationViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import cafe.adriel.voyager.core.screen.Screen
+import org.koin.compose.koinInject
 
-data class AttendanceUiState(
-    val isLoading: Boolean = false,
-    val attendances: List<Attendance> = emptyList(),
-    val error: String? = null,
-)
+data class AttendanceScreen(
+    val token: String,
+    val studentId: Int,
+) : Screen {
 
-class AttendanceViewModel(
-    private val attendanceRepository: AttendanceRepository,
-    private val navigationViewModel: NavigationViewModel,
-) : ScreenModel {
+    @Composable
+    override fun Content() {
+        val viewModel: AttendanceViewModel = koinInject()
+        val uiState by viewModel.uiState.collectAsState()
 
-    private val _uiState = MutableStateFlow(AttendanceUiState())
-    val uiState: StateFlow<AttendanceUiState> = _uiState.asStateFlow()
+        LaunchedEffect(Unit) {
+            viewModel.loadAttendance(token, studentId)
+        }
 
-    fun loadAttendance(token: String, studentId: Int) {
-        screenModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = null) }
-            try {
-                val attendances = attendanceRepository.getAttendanceByStudent(token, studentId)
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        attendances = attendances,
-                    )
-                }
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        error = "Erro ao carregar frequência",
-                    )
+        if (uiState.isLoading) {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center,
+            ) {
+                CircularProgressIndicator()
+            }
+            return
+        }
+
+        uiState.error?.let {
+            Box(
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center,
+            ) {
+                Text(text = it, color = MaterialTheme.colorScheme.error)
+            }
+            return
+        }
+
+        val total = uiState.attendances.size
+        val presents = uiState.attendances.count { it.isPresent }
+        val percent = if (total > 0) (presents * 100) / total else 0
+
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(16.dp),
+        ) {
+            Text(
+                text = "Frequência",
+                style = MaterialTheme.typography.headlineSmall,
+                modifier = Modifier.padding(bottom = 8.dp),
+            )
+
+            Text(
+                text = "Presença: $percent%",
+                style = MaterialTheme.typography.titleMedium,
+                color = if (percent >= 75)
+                    MaterialTheme.colorScheme.primary
+                else
+                    MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(bottom = 16.dp),
+            )
+
+            LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(uiState.attendances) { attendance ->
+                    Card(modifier = Modifier.fillMaxWidth()) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
+                        ) {
+                            Text(
+                                text = attendance.date,
+                                style = MaterialTheme.typography.bodyMedium,
+                            )
+                            Text(
+                                text = if (attendance.isPresent) "Presente" else "Falta",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = if (attendance.isPresent)
+                                    MaterialTheme.colorScheme.primary
+                                else
+                                    MaterialTheme.colorScheme.error,
+                            )
+                        }
+                    }
                 }
             }
-        }
-    }
-
-    fun navigateBack() {
-        screenModelScope.launch {
-            navigationViewModel.emit(NavigationEvent.Back)
         }
     }
 }

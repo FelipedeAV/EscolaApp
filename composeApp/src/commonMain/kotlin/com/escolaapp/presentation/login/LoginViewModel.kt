@@ -32,8 +32,9 @@ class LoginViewModel(
                 navigationViewModel.emit(
                     NavigationEvent.ToDashboard(
                         token = result.token,
-                        guardianId = result.guardianId,
+                        userId = result.userId,
                         name = result.name,
+                        role = result.role,
                     )
                 )
             } catch (e: Exception) {

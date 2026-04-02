@@ -1,9 +1,9 @@
-package com.escolaapp.presentation.attendance
+package com.escolaapp.presentation.teacher
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.escolaapp.data.repository.AttendanceRepository
-import com.escolaapp.domain.model.Attendance
+import com.escolaapp.data.gateway.ApiClient
+import com.escolaapp.data.models.NoticeRequest
 import com.escolaapp.navigation.NavigationEvent
 import com.escolaapp.navigation.NavigationViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,36 +12,42 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-data class AttendanceUiState(
+data class AddNoticeUiState(
     val isLoading: Boolean = false,
-    val attendances: List<Attendance> = emptyList(),
+    val success: String? = null,
     val error: String? = null,
 )
 
-class AttendanceViewModel(
-    private val attendanceRepository: AttendanceRepository,
+class AddNoticeViewModel(
+    private val apiClient: ApiClient,
     private val navigationViewModel: NavigationViewModel,
 ) : ScreenModel {
 
-    private val _uiState = MutableStateFlow(AttendanceUiState())
-    val uiState: StateFlow<AttendanceUiState> = _uiState.asStateFlow()
+    private val _uiState = MutableStateFlow(AddNoticeUiState())
+    val uiState: StateFlow<AddNoticeUiState> = _uiState.asStateFlow()
 
-    fun loadAttendance(token: String, studentId: Int) {
+    fun addNotice(token: String, title: String, description: String) {
         screenModelScope.launch {
-            _uiState.update { it.copy(isLoading = true, error = null) }
+            _uiState.update { it.copy(isLoading = true, error = null, success = null) }
             try {
-                val attendances = attendanceRepository.getAttendanceByStudent(token, studentId)
+                apiClient.addNotice(
+                    token = token,
+                    request = NoticeRequest(
+                        title = title,
+                        description = description,
+                    )
+                )
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        attendances = attendances,
+                        success = "Aviso publicado com sucesso!",
                     )
                 }
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "Erro ao carregar frequência",
+                        error = "Erro ao publicar aviso",
                     )
                 }
             }

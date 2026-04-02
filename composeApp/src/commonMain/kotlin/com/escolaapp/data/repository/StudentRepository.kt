@@ -7,9 +7,7 @@ import com.escolaapp.domain.model.Student
 class StudentRepository(private val apiClient: ApiClient) {
 
     suspend fun getStudents(token: String): List<Student> =
-        apiClient.getStudents(token).map { dto ->
-            dto.toDomain()
-        }
+        apiClient.getStudents(token).map { it.toDomain() }
 
     suspend fun getStudentById(token: String, id: Int): Student =
         apiClient.getStudentById(token, id).toDomain()

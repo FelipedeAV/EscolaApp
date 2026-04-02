@@ -12,6 +12,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,30 +22,30 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import cafe.adriel.voyager.navigator.LocalNavigator
-import cafe.adriel.voyager.navigator.currentOrThrow
 import org.koin.compose.koinInject
 
 data class DashboardScreen(
     val token: String,
-    val guardianId: Int,
-    val name: String
+    val userId: Int,
+    val name: String,
+    val role: String,
 ) : Screen {
 
     @Composable
     override fun Content() {
-        val navigator = LocalNavigator.currentOrThrow
         val viewModel: DashboardViewModel = koinInject()
         val uiState by viewModel.uiState.collectAsState()
 
+        val isTeacher = role == "Teacher"
+
         LaunchedEffect(Unit) {
-            viewModel.loadStudent(token, guardianId)
+            viewModel.loadStudent(token, userId)
         }
 
         if (uiState.isLoading) {
             Box(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 CircularProgressIndicator()
             }
@@ -54,7 +55,7 @@ data class DashboardScreen(
         uiState.error?.let {
             Box(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 Text(text = it, color = MaterialTheme.colorScheme.error)
             }
@@ -65,11 +66,17 @@ data class DashboardScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             Text(
                 text = "Olá, $name",
-                style = MaterialTheme.typography.headlineSmall
+                style = MaterialTheme.typography.headlineSmall,
+            )
+
+            Text(
+                text = if (isTeacher) "Professor" else "Responsável",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
             uiState.student?.let { student ->
@@ -78,16 +85,16 @@ data class DashboardScreen(
                         Text(
                             text = "Aluno",
                             style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         Text(
                             text = student.name,
-                            style = MaterialTheme.typography.titleLarge
+                            style = MaterialTheme.typography.titleLarge,
                         )
                         Text(
                             text = student.classroom,
                             style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
                 }
@@ -95,13 +102,14 @@ data class DashboardScreen(
 
             Spacer(Modifier.height(8.dp))
 
+            // Botões visíveis para todos
             Button(
-                onClick = { viewModel.navigateToGrades(token, guardianId) },
+                onClick = { viewModel.navigateToGrades(token, userId) },
                 modifier = Modifier.fillMaxWidth(),
             ) { Text("Ver Notas") }
 
             Button(
-                onClick = { viewModel.navigateToAttendance(token, guardianId) },
+                onClick = { viewModel.navigateToAttendance(token, userId) },
                 modifier = Modifier.fillMaxWidth(),
             ) { Text("Ver Frequência") }
 
@@ -109,6 +117,32 @@ data class DashboardScreen(
                 onClick = { viewModel.navigateToNotices(token) },
                 modifier = Modifier.fillMaxWidth(),
             ) { Text("Ver Avisos") }
+
+            // Botões exclusivos do Teacher
+            if (isTeacher) {
+                Spacer(Modifier.height(8.dp))
+
+                Text(
+                    text = "Ações do professor",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+
+                OutlinedButton(
+                    onClick = { viewModel.navigateToAddGrade(token) },
+                    modifier = Modifier.fillMaxWidth(),
+                ) { Text("Lançar Nota") }
+
+                OutlinedButton(
+                    onClick = { viewModel.navigateToAddAttendance(token) },
+                    modifier = Modifier.fillMaxWidth(),
+                ) { Text("Lançar Frequência") }
+
+                OutlinedButton(
+                    onClick = { viewModel.navigateToAddNotice(token) },
+                    modifier = Modifier.fillMaxWidth(),
+                ) { Text("Criar Aviso") }
+            }
         }
     }
 }

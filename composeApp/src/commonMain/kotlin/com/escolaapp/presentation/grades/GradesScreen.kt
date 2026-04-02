@@ -25,7 +25,7 @@ import org.koin.compose.koinInject
 
 data class GradesScreen(
     val token: String,
-    val studentId: Int
+    val studentId: Int,
 ) : Screen {
 
     @Composable
@@ -40,7 +40,7 @@ data class GradesScreen(
         if (uiState.isLoading) {
             Box(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 CircularProgressIndicator()
             }
@@ -50,7 +50,7 @@ data class GradesScreen(
         uiState.error?.let {
             Box(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 Text(text = it, color = MaterialTheme.colorScheme.error)
             }
@@ -60,12 +60,12 @@ data class GradesScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(16.dp),
         ) {
             Text(
                 text = "Notas",
                 style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier.padding(bottom = 16.dp),
             )
 
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -76,17 +76,17 @@ data class GradesScreen(
                                 .fillMaxWidth()
                                 .padding(16.dp),
                             horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Column {
                                 Text(
                                     text = grade.subject,
-                                    style = MaterialTheme.typography.titleMedium
+                                    style = MaterialTheme.typography.titleMedium,
                                 )
                                 Text(
                                     text = "${grade.bimester}º Bimestre",
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
                             }
                             Text(
@@ -95,7 +95,7 @@ data class GradesScreen(
                                 color = if (grade.value >= 6.0)
                                     MaterialTheme.colorScheme.primary
                                 else
-                                    MaterialTheme.colorScheme.error
+                                    MaterialTheme.colorScheme.error,
                             )
                         }
                     }

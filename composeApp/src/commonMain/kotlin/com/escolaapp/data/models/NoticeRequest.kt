@@ -1,12 +1,9 @@
 package com.escolaapp.data.models
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class NoticeResponse(
-    val id: Int,
+data class NoticeRequest(
     val title: String,
     val description: String,
-    @SerialName("published_at") val publishedAt: String,
 )

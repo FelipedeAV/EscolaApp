@@ -1,12 +1,11 @@
 package com.escolaapp.data.models
 
-import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class LoginResponse(
-    val token: String,
+data class UserResponse(
+    val id: Int,
     val name: String,
-    @SerialName("user_id") val userId: Int,
+    val email: String,
     val role: String,
 )

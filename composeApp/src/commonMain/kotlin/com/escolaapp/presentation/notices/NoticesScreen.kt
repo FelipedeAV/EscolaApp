@@ -23,7 +23,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import org.koin.compose.koinInject
 
 data class NoticesScreen(
-    val token: String
+    val token: String,
 ) : Screen {
 
     @Composable
@@ -38,7 +38,7 @@ data class NoticesScreen(
         if (uiState.isLoading) {
             Box(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 CircularProgressIndicator()
             }
@@ -48,7 +48,7 @@ data class NoticesScreen(
         uiState.error?.let {
             Box(
                 modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.Center,
             ) {
                 Text(text = it, color = MaterialTheme.colorScheme.error)
             }
@@ -58,12 +58,12 @@ data class NoticesScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(16.dp),
         ) {
             Text(
                 text = "Avisos",
                 style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.padding(bottom = 16.dp)
+                modifier = Modifier.padding(bottom = 16.dp),
             )
 
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -72,19 +72,19 @@ data class NoticesScreen(
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text(
                                 text = notice.title,
-                                style = MaterialTheme.typography.titleMedium
+                                style = MaterialTheme.typography.titleMedium,
                             )
                             Text(
                                 text = notice.description,
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.padding(top = 4.dp)
+                                modifier = Modifier.padding(top = 4.dp),
                             )
                             Text(
                                 text = notice.publishedAt,
                                 style = MaterialTheme.typography.bodySmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                modifier = Modifier.padding(top = 8.dp)
+                                modifier = Modifier.padding(top = 8.dp),
                             )
                         }
                     }

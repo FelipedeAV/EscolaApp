@@ -4,9 +4,9 @@ import com.escolaapp.data.models.GradeResponse
 import com.escolaapp.domain.model.Grade
 
 fun GradeResponse.toDomain() = Grade(
-    id        = id,
+    id = id,
     studentId = studentId,
-    subject   = subject,
-    bimester  = bimester,
-    value     = value,
+    subject = subject,
+    bimester = bimester,
+    value = value,
 )

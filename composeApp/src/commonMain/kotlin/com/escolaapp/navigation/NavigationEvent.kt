@@ -3,8 +3,9 @@ package com.escolaapp.navigation
 sealed class NavigationEvent {
     data class ToDashboard(
         val token: String,
-        val guardianId: Int,
+        val userId: Int,
         val name: String,
+        val role: String,
     ) : NavigationEvent()
 
     data class ToGrades(
@@ -18,6 +19,18 @@ sealed class NavigationEvent {
     ) : NavigationEvent()
 
     data class ToNotices(
+        val token: String,
+    ) : NavigationEvent()
+
+    data class ToAddGrade(
+        val token: String,
+    ) : NavigationEvent()
+
+    data class ToAddAttendance(
+        val token: String,
+    ) : NavigationEvent()
+
+    data class ToAddNotice(
         val token: String,
     ) : NavigationEvent()
 

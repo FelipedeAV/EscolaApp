@@ -3,16 +3,18 @@ package com.escolaapp.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import cafe.adriel.voyager.navigator.Navigator
-import com.escolaapp.presentation.attendance.AttendanceScreen
 import com.escolaapp.presentation.dashboard.DashboardScreen
 import com.escolaapp.presentation.grades.GradesScreen
 import com.escolaapp.presentation.notices.NoticesScreen
+import com.escolaapp.presentation.teacher.AddAttendanceScreen
+import com.escolaapp.presentation.teacher.AddGradeScreen
+import com.escolaapp.presentation.teacher.AddNoticeScreen
 import kotlinx.coroutines.flow.SharedFlow
 
 @Composable
 fun NavigationHandler(
     navigator: Navigator,
-    events: SharedFlow<NavigationEvent>,
+    events: SharedFlow<NavigationEvent>
 ) {
     LaunchedEffect(Unit) {
         events.collect { event ->
@@ -20,8 +22,9 @@ fun NavigationHandler(
                 is NavigationEvent.ToDashboard -> navigator.replace(
                     DashboardScreen(
                         token = event.token,
-                        guardianId = event.guardianId,
+                        userId = event.userId,
                         name = event.name,
+                        role = event.role,
                     )
                 )
 
@@ -41,6 +44,18 @@ fun NavigationHandler(
 
                 is NavigationEvent.ToNotices -> navigator.push(
                     NoticesScreen(token = event.token)
+                )
+
+                is NavigationEvent.ToAddGrade -> navigator.push(
+                    AddGradeScreen(token = event.token)
+                )
+
+                is NavigationEvent.ToAddAttendance -> navigator.push(
+                    AddAttendanceScreen(token = event.token)
+                )
+
+                is NavigationEvent.ToAddNotice -> navigator.push(
+                    AddNoticeScreen(token = event.token)
                 )
 
                 is NavigationEvent.Back -> navigator.pop()

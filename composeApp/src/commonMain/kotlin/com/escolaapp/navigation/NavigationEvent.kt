@@ -34,5 +34,15 @@ sealed class NavigationEvent {
         val token: String,
     ) : NavigationEvent()
 
+    data class ToProfile(
+        val token: String,
+        val userId: Int,
+    ) : NavigationEvent()
+
+    data class ToProfileSettings(
+        val token: String,
+        val userId: Int,
+    ) : NavigationEvent()
+
     object Back : NavigationEvent()
 }

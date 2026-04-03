@@ -2,6 +2,7 @@ package com.escolaapp.data.gateway
 
 import com.escolaapp.data.models.AttendanceRequest
 import com.escolaapp.data.models.AttendanceResponse
+import com.escolaapp.data.models.ChangePasswordRequest
 import com.escolaapp.data.models.GradeRequest
 import com.escolaapp.data.models.GradeResponse
 import com.escolaapp.data.models.LoginRequest
@@ -92,6 +93,24 @@ class ApiClient {
             contentType(ContentType.Application.Json)
             setBody(user)
         }.body()
+
+    suspend fun changePassword(
+        token: String,
+        userId: Int,
+        currentPassword: String,
+        newPassword: String,
+    ) {
+        client.post("$baseUrl/users/$userId/change-password") {
+            header("Authorization", "Bearer $token")
+            contentType(ContentType.Application.Json)
+            setBody(
+                ChangePasswordRequest(
+                    currentPassword = currentPassword,
+                    newPassword = newPassword,
+                )
+            )
+        }
+    }
 
     suspend fun getStudents(token: String): List<StudentResponse> =
         client.get("$baseUrl/students") {

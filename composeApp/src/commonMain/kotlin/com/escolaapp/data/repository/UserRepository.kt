@@ -15,4 +15,13 @@ class UserRepository(private val apiClient: ApiClient) {
 
     suspend fun createUser(user: UserRequest): User =
         apiClient.createUser(user).toDomain()
+
+    suspend fun changePassword(
+        token: String,
+        userId: Int,
+        currentPassword: String,
+        newPassword: String,
+    ) {
+        apiClient.changePassword(token, userId, currentPassword, newPassword)
+    }
 }

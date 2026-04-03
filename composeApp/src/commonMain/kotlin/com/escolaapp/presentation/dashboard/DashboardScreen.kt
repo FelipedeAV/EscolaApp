@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -51,7 +52,12 @@ data class DashboardScreen(
             topBar = {
                 AppTopBar(
                     title = "Dashboard",
-                    onBackClick = { viewModel.navigateBack() },
+                    showBackButton = false,
+                    actions = {
+                        IconButton(onClick = { viewModel.navigateToProfile(token, userId) }) {
+                            Text(text = "P")
+                        }
+                    },
                 )
             },
         ) { innerPadding ->
@@ -86,83 +92,83 @@ data class DashboardScreen(
                     .padding(16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
-            Text(
-                text = "Olá, $name",
-                style = MaterialTheme.typography.headlineSmall,
-            )
-
-            Text(
-                text = if (isTeacher) "Professor" else "Responsável",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
-
-            uiState.student?.let { student ->
-                Card(modifier = Modifier.fillMaxWidth()) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            text = "Aluno",
-                            style = MaterialTheme.typography.labelMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                        Text(
-                            text = student.name,
-                            style = MaterialTheme.typography.titleLarge,
-                        )
-                        Text(
-                            text = student.classroom,
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                }
-            }
-
-            Spacer(Modifier.height(8.dp))
-
-            // Botões visíveis para todos
-            Button(
-                onClick = { linkedStudentId?.let { viewModel.navigateToGrades(token, it) } },
-                enabled = linkedStudentId != null,
-                modifier = Modifier.fillMaxWidth(),
-            ) { Text("Ver Notas") }
-
-            Button(
-                onClick = { linkedStudentId?.let { viewModel.navigateToAttendance(token, it) } },
-                enabled = linkedStudentId != null,
-                modifier = Modifier.fillMaxWidth(),
-            ) { Text("Ver Frequência") }
-
-            Button(
-                onClick = { viewModel.navigateToNotices(token) },
-                modifier = Modifier.fillMaxWidth(),
-            ) { Text("Ver Avisos") }
-
-            // Botões exclusivos do Teacher
-            if (isTeacher) {
-                Spacer(Modifier.height(8.dp))
+                Text(
+                    text = "Olá, $name",
+                    style = MaterialTheme.typography.headlineSmall,
+                )
 
                 Text(
-                    text = "Ações do professor",
-                    style = MaterialTheme.typography.labelMedium,
+                    text = if (isTeacher) "Professor" else "Responsável",
+                    style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
 
-                OutlinedButton(
-                    onClick = { viewModel.navigateToAddGrade(token) },
-                    modifier = Modifier.fillMaxWidth(),
-                ) { Text("Lançar Nota") }
+                uiState.student?.let { student ->
+                    Card(modifier = Modifier.fillMaxWidth()) {
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(
+                                text = "Aluno",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                            Text(
+                                text = student.name,
+                                style = MaterialTheme.typography.titleLarge,
+                            )
+                            Text(
+                                text = student.classroom,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                    }
+                }
 
-                OutlinedButton(
-                    onClick = { viewModel.navigateToAddAttendance(token) },
-                    modifier = Modifier.fillMaxWidth(),
-                ) { Text("Lançar Frequência") }
+                Spacer(Modifier.height(8.dp))
 
-                OutlinedButton(
-                    onClick = { viewModel.navigateToAddNotice(token) },
+                // Botões visíveis para todos
+                Button(
+                    onClick = { linkedStudentId?.let { viewModel.navigateToGrades(token, it) } },
+                    enabled = linkedStudentId != null,
                     modifier = Modifier.fillMaxWidth(),
-                ) { Text("Criar Aviso") }
-            }
+                ) { Text("Ver Notas") }
+
+                Button(
+                    onClick = { linkedStudentId?.let { viewModel.navigateToAttendance(token, it) } },
+                    enabled = linkedStudentId != null,
+                    modifier = Modifier.fillMaxWidth(),
+                ) { Text("Ver Frequência") }
+
+                Button(
+                    onClick = { viewModel.navigateToNotices(token) },
+                    modifier = Modifier.fillMaxWidth(),
+                ) { Text("Ver Avisos") }
+
+                // Botões exclusivos do Teacher
+                if (isTeacher) {
+                    Spacer(Modifier.height(8.dp))
+
+                    Text(
+                        text = "Ações do professor",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+
+                    OutlinedButton(
+                        onClick = { viewModel.navigateToAddGrade(token) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) { Text("Lançar Nota") }
+
+                    OutlinedButton(
+                        onClick = { viewModel.navigateToAddAttendance(token) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) { Text("Lançar Frequência") }
+
+                    OutlinedButton(
+                        onClick = { viewModel.navigateToAddNotice(token) },
+                        modifier = Modifier.fillMaxWidth(),
+                    ) { Text("Criar Aviso") }
+                }
             }
         }
     }

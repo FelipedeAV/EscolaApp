@@ -100,9 +100,14 @@ class DashboardViewModel(
         }
     }
 
-    fun navigateBack() {
+    fun navigateToProfile(token: String, userId: Int) {
         screenModelScope.launch {
-            navigationViewModel.emit(NavigationEvent.Back)
+            navigationViewModel.emit(
+                NavigationEvent.ToProfile(
+                    token = token,
+                    userId = userId,
+                )
+            )
         }
     }
 }

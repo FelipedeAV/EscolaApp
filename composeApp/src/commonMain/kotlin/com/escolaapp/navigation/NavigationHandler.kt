@@ -59,6 +59,20 @@ fun NavigationHandler(
                     AddNoticeScreen(token = event.token)
                 )
 
+                is NavigationEvent.ToProfile -> navigator.push(
+                    com.escolaapp.presentation.profile.ProfileScreen(
+                        token = event.token,
+                        userId = event.userId,
+                    )
+                )
+
+                is NavigationEvent.ToProfileSettings -> navigator.push(
+                    com.escolaapp.presentation.profile.ProfileSettingsScreen(
+                        token = event.token,
+                        userId = event.userId,
+                    )
+                )
+
                 is NavigationEvent.Back -> navigator.pop()
             }
         }

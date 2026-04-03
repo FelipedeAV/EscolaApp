@@ -10,15 +10,20 @@ import androidx.compose.runtime.Composable
 @Composable
 fun AppTopBar(
     title: String,
-    onBackClick: () -> Unit,
+    showBackButton: Boolean = true,
+    onBackClick: (() -> Unit)? = null,
+    actions: @Composable () -> Unit = {},
 ) {
     TopAppBar(
         title = { Text(text = title) },
         navigationIcon = {
-            IconButton(onClick = onBackClick) {
-                Text(text = "←")
+            if (showBackButton && onBackClick != null) {
+                IconButton(onClick = onBackClick) {
+                    Text(text = "<")
+                }
             }
         },
+        actions = { actions() },
     )
 }
 

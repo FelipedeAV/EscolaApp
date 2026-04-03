@@ -64,7 +64,14 @@ class ProfileViewModel(
             navigationViewModel.emit(NavigationEvent.Back)
         }
     }
+
+    fun logout() {
+        screenModelScope.launch {
+            navigationViewModel.emit(NavigationEvent.ToLogin)
+        }
+    }
 }
+
 
 
 

@@ -44,5 +44,7 @@ sealed class NavigationEvent {
         val userId: Int,
     ) : NavigationEvent()
 
+    object ToLogin : NavigationEvent()
+
     object Back : NavigationEvent()
 }

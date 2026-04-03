@@ -99,10 +99,18 @@ data class ProfileScreen(
                 ) {
                     Text("Configurações do Perfil")
                 }
+
+                Button(
+                    onClick = { viewModel.logout() },
+                    modifier = Modifier.fillMaxWidth(),
+                ) {
+                    Text("Deslogar")
+                }
             }
         }
     }
 }
+
 
 
 

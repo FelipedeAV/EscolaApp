@@ -39,12 +39,7 @@ class LoginScreen : Screen {
         var password by remember { mutableStateOf("") }
 
         Scaffold(
-            topBar = {
-                AppTopBar(
-                    title = "Login",
-                    onBackClick = { viewModel.navigateBack() },
-                )
-            },
+            topBar = { },
         ) { innerPadding ->
             Column(
                 modifier = Modifier

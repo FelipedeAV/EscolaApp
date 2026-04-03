@@ -6,6 +6,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import com.escolaapp.presentation.attendance.AttendanceScreen
 import com.escolaapp.presentation.dashboard.DashboardScreen
 import com.escolaapp.presentation.grades.GradesScreen
+import com.escolaapp.presentation.login.LoginScreen
 import com.escolaapp.presentation.notices.NoticesScreen
 import com.escolaapp.presentation.teacher.AddAttendanceScreen
 import com.escolaapp.presentation.teacher.AddGradeScreen
@@ -72,6 +73,8 @@ fun NavigationHandler(
                         userId = event.userId,
                     )
                 )
+
+                is NavigationEvent.ToLogin -> navigator.replace(LoginScreen())
 
                 is NavigationEvent.Back -> navigator.pop()
             }

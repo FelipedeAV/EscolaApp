@@ -1,5 +1,6 @@
 package com.escolaapp.data.gateway
 
+import com.escolaapp.data.gateway.dto.ClassResponse
 import com.escolaapp.data.models.AttendanceRequest
 import com.escolaapp.data.models.AttendanceResponse
 import com.escolaapp.data.models.ChangePasswordRequest
@@ -156,5 +157,15 @@ class ApiClient {
             header("Authorization", "Bearer $token")
             contentType(ContentType.Application.Json)
             setBody(request)
+        }.body()
+
+    suspend fun getClassesByTeacher(token: String, teacherId: Int): List<ClassResponse> =
+        client.get("$baseUrl/classes/teacher/$teacherId") {
+            header("Authorization", "Bearer $token")
+        }.body()
+
+    suspend fun getCurrentClass(token: String, teacherId: Int): ClassResponse =
+        client.get("$baseUrl/classes/current/$teacherId") {
+            header("Authorization", "Bearer $token")
         }.body()
 }

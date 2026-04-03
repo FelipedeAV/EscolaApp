@@ -5,9 +5,11 @@ import androidx.compose.runtime.LaunchedEffect
 import cafe.adriel.voyager.navigator.Navigator
 import com.escolaapp.presentation.attendance.AttendanceScreen
 import com.escolaapp.presentation.dashboard.DashboardScreen
+import com.escolaapp.presentation.dashboard.TeacherDashboardScreen
 import com.escolaapp.presentation.grades.GradesScreen
 import com.escolaapp.presentation.login.LoginScreen
 import com.escolaapp.presentation.notices.NoticesScreen
+import com.escolaapp.presentation.profile.*
 import com.escolaapp.presentation.teacher.AddAttendanceScreen
 import com.escolaapp.presentation.teacher.AddGradeScreen
 import com.escolaapp.presentation.teacher.AddNoticeScreen
@@ -21,14 +23,26 @@ fun NavigationHandler(
     LaunchedEffect(Unit) {
         events.collect { event ->
             when (event) {
-                is NavigationEvent.ToDashboard -> navigator.replace(
-                    DashboardScreen(
-                        token = event.token,
-                        userId = event.userId,
-                        name = event.name,
-                        role = event.role,
-                    )
-                )
+                is NavigationEvent.ToDashboard -> {
+                    if (event.role == "Teacher") {
+                        navigator.replace(
+                            TeacherDashboardScreen(
+                                token = event.token,
+                                userId = event.userId,
+                                name = event.name,
+                            )
+                        )
+                    } else {
+                        navigator.replace(
+                            DashboardScreen(
+                                token  = event.token,
+                                userId = event.userId,
+                                name   = event.name,
+                                role   = event.role,
+                            )
+                        )
+                    }
+                }
 
                 is NavigationEvent.ToGrades -> navigator.push(
                     GradesScreen(
@@ -61,14 +75,14 @@ fun NavigationHandler(
                 )
 
                 is NavigationEvent.ToProfile -> navigator.push(
-                    com.escolaapp.presentation.profile.ProfileScreen(
+                    ProfileScreen(
                         token = event.token,
                         userId = event.userId,
                     )
                 )
 
                 is NavigationEvent.ToProfileSettings -> navigator.push(
-                    com.escolaapp.presentation.profile.ProfileSettingsScreen(
+                    ProfileSettingsScreen(
                         token = event.token,
                         userId = event.userId,
                     )
@@ -77,6 +91,8 @@ fun NavigationHandler(
                 is NavigationEvent.ToLogin -> navigator.replace(LoginScreen())
 
                 is NavigationEvent.Back -> navigator.pop()
+
+                is NavigationEvent.ToTeacherDashboard -> TODO()
             }
         }
     }

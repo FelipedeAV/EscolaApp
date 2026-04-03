@@ -44,6 +44,12 @@ sealed class NavigationEvent {
         val userId: Int,
     ) : NavigationEvent()
 
+    data class ToTeacherDashboard(
+        val token: String,
+        val userId: Int,
+        val name: String,
+    ) : NavigationEvent()
+
     object ToLogin : NavigationEvent()
 
     object Back : NavigationEvent()

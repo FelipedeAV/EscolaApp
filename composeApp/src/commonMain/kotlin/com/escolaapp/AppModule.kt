@@ -3,6 +3,7 @@ package com.escolaapp
 import com.escolaapp.data.gateway.ApiClient
 import com.escolaapp.data.repository.AttendanceRepository
 import com.escolaapp.data.repository.AuthRepository
+import com.escolaapp.data.repository.ClassRepository
 import com.escolaapp.data.repository.GradeRepository
 import com.escolaapp.data.repository.NoticeRepository
 import com.escolaapp.data.repository.StudentRepository
@@ -10,6 +11,7 @@ import com.escolaapp.data.repository.UserRepository
 import com.escolaapp.navigation.NavigationViewModel
 import com.escolaapp.presentation.attendance.AttendanceViewModel
 import com.escolaapp.presentation.dashboard.DashboardViewModel
+import com.escolaapp.presentation.dashboard.TeacherDashboardViewModel
 import com.escolaapp.presentation.grades.GradesViewModel
 import com.escolaapp.presentation.login.LoginViewModel
 import com.escolaapp.presentation.notices.NoticesViewModel
@@ -32,6 +34,7 @@ val appModule = module {
     single { AttendanceRepository(get()) }
     single { NoticeRepository(get()) }
     single { UserRepository(get()) }
+    single { ClassRepository(get()) }
 
     // Navigation
     single { NavigationViewModel() }
@@ -49,4 +52,5 @@ val appModule = module {
     factory { AddGradeViewModel(get(), get()) }
     factory { AddAttendanceViewModel(get(), get()) }
     factory { AddNoticeViewModel(get(), get()) }
+    factory { TeacherDashboardViewModel(get(), get()) }
 }

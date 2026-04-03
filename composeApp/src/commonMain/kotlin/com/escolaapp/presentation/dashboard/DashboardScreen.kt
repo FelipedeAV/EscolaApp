@@ -13,6 +13,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -22,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.presentation.components.AppTopBar
 import org.koin.compose.koinInject
 
 data class DashboardScreen(
@@ -37,37 +39,53 @@ data class DashboardScreen(
         val uiState by viewModel.uiState.collectAsState()
 
         val isTeacher = role == "Teacher"
+        val linkedStudentId = uiState.student?.id
 
-        LaunchedEffect(Unit) {
-            viewModel.loadStudent(token, userId)
-        }
-
-        if (uiState.isLoading) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center,
-            ) {
-                CircularProgressIndicator()
+        LaunchedEffect(isTeacher) {
+            if (!isTeacher) {
+                viewModel.loadStudent(token, userId)
             }
-            return
         }
 
-        uiState.error?.let {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(text = it, color = MaterialTheme.colorScheme.error)
+        Scaffold(
+            topBar = {
+                AppTopBar(
+                    title = "Dashboard",
+                    onBackClick = { viewModel.navigateBack() },
+                )
+            },
+        ) { innerPadding ->
+            if (uiState.isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator()
+                }
+                return@Scaffold
             }
-            return
-        }
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
+            uiState.error?.let {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(text = it, color = MaterialTheme.colorScheme.error)
+                }
+                return@Scaffold
+            }
+
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
             Text(
                 text = "Olá, $name",
                 style = MaterialTheme.typography.headlineSmall,
@@ -104,12 +122,14 @@ data class DashboardScreen(
 
             // Botões visíveis para todos
             Button(
-                onClick = { viewModel.navigateToGrades(token, userId) },
+                onClick = { linkedStudentId?.let { viewModel.navigateToGrades(token, it) } },
+                enabled = linkedStudentId != null,
                 modifier = Modifier.fillMaxWidth(),
             ) { Text("Ver Notas") }
 
             Button(
-                onClick = { viewModel.navigateToAttendance(token, userId) },
+                onClick = { linkedStudentId?.let { viewModel.navigateToAttendance(token, it) } },
+                enabled = linkedStudentId != null,
                 modifier = Modifier.fillMaxWidth(),
             ) { Text("Ver Frequência") }
 
@@ -142,6 +162,7 @@ data class DashboardScreen(
                     onClick = { viewModel.navigateToAddNotice(token) },
                     modifier = Modifier.fillMaxWidth(),
                 ) { Text("Criar Aviso") }
+            }
             }
         }
     }

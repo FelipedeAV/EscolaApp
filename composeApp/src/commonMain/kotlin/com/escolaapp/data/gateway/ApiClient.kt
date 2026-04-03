@@ -16,6 +16,7 @@ import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
+import io.ktor.client.statement.bodyAsText
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
@@ -24,6 +25,10 @@ import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
+
+class ApiException(val statusCode: Int, override val message: String) : Exception(message)
 
 class ApiClient {
 
@@ -38,14 +43,39 @@ class ApiClient {
         }
         install(Logging) {
             level = LogLevel.ALL
+            logger = object : io.ktor.client.plugins.logging.Logger {
+                override fun log(message: String) {
+                    println("KTOR: $message")
+                }
+            }
         }
     }
 
-    suspend fun login(email: String, password: String): LoginResponse =
-        client.post("$baseUrl/auth/login") {
+    private val json = Json {
+        ignoreUnknownKeys = true
+        isLenient = true
+    }
+
+    suspend fun login(email: String, password: String): LoginResponse {
+        val response = client.post("$baseUrl/auth/login") {
             contentType(ContentType.Application.Json)
             setBody(LoginRequest(email, password))
-        }.body()
+        }
+
+        return if (response.status.value in 200..299) {
+            response.body()
+        } else {
+            val rawBody = response.bodyAsText()
+            val message = runCatching {
+                json.parseToJsonElement(rawBody)
+                    .jsonObject["message"]
+                    ?.jsonPrimitive
+                    ?.content
+            }.getOrNull() ?: "Falha ao fazer login"
+
+            throw ApiException(response.status.value, message)
+        }
+    }
 
     suspend fun getUsers(token: String): List<UserResponse> =
         client.get("$baseUrl/users") {

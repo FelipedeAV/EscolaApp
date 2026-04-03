@@ -3,6 +3,7 @@ package com.escolaapp.navigation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import cafe.adriel.voyager.navigator.Navigator
+import com.escolaapp.presentation.attendance.AttendanceScreen
 import com.escolaapp.presentation.dashboard.DashboardScreen
 import com.escolaapp.presentation.grades.GradesScreen
 import com.escolaapp.presentation.notices.NoticesScreen

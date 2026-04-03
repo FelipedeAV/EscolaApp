@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.presentation.components.AppTopBar
 import org.koin.compose.koinInject
 
 data class AttendanceScreen(
@@ -37,40 +39,48 @@ data class AttendanceScreen(
             viewModel.loadAttendance(token, studentId)
         }
 
-        if (uiState.isLoading) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center,
-            ) {
-                CircularProgressIndicator()
+        Scaffold(
+            topBar = {
+                AppTopBar(
+                    title = "Frequência",
+                    onBackClick = { viewModel.navigateBack() },
+                )
+            },
+        ) { innerPadding ->
+            if (uiState.isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    CircularProgressIndicator()
+                }
+                return@Scaffold
             }
-            return
-        }
 
-        uiState.error?.let {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(text = it, color = MaterialTheme.colorScheme.error)
+            uiState.error?.let {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(innerPadding),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Text(text = it, color = MaterialTheme.colorScheme.error)
+                }
+                return@Scaffold
             }
-            return
-        }
 
-        val total = uiState.attendances.size
-        val presents = uiState.attendances.count { it.isPresent }
-        val percent = if (total > 0) (presents * 100) / total else 0
+            val total = uiState.attendances.size
+            val presents = uiState.attendances.count { it.isPresent }
+            val percent = if (total > 0) (presents * 100) / total else 0
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-        ) {
-            Text(
-                text = "Frequência",
-                style = MaterialTheme.typography.headlineSmall,
-                modifier = Modifier.padding(bottom = 8.dp),
-            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp),
+            ) {
 
             Text(
                 text = "Presença: $percent%",
@@ -107,6 +117,7 @@ data class AttendanceScreen(
                         }
                     }
                 }
+            }
             }
         }
     }

@@ -11,6 +11,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -21,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.presentation.components.AppTopBar
 import org.koin.compose.koinInject
 
 data class AddNoticeScreen(
@@ -35,16 +37,21 @@ data class AddNoticeScreen(
         var title by remember { mutableStateOf("") }
         var description by remember { mutableStateOf("") }
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Text(
-                text = "Criar Aviso",
-                style = MaterialTheme.typography.headlineSmall,
-            )
+        Scaffold(
+            topBar = {
+                AppTopBar(
+                    title = "Criar Aviso",
+                    onBackClick = { viewModel.navigateBack() },
+                )
+            },
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
 
             OutlinedTextField(
                 value = title,
@@ -93,6 +100,7 @@ data class AddNoticeScreen(
             ) {
                 if (uiState.isLoading) CircularProgressIndicator()
                 else Text("Publicar Aviso")
+            }
             }
         }
     }

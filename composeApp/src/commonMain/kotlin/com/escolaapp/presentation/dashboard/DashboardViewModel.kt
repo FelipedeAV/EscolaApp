@@ -30,14 +30,18 @@ class DashboardViewModel(
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
-                val student = studentRepository.getStudentById(token, userId)
+                val student = studentRepository
+                    .getStudents(token)
+                    .firstOrNull { it.userId == userId }
+                    ?: throw IllegalStateException("Aluno não encontrado para este responsável")
+
                 _uiState.update {
                     it.copy(
                         isLoading = false,
                         student   = student
                     )
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -93,6 +97,12 @@ class DashboardViewModel(
     fun navigateToAddNotice(token: String) {
         screenModelScope.launch {
             navigationViewModel.emit(NavigationEvent.ToAddNotice(token = token))
+        }
+    }
+
+    fun navigateBack() {
+        screenModelScope.launch {
+            navigationViewModel.emit(NavigationEvent.Back)
         }
     }
 }

@@ -2,6 +2,7 @@ package com.escolaapp.presentation.login
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.escolaapp.data.gateway.ApiException
 import com.escolaapp.data.repository.AuthRepository
 import com.escolaapp.navigation.NavigationEvent
 import com.escolaapp.navigation.NavigationViewModel
@@ -37,14 +38,27 @@ class LoginViewModel(
                         role = result.role,
                     )
                 )
-            } catch (e: Exception) {
+            } catch (e: ApiException) {
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "Email ou senha inválidos",
+                        error = e.message,
+                    )
+                }
+            } catch (_: Exception) {
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        error = "Falha ao fazer login",
                     )
                 }
             }
+        }
+    }
+
+    fun navigateBack() {
+        screenModelScope.launch {
+            navigationViewModel.emit(NavigationEvent.Back)
         }
     }
 }

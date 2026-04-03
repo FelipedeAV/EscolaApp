@@ -14,6 +14,7 @@ import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -26,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.presentation.components.AppTopBar
 import org.koin.compose.koinInject
 
 data class AddAttendanceScreen(
@@ -41,16 +43,21 @@ data class AddAttendanceScreen(
         var date by remember { mutableStateOf("") }
         var isPresent by remember { mutableStateOf(true) }
 
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp),
-        ) {
-            Text(
-                text = "Lançar Frequência",
-                style = MaterialTheme.typography.headlineSmall,
-            )
+        Scaffold(
+            topBar = {
+                AppTopBar(
+                    title = "Lançar Frequência",
+                    onBackClick = { viewModel.navigateBack() },
+                )
+            },
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
 
             OutlinedTextField(
                 value = studentId,
@@ -111,6 +118,7 @@ data class AddAttendanceScreen(
             ) {
                 if (uiState.isLoading) CircularProgressIndicator()
                 else Text("Salvar Frequência")
+            }
             }
         }
     }

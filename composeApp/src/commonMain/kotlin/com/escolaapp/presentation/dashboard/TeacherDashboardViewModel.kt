@@ -68,4 +68,15 @@ class TeacherDashboardViewModel(
             navigationViewModel.emit(NavigationEvent.ToAddNotice(token = token))
         }
     }
+
+    fun navigateToAttendanceCall(token: String, classId: Int) {
+        screenModelScope.launch {
+            navigationViewModel.emit(
+                NavigationEvent.ToAttendanceCall(
+                    token   = token,
+                    classId = classId,
+                )
+            )
+        }
+    }
 }

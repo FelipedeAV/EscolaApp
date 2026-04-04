@@ -3,6 +3,8 @@ package com.escolaapp.data.gateway
 import com.escolaapp.data.gateway.dto.ClassResponse
 import com.escolaapp.data.models.AttendanceRequest
 import com.escolaapp.data.models.AttendanceResponse
+import com.escolaapp.data.models.AttendanceSummaryResponse
+import com.escolaapp.data.models.BatchAttendanceRequest
 import com.escolaapp.data.models.ChangePasswordRequest
 import com.escolaapp.data.models.GradeRequest
 import com.escolaapp.data.models.GradeResponse
@@ -167,5 +169,17 @@ class ApiClient {
     suspend fun getCurrentClass(token: String, teacherId: Int): ClassResponse =
         client.get("$baseUrl/classes/current/$teacherId") {
             header("Authorization", "Bearer $token")
+        }.body()
+
+    suspend fun getAttendanceSummary(token: String, classId: Int, date: String): AttendanceSummaryResponse =
+        client.get("$baseUrl/attendances/summary/$classId?date=$date") {
+            header("Authorization", "Bearer $token")
+        }.body()
+
+    suspend fun sendBatchAttendance(token: String, request: BatchAttendanceRequest): String =
+        client.post("$baseUrl/attendances/batch") {
+            header("Authorization", "Bearer $token")
+            contentType(ContentType.Application.Json)
+            setBody(request)
         }.body()
 }

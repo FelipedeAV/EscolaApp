@@ -233,7 +233,11 @@ data class TeacherDashboardScreen(
                             "Sessão Atual: ${it.subject} (${it.room})"
                         } ?: "Nenhuma aula em andamento",
                         buttonText = "Marcar Presença ✓",
-                        onButtonClick = { viewModel.navigateToAddAttendance(token) },
+                        onButtonClick = {
+                            uiState.currentClass?.let {
+                                viewModel.navigateToAttendanceCall(token, it.id)
+                            }
+                        },
                         buttonBackgroundColor = MaterialTheme.colorScheme.surface,
                         buttonTextColor = MaterialTheme.colorScheme.primary,
                         topLabel = "ACESSO RÁPIDO",

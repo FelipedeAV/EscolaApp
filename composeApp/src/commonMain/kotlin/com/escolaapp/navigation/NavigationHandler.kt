@@ -13,6 +13,7 @@ import com.escolaapp.presentation.profile.*
 import com.escolaapp.presentation.teacher.AddAttendanceScreen
 import com.escolaapp.presentation.teacher.AddGradeScreen
 import com.escolaapp.presentation.teacher.AddNoticeScreen
+import com.escolaapp.presentation.teacher.AttendanceCallScreen
 import kotlinx.coroutines.flow.SharedFlow
 
 @Composable
@@ -85,6 +86,13 @@ fun NavigationHandler(
                     ProfileSettingsScreen(
                         token = event.token,
                         userId = event.userId,
+                    )
+                )
+
+                is NavigationEvent.ToAttendanceCall -> navigator.push(
+                    AttendanceCallScreen(
+                        token = event.token,
+                        classId = event.classId
                     )
                 )
 

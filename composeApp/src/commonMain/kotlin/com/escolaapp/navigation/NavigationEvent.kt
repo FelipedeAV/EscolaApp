@@ -50,6 +50,11 @@ sealed class NavigationEvent {
         val name: String,
     ) : NavigationEvent()
 
+    data class ToAttendanceCall(
+        val token: String,
+        val classId: Int,
+    ) : NavigationEvent()
+
     object ToLogin : NavigationEvent()
 
     object Back : NavigationEvent()

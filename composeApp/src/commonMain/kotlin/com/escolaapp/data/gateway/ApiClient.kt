@@ -5,7 +5,9 @@ import com.escolaapp.data.models.AttendanceRequest
 import com.escolaapp.data.models.AttendanceResponse
 import com.escolaapp.data.models.AttendanceSummaryResponse
 import com.escolaapp.data.models.BatchAttendanceRequest
+import com.escolaapp.data.models.BatchGradeRequest
 import com.escolaapp.data.models.ChangePasswordRequest
+import com.escolaapp.data.models.ClassGradeSummaryResponse
 import com.escolaapp.data.models.GradeRequest
 import com.escolaapp.data.models.GradeResponse
 import com.escolaapp.data.models.LoginRequest
@@ -178,6 +180,18 @@ class ApiClient {
 
     suspend fun sendBatchAttendance(token: String, request: BatchAttendanceRequest): String =
         client.post("$baseUrl/attendances/batch") {
+            header("Authorization", "Bearer $token")
+            contentType(ContentType.Application.Json)
+            setBody(request)
+        }.body()
+
+    suspend fun getClassGradeSummary(token: String, classId: Int, bimester: Int): ClassGradeSummaryResponse =
+        client.get("$baseUrl/grades/class/$classId/bimester/$bimester") {
+            header("Authorization", "Bearer $token")
+        }.body()
+
+    suspend fun sendBatchGrades(token: String, request: BatchGradeRequest): String =
+        client.post("$baseUrl/grades/batch") {
             header("Authorization", "Bearer $token")
             contentType(ContentType.Application.Json)
             setBody(request)

@@ -254,7 +254,11 @@ data class TeacherDashboardScreen(
                             "Atualizar notas finais do semestre para ${it.subject}."
                         } ?: "Selecione uma turma para lançar notas.",
                         buttonText = "Abrir Diário de Classe ->",
-                        onButtonClick = { viewModel.navigateToAddGrade(token) },
+                        onButtonClick = {
+                            uiState.currentClass?.let {
+                                viewModel.navigateToGradeBook(token, it.id)
+                            }
+                        },
                         buttonBackgroundColor = MaterialTheme.colorScheme.primary,
                         buttonTextColor = MaterialTheme.colorScheme.onPrimary,
                     )

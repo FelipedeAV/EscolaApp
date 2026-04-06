@@ -5,6 +5,7 @@ import com.escolaapp.data.repository.AttendanceRepository
 import com.escolaapp.data.repository.AttendanceSummaryRepository
 import com.escolaapp.data.repository.AuthRepository
 import com.escolaapp.data.repository.ClassRepository
+import com.escolaapp.data.repository.GradeBookRepository
 import com.escolaapp.data.repository.GradeRepository
 import com.escolaapp.data.repository.NoticeRepository
 import com.escolaapp.data.repository.StudentRepository
@@ -22,6 +23,7 @@ import com.escolaapp.presentation.teacher.AddAttendanceViewModel
 import com.escolaapp.presentation.teacher.AddGradeViewModel
 import com.escolaapp.presentation.teacher.AddNoticeViewModel
 import com.escolaapp.presentation.teacher.AttendanceCallViewModel
+import com.escolaapp.presentation.teacher.GradeBookViewModel
 import org.koin.dsl.module
 
 val appModule = module {
@@ -38,6 +40,7 @@ val appModule = module {
     single { NoticeRepository(get()) }
     single { UserRepository(get()) }
     single { ClassRepository(get()) }
+    single { GradeBookRepository(get()) }
 
     // Navigation
     single { NavigationViewModel() }
@@ -57,4 +60,5 @@ val appModule = module {
     factory { AttendanceCallViewModel(get(), get()) }
     factory { AddNoticeViewModel(get(), get()) }
     factory { TeacherDashboardViewModel(get(), get()) }
+    factory { GradeBookViewModel(get(), get()) }
 }

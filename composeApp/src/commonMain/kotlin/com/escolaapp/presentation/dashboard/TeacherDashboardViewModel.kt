@@ -73,7 +73,18 @@ class TeacherDashboardViewModel(
         screenModelScope.launch {
             navigationViewModel.emit(
                 NavigationEvent.ToAttendanceCall(
-                    token   = token,
+                    token = token,
+                    classId = classId,
+                )
+            )
+        }
+    }
+
+    fun navigateToGradeBook(token: String, classId: Int) {
+        screenModelScope.launch {
+            navigationViewModel.emit(
+                NavigationEvent.ToGradeBook(
+                    token = token,
                     classId = classId,
                 )
             )

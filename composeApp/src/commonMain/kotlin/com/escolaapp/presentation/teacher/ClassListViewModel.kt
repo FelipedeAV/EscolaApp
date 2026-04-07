@@ -1,0 +1,93 @@
+package com.escolaapp.presentation.teacher
+
+import cafe.adriel.voyager.core.model.ScreenModel
+import cafe.adriel.voyager.core.model.screenModelScope
+import com.escolaapp.data.repository.ClassRepository
+import com.escolaapp.domain.model.Class
+import com.escolaapp.navigation.NavigationEvent
+import com.escolaapp.navigation.NavigationViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+
+data class ClassListUiState(
+    val isLoading: Boolean      = false,
+    val classes: List<Class>    = emptyList(),
+    val filteredClasses: List<Class> = emptyList(),
+    val searchQuery: String = "",
+    val error: String?          = null
+)
+
+class ClassListViewModel(
+    private val classRepository: ClassRepository,
+    private val navigationViewModel: NavigationViewModel
+) : ScreenModel {
+
+    private val _uiState = MutableStateFlow(ClassListUiState())
+    val uiState: StateFlow<ClassListUiState> = _uiState.asStateFlow()
+
+    fun loadClasses(token: String, teacherId: Int) {
+        screenModelScope.launch {
+            _uiState.update { it.copy(isLoading = true, error = null) }
+            try {
+                val classes = classRepository.getClassesByTeacher(token, teacherId)
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        classes = classes,
+                        filteredClasses = applySearchFilter(classes, it.searchQuery),
+                    )
+                }
+            } catch (_: Exception) {
+                _uiState.update {
+                    it.copy(isLoading = false, error = "Erro ao carregar turmas")
+                }
+            }
+        }
+    }
+
+    fun onSearchQueryChanged(query: String) {
+        _uiState.update {
+            it.copy(
+                searchQuery = query,
+                filteredClasses = applySearchFilter(it.classes, query),
+            )
+        }
+    }
+
+    private fun applySearchFilter(classes: List<Class>, query: String): List<Class> {
+        if (query.isBlank()) return classes
+        val normalizedQuery = query.trim().lowercase()
+        return classes.filter { schoolClass ->
+            schoolClass.subject.lowercase().contains(normalizedQuery) ||
+                schoolClass.room.lowercase().contains(normalizedQuery)
+        }
+    }
+
+    fun navigateToClass(token: String, classId: Int, mode: ClassListMode) {
+        screenModelScope.launch {
+            when (mode) {
+                ClassListMode.ATTENDANCE -> navigationViewModel.emit(
+                    NavigationEvent.ToAttendanceCall(
+                        token   = token,
+                        classId = classId
+                    )
+                )
+                ClassListMode.GRADEBOOK -> navigationViewModel.emit(
+                    NavigationEvent.ToGradeBook(
+                        token   = token,
+                        classId = classId
+                    )
+                )
+            }
+        }
+    }
+
+    fun navigateBack() {
+        screenModelScope.launch {
+            navigationViewModel.emit(NavigationEvent.Back)
+        }
+    }
+}

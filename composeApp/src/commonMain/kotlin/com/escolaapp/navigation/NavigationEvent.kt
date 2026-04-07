@@ -60,6 +60,12 @@ sealed class NavigationEvent {
         val classId: Int,
     ) : NavigationEvent()
 
+    data class ToClassList(
+        val token: String,
+        val teacherId: Int,
+        val mode: com.escolaapp.presentation.teacher.ClassListMode,
+    ) : NavigationEvent()
+
     object ToLogin : NavigationEvent()
 
     object Back : NavigationEvent()

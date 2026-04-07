@@ -23,6 +23,7 @@ import com.escolaapp.presentation.teacher.AddAttendanceViewModel
 import com.escolaapp.presentation.teacher.AddGradeViewModel
 import com.escolaapp.presentation.teacher.AddNoticeViewModel
 import com.escolaapp.presentation.teacher.AttendanceCallViewModel
+import com.escolaapp.presentation.teacher.ClassListViewModel
 import com.escolaapp.presentation.teacher.GradeBookViewModel
 import org.koin.dsl.module
 
@@ -61,4 +62,5 @@ val appModule = module {
     factory { AddNoticeViewModel(get(), get()) }
     factory { TeacherDashboardViewModel(get(), get()) }
     factory { GradeBookViewModel(get(), get()) }
+    factory { ClassListViewModel(get(), get()) }
 }

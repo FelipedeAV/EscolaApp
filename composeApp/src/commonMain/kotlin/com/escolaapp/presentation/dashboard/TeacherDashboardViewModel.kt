@@ -6,6 +6,7 @@ import com.escolaapp.data.repository.ClassRepository
 import com.escolaapp.domain.model.Class
 import com.escolaapp.navigation.NavigationEvent
 import com.escolaapp.navigation.NavigationViewModel
+import com.escolaapp.presentation.teacher.ClassListMode
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -51,15 +52,15 @@ class TeacherDashboardViewModel(
         }
     }
 
-    fun navigateToAddGrade(token: String) {
+    fun navigateToClassList(token: String, teacherId: Int, mode: ClassListMode) {
         screenModelScope.launch {
-            navigationViewModel.emit(NavigationEvent.ToAddGrade(token = token))
-        }
-    }
-
-    fun navigateToAddAttendance(token: String) {
-        screenModelScope.launch {
-            navigationViewModel.emit(NavigationEvent.ToAddAttendance(token = token))
+            navigationViewModel.emit(
+                NavigationEvent.ToClassList(
+                    token     = token,
+                    teacherId = teacherId,
+                    mode      = mode
+                )
+            )
         }
     }
 

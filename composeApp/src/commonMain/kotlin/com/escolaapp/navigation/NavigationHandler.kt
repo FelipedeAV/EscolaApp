@@ -14,6 +14,7 @@ import com.escolaapp.presentation.teacher.AddAttendanceScreen
 import com.escolaapp.presentation.teacher.AddGradeScreen
 import com.escolaapp.presentation.teacher.AddNoticeScreen
 import com.escolaapp.presentation.teacher.AttendanceCallScreen
+import com.escolaapp.presentation.teacher.ClassListScreen
 import com.escolaapp.presentation.teacher.GradeBookScreen
 import kotlinx.coroutines.flow.SharedFlow
 
@@ -101,6 +102,14 @@ fun NavigationHandler(
                     GradeBookScreen(
                         token = event.token,
                         classId = event.classId,
+                    )
+                )
+
+                is NavigationEvent.ToClassList -> navigator.push(
+                    ClassListScreen(
+                        token = event.token,
+                        teacherId = event.teacherId,
+                        mode = event.mode,
                     )
                 )
 

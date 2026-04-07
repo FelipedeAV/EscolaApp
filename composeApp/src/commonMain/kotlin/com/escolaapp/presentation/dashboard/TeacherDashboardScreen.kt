@@ -17,17 +17,15 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,6 +40,9 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import com.escolaapp.presentation.components.TeacherActionCard
 import com.escolaapp.presentation.components.teacherAssignedClassesSection
+import com.escolaapp.presentation.teacher.ClassListMode
+import com.escolaapp.utils.TeacherNavigationBar
+import com.escolaapp.utils.TeacherNavigationTab
 import org.koin.compose.koinInject
 
 data class TeacherDashboardScreen(
@@ -54,7 +55,7 @@ data class TeacherDashboardScreen(
     override fun Content() {
         val viewModel: TeacherDashboardViewModel = koinInject()
         val uiState by viewModel.uiState.collectAsState()
-        var selectedTab by remember { mutableIntStateOf(0) }
+        var selectedTab by remember { mutableStateOf(TeacherNavigationTab.HOME) }
 
         LaunchedEffect(Unit) {
             viewModel.loadDashboard(token, userId)
@@ -62,8 +63,8 @@ data class TeacherDashboardScreen(
 
         if (uiState.isLoading) {
             Box(
-                modifier         = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center
+                modifier = Modifier.fillMaxSize(),
+                contentAlignment = Alignment.Center,
             ) {
                 CircularProgressIndicator()
             }
@@ -72,56 +73,10 @@ data class TeacherDashboardScreen(
 
         Scaffold(
             bottomBar = {
-                NavigationBar(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    tonalElevation = 0.dp
-                ) {
-                    NavigationBarItem(
-                        selected = selectedTab == 0,
-                        onClick  = { selectedTab = 0 },
-                        icon     = {
-                            Text(
-                                text     = "⌂",
-                                fontSize = 20.sp,
-                                color    = if (selectedTab == 0)
-                                    MaterialTheme.colorScheme.primary
-                                else
-                                    MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        },
-                        label    = { Text("Início") }
-                    )
-                    NavigationBarItem(
-                        selected = selectedTab == 1,
-                        onClick  = { selectedTab = 1 },
-                        icon     = {
-                            Text(
-                                text     = "◫",
-                                fontSize = 20.sp,
-                                color    = if (selectedTab == 1)
-                                    MaterialTheme.colorScheme.primary
-                                else
-                                    MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        },
-                        label    = { Text("Turmas") }
-                    )
-                    NavigationBarItem(
-                        selected = selectedTab == 2,
-                        onClick  = { selectedTab = 2 },
-                        icon     = {
-                            Text(
-                                text     = "⚙",
-                                fontSize = 20.sp,
-                                color    = if (selectedTab == 2)
-                                    MaterialTheme.colorScheme.primary
-                                else
-                                    MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        },
-                        label    = { Text("Configurações") }
-                    )
-                }
+                TeacherNavigationBar(
+                    selectedTab = selectedTab,
+                    onTabSelected = { selectedTab = it },
+                )
             }
         ) { innerPadding ->
             LazyColumn(
@@ -233,11 +188,7 @@ data class TeacherDashboardScreen(
                             "Sessão Atual: ${it.subject} (${it.room})"
                         } ?: "Nenhuma aula em andamento",
                         buttonText = "Marcar Presença ✓",
-                        onButtonClick = {
-                            uiState.currentClass?.let {
-                                viewModel.navigateToAttendanceCall(token, it.id)
-                            }
-                        },
+                        onButtonClick = { viewModel.navigateToClassList(token, userId, ClassListMode.ATTENDANCE) },
                         buttonBackgroundColor = MaterialTheme.colorScheme.surface,
                         buttonTextColor = MaterialTheme.colorScheme.primary,
                         topLabel = "ACESSO RÁPIDO",
@@ -254,11 +205,7 @@ data class TeacherDashboardScreen(
                             "Atualizar notas finais do semestre para ${it.subject}."
                         } ?: "Selecione uma turma para lançar notas.",
                         buttonText = "Abrir Diário de Classe ->",
-                        onButtonClick = {
-                            uiState.currentClass?.let {
-                                viewModel.navigateToGradeBook(token, it.id)
-                            }
-                        },
+                        onButtonClick = { viewModel.navigateToClassList(token, userId, ClassListMode.GRADEBOOK) },
                         buttonBackgroundColor = MaterialTheme.colorScheme.primary,
                         buttonTextColor = MaterialTheme.colorScheme.onPrimary,
                     )

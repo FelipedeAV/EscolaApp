@@ -17,8 +17,11 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
@@ -27,9 +30,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -40,7 +43,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import com.escolaapp.presentation.components.AppTopBar
 import com.escolaapp.presentation.components.TeacherClassCard
 import com.escolaapp.utils.TeacherNavigationBar
 import com.escolaapp.utils.TeacherNavigationTab
@@ -51,11 +53,14 @@ data class ClassListScreen(
     val mode: ClassListMode,
 ) : Screen {
 
+    @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
         val viewModel: ClassListViewModel = koinInject()
         val uiState by viewModel.uiState.collectAsState()
         var selectedTab by remember { mutableStateOf(TeacherNavigationTab.CLASSES) }
+        var selectedClassId by remember { mutableStateOf<Int?>(null) }
+        var selectedClassSubject by remember { mutableStateOf<String?>(null) }
 
         LaunchedEffect(Unit) {
             viewModel.loadClasses(token, teacherId)
@@ -84,6 +89,56 @@ data class ClassListScreen(
                 )
             }
         ) { innerPadding ->
+            if (mode == ClassListMode.SELECT_ACTION && selectedClassId != null && selectedClassSubject != null) {
+                ModalBottomSheet(
+                    onDismissRequest = {
+                        selectedClassId = null
+                        selectedClassSubject = null
+                    },
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 20.dp, vertical = 8.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Text(
+                            text = selectedClassSubject.orEmpty(),
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold,
+                        )
+                        Text(
+                            text = "Escolha o que deseja acessar para esta turma.",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                        Button(
+                            onClick = {
+                                val classId = selectedClassId ?: return@Button
+                                selectedClassId = null
+                                selectedClassSubject = null
+                                viewModel.navigateToClass(token, classId, ClassListMode.ATTENDANCE)
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("Ir para Presença")
+                        }
+                        Button(
+                            onClick = {
+                                val classId = selectedClassId ?: return@Button
+                                selectedClassId = null
+                                selectedClassSubject = null
+                                viewModel.navigateToClass(token, classId, ClassListMode.GRADEBOOK)
+                            },
+                            modifier = Modifier.fillMaxWidth(),
+                        ) {
+                            Text("Ir para Notas")
+                        }
+                        Spacer(Modifier.height(12.dp))
+                    }
+                }
+            }
+
             LazyColumn(
                 modifier            = Modifier
                     .fillMaxSize()
@@ -99,12 +154,19 @@ data class ClassListScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        text       = if (mode == ClassListMode.ATTENDANCE) "Fazer Chamada" else "Lançar Notas",
+                        text       = when (mode) {
+                            ClassListMode.SELECT_ACTION -> "Turmas"
+                            ClassListMode.ATTENDANCE -> "Fazer Chamada"
+                            ClassListMode.GRADEBOOK -> "Lançar Notas"
+                        },
                         style      = MaterialTheme.typography.headlineSmall,
                         fontWeight = FontWeight.Bold
                     )
                     Text(
-                        text  = "Selecione uma turma",
+                        text  = when (mode) {
+                            ClassListMode.SELECT_ACTION -> "Escolha uma turma para continuar"
+                            else -> "Selecione uma turma"
+                        },
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -168,11 +230,16 @@ data class ClassListScreen(
                             dayOfWeek = schoolClass.dayOfWeek,
                             studentCount = schoolClass.students.size,
                             onClick   = {
-                                viewModel.navigateToClass(
-                                    token   = token,
-                                    classId = schoolClass.id,
-                                    mode    = mode
-                                )
+                                if (mode == ClassListMode.SELECT_ACTION) {
+                                    selectedClassId = schoolClass.id
+                                    selectedClassSubject = schoolClass.subject
+                                } else {
+                                    viewModel.navigateToClass(
+                                        token   = token,
+                                        classId = schoolClass.id,
+                                        mode    = mode
+                                    )
+                                }
                             }
                         )
                     }

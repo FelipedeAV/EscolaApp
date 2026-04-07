@@ -79,7 +79,7 @@ class TeacherDashboardViewModel(
     fun onTabSelected(tab: TeacherNavigationTab, token: String, userId: Int) {
         when (tab) {
             TeacherNavigationTab.CLASSES -> {
-                navigateToClassList(token, userId, ClassListMode.ATTENDANCE)
+                navigateToClassList(token, userId, ClassListMode.SELECT_ACTION)
             }
 
             TeacherNavigationTab.SETTINGS -> {

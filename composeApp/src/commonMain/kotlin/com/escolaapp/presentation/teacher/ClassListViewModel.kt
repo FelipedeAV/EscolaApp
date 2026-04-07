@@ -69,6 +69,7 @@ class ClassListViewModel(
     fun navigateToClass(token: String, classId: Int, mode: ClassListMode) {
         screenModelScope.launch {
             when (mode) {
+                ClassListMode.SELECT_ACTION -> Unit
                 ClassListMode.ATTENDANCE -> navigationViewModel.emit(
                     NavigationEvent.ToAttendanceCall(
                         token   = token,

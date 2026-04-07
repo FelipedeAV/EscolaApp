@@ -75,7 +75,10 @@ data class TeacherDashboardScreen(
             bottomBar = {
                 TeacherNavigationBar(
                     selectedTab = selectedTab,
-                    onTabSelected = { selectedTab = it },
+                    onTabSelected = { tab ->
+                        selectedTab = tab
+                        viewModel.onTabSelected(tab, token, userId)
+                    },
                 )
             }
         ) { innerPadding ->

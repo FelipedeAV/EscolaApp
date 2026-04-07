@@ -72,12 +72,6 @@ data class ClassListScreen(
         }
 
         Scaffold(
-            topBar = {
-                AppTopBar(
-                    title = "Turmas",
-                    onBackClick = { viewModel.navigateBack() },
-                )
-            },
             bottomBar = {
                 TeacherNavigationBar(
                     selectedTab = selectedTab,

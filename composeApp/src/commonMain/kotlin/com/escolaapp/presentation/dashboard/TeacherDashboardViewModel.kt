@@ -7,6 +7,7 @@ import com.escolaapp.domain.model.Class
 import com.escolaapp.navigation.NavigationEvent
 import com.escolaapp.navigation.NavigationViewModel
 import com.escolaapp.presentation.teacher.ClassListMode
+import com.escolaapp.utils.TeacherNavigationTab
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -61,6 +62,31 @@ class TeacherDashboardViewModel(
                     mode      = mode
                 )
             )
+        }
+    }
+
+    fun navigateToProfile(token: String, userId: Int) {
+        screenModelScope.launch {
+            navigationViewModel.emit(
+                NavigationEvent.ToProfile(
+                    token = token,
+                    userId = userId,
+                )
+            )
+        }
+    }
+
+    fun onTabSelected(tab: TeacherNavigationTab, token: String, userId: Int) {
+        when (tab) {
+            TeacherNavigationTab.CLASSES -> {
+                navigateToClassList(token, userId, ClassListMode.ATTENDANCE)
+            }
+
+            TeacherNavigationTab.SETTINGS -> {
+                navigateToProfile(token, userId)
+            }
+
+            TeacherNavigationTab.HOME -> Unit
         }
     }
 

@@ -36,6 +36,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.presentation.components.AppTopBar
 import com.escolaapp.utils.getCurrentDate
 import org.koin.compose.koinInject
 
@@ -77,6 +78,12 @@ data class AttendanceCallScreen(
         val summary = uiState.summary ?: return
 
         Scaffold(
+            topBar = {
+                AppTopBar(
+                    title = "Chamada - ${summary.subject}",
+                    onBackClick = { viewModel.navigateBack() }
+                )
+            },
             bottomBar = {
                 Column(
                     modifier = Modifier

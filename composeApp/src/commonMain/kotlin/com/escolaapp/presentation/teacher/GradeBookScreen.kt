@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import com.escolaapp.domain.model.StudentGradeSummary
+import com.escolaapp.presentation.components.AppTopBar
 import com.escolaapp.utils.formatOneDecimal
 import org.koin.compose.koinInject
 
@@ -77,6 +78,12 @@ data class GradeBookScreen(
         val summary = uiState.summary ?: return
 
         Scaffold(
+            topBar = {
+                AppTopBar(
+                    title = "Diário de Classe",
+                    onBackClick = { viewModel.navigateBack() },
+                )
+            },
             bottomBar = {
                 Column(
                     modifier = Modifier

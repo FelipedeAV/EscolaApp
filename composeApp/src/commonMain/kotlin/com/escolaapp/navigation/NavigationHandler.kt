@@ -33,6 +33,8 @@ fun NavigationHandler(
                                 token = event.token,
                                 userId = event.userId,
                                 name = event.name,
+                                email = event.email,
+                                role = event.role,
                             )
                         )
                     } else {
@@ -41,6 +43,7 @@ fun NavigationHandler(
                                 token  = event.token,
                                 userId = event.userId,
                                 name   = event.name,
+                                email  = event.email,
                                 role   = event.role,
                             )
                         )
@@ -79,8 +82,11 @@ fun NavigationHandler(
 
                 is NavigationEvent.ToProfile -> navigator.push(
                     ProfileScreen(
-                        token = event.token,
+                        token  = event.token,
                         userId = event.userId,
+                        name   = event.name,
+                        email  = event.email,
+                        role   = event.role
                     )
                 )
 
@@ -110,6 +116,9 @@ fun NavigationHandler(
                         token = event.token,
                         teacherId = event.teacherId,
                         mode = event.mode,
+                        name = event.name,
+                        email = event.email,
+                        role = event.role,
                     )
                 )
 
@@ -117,7 +126,15 @@ fun NavigationHandler(
 
                 is NavigationEvent.Back -> navigator.pop()
 
-                is NavigationEvent.ToTeacherDashboard -> TODO()
+                is NavigationEvent.ToTeacherDashboard -> navigator.replace(
+                    TeacherDashboardScreen(
+                        token = event.token,
+                        userId = event.userId,
+                        name = event.name,
+                        email = event.email,
+                        role = event.role,
+                    )
+                )
             }
         }
     }

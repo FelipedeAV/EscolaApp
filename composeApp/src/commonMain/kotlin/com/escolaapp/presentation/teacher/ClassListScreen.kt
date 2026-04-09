@@ -51,6 +51,9 @@ data class ClassListScreen(
     val token: String,
     val teacherId: Int,
     val mode: ClassListMode,
+    val name: String,
+    val email: String,
+    val role: String,
 ) : Screen {
 
     @OptIn(ExperimentalMaterial3Api::class)
@@ -82,9 +85,7 @@ data class ClassListScreen(
                     selectedTab = selectedTab,
                     onTabSelected = { tab ->
                         selectedTab = tab
-                        if (tab == TeacherNavigationTab.HOME) {
-                            viewModel.navigateBack()
-                        }
+                        viewModel.onTabSelected(tab, token, teacherId, name, email, role)
                     },
                 )
             }

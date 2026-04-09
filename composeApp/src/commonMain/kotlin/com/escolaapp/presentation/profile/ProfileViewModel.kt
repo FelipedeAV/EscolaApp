@@ -6,6 +6,8 @@ import com.escolaapp.data.repository.UserRepository
 import com.escolaapp.domain.model.User
 import com.escolaapp.navigation.NavigationEvent
 import com.escolaapp.navigation.NavigationViewModel
+import com.escolaapp.presentation.teacher.ClassListMode
+import com.escolaapp.utils.TeacherNavigationTab
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -48,22 +50,61 @@ class ProfileViewModel(
         }
     }
 
-    fun navigateToSettings(token: String, userId: Int) {
+    fun onTabSelected(tab: TeacherNavigationTab, token: String, userId: Int, name: String, email: String, role: String) {
+        when (tab) {
+            TeacherNavigationTab.CLASSES -> {
+                navigateToClassList(token, userId, ClassListMode.SELECT_ACTION, name, email, role)
+            }
+
+            TeacherNavigationTab.SETTINGS -> Unit
+
+            TeacherNavigationTab.HOME -> {
+                navigateToHome(token, userId, name, email, role)
+            }
+        }
+    }
+
+    fun navigateToClassList(
+        token: String,
+        teacherId: Int,
+        mode: ClassListMode,
+        name: String,
+        email: String,
+        role: String,
+    ) {
         screenModelScope.launch {
             navigationViewModel.emit(
-                NavigationEvent.ToProfileSettings(
-                    token = token,
-                    userId = userId,
+                NavigationEvent.ToClassList(
+                    token     = token,
+                    teacherId = teacherId,
+                    name      = name,
+                    email     = email,
+                    role      = role,
+                    mode      = mode
                 )
             )
         }
     }
 
-    fun navigateBack() {
+    fun navigateToHome(token: String, userId: Int, name: String, email: String, role: String) {
         screenModelScope.launch {
-            navigationViewModel.emit(NavigationEvent.Back)
+            navigationViewModel.emit(
+                NavigationEvent.ToDashboard(
+                    token = token,
+                    userId = userId,
+                    name = name,
+                    email = email,
+                    role = role
+                )
+            )
         }
     }
+
+//    fun navigateBack() {
+//        screenModelScope.launch {
+//            navigationViewModel.emit(NavigationEvent.Back)
+//        }
+//    }
 
     fun logout() {
         screenModelScope.launch {

@@ -6,6 +6,7 @@ import com.escolaapp.data.repository.ClassRepository
 import com.escolaapp.domain.model.Class
 import com.escolaapp.navigation.NavigationEvent
 import com.escolaapp.navigation.NavigationViewModel
+import com.escolaapp.utils.TeacherNavigationTab
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -66,6 +67,7 @@ class ClassListViewModel(
         }
     }
 
+    // navigation functions
     fun navigateToClass(token: String, classId: Int, mode: ClassListMode) {
         screenModelScope.launch {
             when (mode) {
@@ -86,9 +88,46 @@ class ClassListViewModel(
         }
     }
 
-    fun navigateBack() {
+    fun navigateToHome(token: String, userId: Int, name: String, email: String, role: String) {
         screenModelScope.launch {
-            navigationViewModel.emit(NavigationEvent.Back)
+            navigationViewModel.emit(
+                NavigationEvent.ToDashboard(
+                    token = token,
+                    userId = userId,
+                    name = name,
+                    email = email,
+                    role = role
+                )
+            )
         }
     }
+
+    fun navigateToSettings(token: String, userId: Int, name: String, email: String, role: String) {
+        screenModelScope.launch {
+            navigationViewModel.emit(
+                NavigationEvent.ToProfile(
+                    token  = token,
+                    userId = userId,
+                    name   = name,
+                    email  = email,
+                    role   = role
+                )
+            )
+        }
+    }
+
+    fun onTabSelected(tab: TeacherNavigationTab, token: String, userId: Int, name: String, email: String, role: String) {
+        when (tab) {
+            TeacherNavigationTab.CLASSES -> Unit
+
+            TeacherNavigationTab.SETTINGS -> {
+                navigateToSettings(token, userId, name, email, role)
+            }
+
+            TeacherNavigationTab.HOME -> {
+                navigateToHome(token, userId, name, email, role)
+            }
+        }
+    }
+    // end navigation functions
 }

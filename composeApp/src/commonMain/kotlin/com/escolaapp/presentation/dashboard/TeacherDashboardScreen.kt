@@ -48,7 +48,9 @@ import org.koin.compose.koinInject
 data class TeacherDashboardScreen(
     val token: String,
     val userId: Int,
-    val name: String
+    val name: String,
+    val email: String,
+    val role: String,
 ) : Screen {
 
     @Composable
@@ -77,7 +79,7 @@ data class TeacherDashboardScreen(
                     selectedTab = selectedTab,
                     onTabSelected = { tab ->
                         selectedTab = tab
-                        viewModel.onTabSelected(tab, token, userId)
+                        viewModel.onTabSelected(tab, token, userId, name, email, role)
                     },
                 )
             }
@@ -191,7 +193,16 @@ data class TeacherDashboardScreen(
                             "Sessão Atual: ${it.subject} (${it.room})"
                         } ?: "Nenhuma aula em andamento",
                         buttonText = "Marcar Presença ✓",
-                        onButtonClick = { viewModel.navigateToClassList(token, userId, ClassListMode.ATTENDANCE) },
+                        onButtonClick = {
+                            viewModel.navigateToClassList(
+                                token = token,
+                                teacherId = userId,
+                                mode = ClassListMode.ATTENDANCE,
+                                name = name,
+                                email = email,
+                                role = role,
+                            )
+                        },
                         buttonBackgroundColor = MaterialTheme.colorScheme.surface,
                         buttonTextColor = MaterialTheme.colorScheme.primary,
                         topLabel = "ACESSO RÁPIDO",
@@ -208,7 +219,16 @@ data class TeacherDashboardScreen(
                             "Atualizar notas finais do semestre para ${it.subject}."
                         } ?: "Selecione uma turma para lançar notas.",
                         buttonText = "Abrir Diário de Classe ->",
-                        onButtonClick = { viewModel.navigateToClassList(token, userId, ClassListMode.GRADEBOOK) },
+                        onButtonClick = {
+                            viewModel.navigateToClassList(
+                                token = token,
+                                teacherId = userId,
+                                mode = ClassListMode.GRADEBOOK,
+                                name = name,
+                                email = email,
+                                role = role,
+                            )
+                        },
                         buttonBackgroundColor = MaterialTheme.colorScheme.primary,
                         buttonTextColor = MaterialTheme.colorScheme.onPrimary,
                     )

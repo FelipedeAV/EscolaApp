@@ -35,6 +35,7 @@ class LoginViewModel(
                         token = result.token,
                         userId = result.userId,
                         name = result.name,
+                        email = email,
                         role = result.role,
                     )
                 )

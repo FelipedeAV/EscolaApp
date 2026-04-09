@@ -53,37 +53,50 @@ class TeacherDashboardViewModel(
         }
     }
 
-    fun navigateToClassList(token: String, teacherId: Int, mode: ClassListMode) {
+    fun navigateToClassList(
+        token: String,
+        teacherId: Int,
+        mode: ClassListMode,
+        name: String,
+        email: String,
+        role: String,
+    ) {
         screenModelScope.launch {
             navigationViewModel.emit(
                 NavigationEvent.ToClassList(
                     token     = token,
                     teacherId = teacherId,
+                    name      = name,
+                    email     = email,
+                    role      = role,
                     mode      = mode
                 )
             )
         }
     }
 
-    fun navigateToProfile(token: String, userId: Int) {
+    fun navigateToSettings(token: String, userId: Int, name: String, email: String, role: String) {
         screenModelScope.launch {
             navigationViewModel.emit(
                 NavigationEvent.ToProfile(
-                    token = token,
+                    token  = token,
                     userId = userId,
+                    name   = name,
+                    email  = email,
+                    role   = role
                 )
             )
         }
     }
 
-    fun onTabSelected(tab: TeacherNavigationTab, token: String, userId: Int) {
+    fun onTabSelected(tab: TeacherNavigationTab, token: String, userId: Int, name: String, email: String, role: String) {
         when (tab) {
             TeacherNavigationTab.CLASSES -> {
-                navigateToClassList(token, userId, ClassListMode.SELECT_ACTION)
+                navigateToClassList(token, userId, ClassListMode.SELECT_ACTION, name, email, role)
             }
 
             TeacherNavigationTab.SETTINGS -> {
-                navigateToProfile(token, userId)
+                navigateToSettings(token, userId, name, email, role)
             }
 
             TeacherNavigationTab.HOME -> Unit

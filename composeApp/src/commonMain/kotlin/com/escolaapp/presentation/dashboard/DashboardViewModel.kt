@@ -100,12 +100,15 @@ class DashboardViewModel(
         }
     }
 
-    fun navigateToProfile(token: String, userId: Int) {
+    fun navigateToProfile(token: String, userId: Int, name: String, email: String, role: String) {
         screenModelScope.launch {
             navigationViewModel.emit(
                 NavigationEvent.ToProfile(
-                    token = token,
+                    token  = token,
                     userId = userId,
+                    name   = name,
+                    email  = email,
+                    role   = role
                 )
             )
         }

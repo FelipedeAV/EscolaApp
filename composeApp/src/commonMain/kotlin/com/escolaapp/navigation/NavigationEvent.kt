@@ -1,10 +1,13 @@
 package com.escolaapp.navigation
 
+import com.escolaapp.presentation.teacher.ClassListMode
+
 sealed class NavigationEvent {
     data class ToDashboard(
         val token: String,
         val userId: Int,
         val name: String,
+        val email: String,
         val role: String,
     ) : NavigationEvent()
 
@@ -37,6 +40,9 @@ sealed class NavigationEvent {
     data class ToProfile(
         val token: String,
         val userId: Int,
+        val name: String,
+        val email: String,
+        val role: String
     ) : NavigationEvent()
 
     data class ToProfileSettings(
@@ -48,6 +54,8 @@ sealed class NavigationEvent {
         val token: String,
         val userId: Int,
         val name: String,
+        val email: String,
+        val role: String,
     ) : NavigationEvent()
 
     data class ToAttendanceCall(
@@ -63,7 +71,10 @@ sealed class NavigationEvent {
     data class ToClassList(
         val token: String,
         val teacherId: Int,
-        val mode: com.escolaapp.presentation.teacher.ClassListMode,
+        val name: String,
+        val email: String,
+        val role: String,
+        val mode: ClassListMode,
     ) : NavigationEvent()
 
     object ToLogin : NavigationEvent()

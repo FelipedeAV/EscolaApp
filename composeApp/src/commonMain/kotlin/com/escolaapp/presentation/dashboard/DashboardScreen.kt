@@ -31,6 +31,7 @@ data class DashboardScreen(
     val token: String,
     val userId: Int,
     val name: String,
+    val email: String,
     val role: String,
 ) : Screen {
 
@@ -54,7 +55,7 @@ data class DashboardScreen(
                     title = "Dashboard",
                     showBackButton = false,
                     actions = {
-                        IconButton(onClick = { viewModel.navigateToProfile(token, userId) }) {
+                        IconButton(onClick = { viewModel.navigateToProfile(token, userId, name, email, role) }) {
                             Text(text = "P")
                         }
                     },

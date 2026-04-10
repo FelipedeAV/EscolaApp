@@ -12,21 +12,26 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Class
+import androidx.compose.material.icons.outlined.School
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 @Composable
 fun TeacherActionCard(
-    icon: String,
+    icon: ImageVector,
     iconBackgroundColor: Color,
     title: String,
     description: String,
@@ -40,7 +45,7 @@ fun TeacherActionCard(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surfaceVariant,
+            containerColor = MaterialTheme.colorScheme.onPrimary,
         ),
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
@@ -55,7 +60,11 @@ fun TeacherActionCard(
                             .background(iconBackgroundColor, RoundedCornerShape(10.dp)),
                         contentAlignment = Alignment.Center,
                     ) {
-                        Text(text = icon, fontSize = 20.sp)
+                        Icon(
+                            imageVector = icon,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurface,
+                        )
                     }
                     Text(
                         text = topLabel,
@@ -70,7 +79,11 @@ fun TeacherActionCard(
                         .background(iconBackgroundColor, RoundedCornerShape(10.dp)),
                     contentAlignment = Alignment.Center,
                 ) {
-                    Text(text = icon, fontSize = 20.sp)
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurface,
+                    )
                 }
             }
 
@@ -107,4 +120,37 @@ fun TeacherActionCard(
     }
 }
 
+@Preview
+@Composable
+private fun TeacherActionCardWithLabelPreview() {
+    MaterialTheme {
+        TeacherActionCard(
+            icon = Icons.Outlined.Class,
+            iconBackgroundColor = Color(0xFFFFF3E0),
+            title = "Fazer Chamada",
+            description = "Sessão Atual: Matemática (Sala 08)",
+            buttonText = "Marcar Presença ✓",
+            onButtonClick = {},
+            buttonBackgroundColor = Color(0xFF1565C0),
+            buttonTextColor = Color.White,
+            topLabel = "ACESSO RÁPIDO",
+        )
+    }
+}
 
+@Preview
+@Composable
+private fun TeacherActionCardWithoutLabelPreview() {
+    MaterialTheme {
+        TeacherActionCard(
+            icon = Icons.Outlined.School,
+            iconBackgroundColor = Color(0xFFE8F4FD),
+            title = "Lançar Notas",
+            description = "Selecione uma turma para lançar notas.",
+            buttonText = "Abrir Diário de Classe ->",
+            onButtonClick = {},
+            buttonBackgroundColor = Color(0xFF1565C0),
+            buttonTextColor = Color.White,
+        )
+    }
+}

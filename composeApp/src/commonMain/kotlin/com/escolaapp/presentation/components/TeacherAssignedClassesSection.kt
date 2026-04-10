@@ -10,8 +10,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.escolaapp.domain.model.Class
@@ -32,76 +33,127 @@ fun LazyListScope.teacherAssignedClassesSection(
     onSeeFullScheduleClick: () -> Unit = {},
 ) {
     item {
-        Row(
+        Card(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.onPrimary,
+            ),
         ) {
-            Text(
-                text = "Aulas\nAtribuídas",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-            )
-            TextButton(onClick = onSeeFullScheduleClick) {
-                Text(
-                    text = "Ver Horário\nCompleto",
-                    color = MaterialTheme.colorScheme.primary,
-                    style = MaterialTheme.typography.bodySmall,
-                )
+            Column(modifier = Modifier.padding(16.dp)) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Text(
+                        text = "Aulas Atribuídas",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                    )
+                    if (classes.isNotEmpty()) {
+                        TextButton(onClick = onSeeFullScheduleClick) {
+                            Text(
+                                text = "Ver Horário\nCompleto",
+                                color = MaterialTheme.colorScheme.primary,
+                                style = MaterialTheme.typography.bodySmall,
+                            )
+                        }
+                    }
+                }
+
+                if (classes.isEmpty()) {
+                    Text(
+                        text = "Nenhuma aula atribuída no momento.",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                } else {
+                    classes.forEachIndexed { index, schoolClass ->
+                        if (index > 0) {
+                            Spacer(Modifier.size(12.dp))
+                        }
+                        AssignedClassItem(schoolClass = schoolClass)
+                    }
+                }
             }
         }
-    }
-
-    items(classes) { schoolClass ->
-        AssignedClassItem(schoolClass = schoolClass)
     }
 }
 
 @Composable
 private fun AssignedClassItem(schoolClass: Class) {
-    Card(
+    Row(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 1.dp),
+        verticalAlignment = Alignment.CenterVertically,
     ) {
-        Row(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically,
+                .size(44.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.primaryContainer),
+            contentAlignment = Alignment.Center,
         ) {
-            Box(
-                modifier = Modifier
-                    .size(44.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(MaterialTheme.colorScheme.primaryContainer),
-                contentAlignment = Alignment.Center,
-            ) {
-                Text(text = "📚", fontSize = 20.sp)
-            }
-            Spacer(Modifier.width(12.dp))
-            Column(modifier = Modifier.weight(1f)) {
-                Text(
-                    text = schoolClass.subject,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.SemiBold,
-                )
-                Text(
-                    text = "${schoolClass.schedule} — ${schoolClass.room}",
-                    style = MaterialTheme.typography.bodySmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                )
-            }
+            Text(text = "📚", fontSize = 20.sp)
+        }
+        Spacer(Modifier.width(12.dp))
+        Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = "›",
-                style = MaterialTheme.typography.titleLarge,
+                text = schoolClass.subject,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.SemiBold,
+            )
+            Text(
+                text = "${schoolClass.schedule} — ${schoolClass.room}",
+                style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
+        }
+        Text(
+            text = "›",
+            style = MaterialTheme.typography.titleLarge,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun TeacherAssignedClassesSectionPreview() {
+    MaterialTheme {
+        LazyColumn {
+            teacherAssignedClassesSection(classes = previewAssignedClasses)
         }
     }
 }
 
+@Preview
+@Composable
+private fun TeacherAssignedClassesSectionEmptyPreview() {
+    MaterialTheme {
+        LazyColumn {
+            teacherAssignedClassesSection(classes = emptyList())
+        }
+    }
+}
 
+private val previewAssignedClasses = listOf(
+    Class(
+        id = 1,
+        subject = "Matemática",
+        room = "Sala 08",
+        schedule = "07:30 - 08:20",
+        dayOfWeek = "Quinta-feira",
+        teacherId = 1,
+    ),
+    Class(
+        id = 2,
+        subject = "Física",
+        room = "Laboratório 2",
+        schedule = "09:10 - 10:00",
+        dayOfWeek = "Quinta-feira",
+        teacherId = 1,
+    ),
+)

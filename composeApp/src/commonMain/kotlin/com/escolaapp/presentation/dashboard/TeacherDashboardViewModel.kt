@@ -64,35 +64,55 @@ class TeacherDashboardViewModel(
         screenModelScope.launch {
             navigationViewModel.emit(
                 NavigationEvent.ToClassList(
-                    token     = token,
+                    token = token,
                     teacherId = teacherId,
-                    name      = name,
-                    email     = email,
-                    role      = role,
-                    mode      = mode
+                    name = name,
+                    email = email,
+                    role = role,
+                    mode = mode,
                 )
             )
         }
     }
 
-    fun navigateToSettings(token: String, userId: Int, name: String, email: String, role: String) {
+    fun navigateToSettings(
+        token: String,
+        userId: Int,
+        name: String,
+        email: String,
+        role: String,
+    ) {
         screenModelScope.launch {
             navigationViewModel.emit(
                 NavigationEvent.ToProfile(
-                    token  = token,
+                    token = token,
                     userId = userId,
-                    name   = name,
-                    email  = email,
-                    role   = role
+                    name = name,
+                    email = email,
+                    role = role,
                 )
             )
         }
     }
 
-    fun onTabSelected(tab: TeacherNavigationTab, token: String, userId: Int, name: String, email: String, role: String) {
+    fun onTabSelected(
+        tab: TeacherNavigationTab,
+        token: String,
+        userId: Int,
+        name: String,
+        email: String,
+        role: String,
+    ) {
         when (tab) {
             TeacherNavigationTab.CLASSES -> {
-                navigateToClassList(token, userId, ClassListMode.SELECT_ACTION, name, email, role)
+                navigateToClassList(
+                    token = token,
+                    teacherId = userId,
+                    mode = ClassListMode.SELECT_ACTION,
+                    name = name,
+                    email = email,
+                    role = role,
+                )
             }
 
             TeacherNavigationTab.SETTINGS -> {
@@ -109,12 +129,13 @@ class TeacherDashboardViewModel(
         }
     }
 
-    fun navigateToAttendanceCall(token: String, classId: Int) {
+    fun navigateToAttendanceCall(token: String) {
+        val currentClass = _uiState.value.currentClass ?: return
         screenModelScope.launch {
             navigationViewModel.emit(
                 NavigationEvent.ToAttendanceCall(
                     token = token,
-                    classId = classId,
+                    classId = currentClass.id,
                 )
             )
         }

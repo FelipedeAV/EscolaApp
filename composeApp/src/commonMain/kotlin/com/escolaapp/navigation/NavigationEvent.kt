@@ -42,7 +42,7 @@ sealed class NavigationEvent {
         val userId: Int,
         val name: String,
         val email: String,
-        val role: String
+        val role: String,
     ) : NavigationEvent()
 
     data class ToProfileSettings(

@@ -86,7 +86,7 @@ fun NavigationHandler(
                         userId = event.userId,
                         name   = event.name,
                         email  = event.email,
-                        role   = event.role
+                        role   = event.role,
                     )
                 )
 

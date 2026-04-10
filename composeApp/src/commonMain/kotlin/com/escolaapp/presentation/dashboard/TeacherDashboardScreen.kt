@@ -46,6 +46,7 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import com.escolaapp.domain.model.Class
 import com.escolaapp.presentation.components.TeacherActionCard
+import com.escolaapp.presentation.components.AppHeader
 import com.escolaapp.presentation.teacher.ClassListMode
 import com.escolaapp.utils.TeacherNavigationBar
 import com.escolaapp.utils.TeacherNavigationTab
@@ -137,48 +138,11 @@ private fun TeacherDashboardContent(
         ) {
             item {
                 Spacer(Modifier.height(8.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier
-                                .size(36.dp)
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(MaterialTheme.colorScheme.secondaryContainer),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Icon(
-                                imageVector = Icons.Outlined.School,
-                                contentDescription = "Ícone chapéu formatura",
-                            )
-                        }
-                        Spacer(Modifier.width(8.dp))
-                        Text(
-                            text = "EscolaApp",
-                            style = MaterialTheme.typography.titleMedium,
-                            fontWeight = FontWeight.Bold,
-                        )
-                    }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier
-                                .size(36.dp)
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.primaryContainer),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            Text(
-                                text = name.firstOrNull()?.uppercaseChar()?.toString() ?: "?",
-                                style = MaterialTheme.typography.titleMedium,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer,
-                                fontWeight = FontWeight.Bold,
-                            )
-                        }
-                    }
-                }
+                AppHeader(
+                    icon = Icons.Outlined.School,
+                    title = "EscolaApp",
+                    userInitial = name.firstOrNull()?.uppercaseChar()?.toString() ?: "?",
+                )
             }
 
             item {

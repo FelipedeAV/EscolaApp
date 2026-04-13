@@ -17,15 +17,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.outlined.KeyboardArrowDown
+import androidx.compose.material.icons.outlined.KeyboardArrowUp
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -43,11 +47,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.domain.model.ClassGradeSummary
+import com.escolaapp.domain.model.GradeItem
 import com.escolaapp.domain.model.StudentGradeSummary
-import com.escolaapp.presentation.components.AppTopBar
+import com.escolaapp.presentation.components.AppActionButton
+import com.escolaapp.presentation.components.AppHeader
 import com.escolaapp.utils.formatOneDecimal
 import org.koin.compose.koinInject
 
@@ -65,201 +74,232 @@ data class GradeBookScreen(
             viewModel.loadGrades(token, classId, 1)
         }
 
-        if (uiState.isLoading) {
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.Center,
-            ) {
-                CircularProgressIndicator()
-            }
-            return
-        }
-
-        val summary = uiState.summary ?: return
-
-        Scaffold(
-            topBar = {
-                AppTopBar(
-                    title = "Diário de Classe",
-                    onBackClick = { viewModel.navigateBack() },
-                )
+        GradeBookScreenContent(
+            uiState = uiState,
+            onBackClick = { viewModel.navigateBack() },
+            onCancelChanges = { viewModel.cancelChanges(token, classId) },
+            onFinalizeAllGrades = { viewModel.finalizeAllGrades(token, classId) },
+            onToggleStudent = { studentId -> viewModel.toggleStudentExpanded(studentId) },
+            onGradeChange = { studentId, evaluation, value ->
+                viewModel.setGrade(studentId, evaluation, value)
             },
-            bottomBar = {
+            onSaveStudent = { studentId ->
+                viewModel.saveStudentGrades(token, classId, studentId)
+            },
+        )
+    }
+}
+
+@Composable
+private fun GradeBookScreenContent(
+    uiState: GradeBookUiState,
+    onBackClick: () -> Unit,
+    onCancelChanges: () -> Unit,
+    onFinalizeAllGrades: () -> Unit,
+    onToggleStudent: (Int) -> Unit,
+    onGradeChange: (Int, String, Double) -> Unit,
+    onSaveStudent: (Int) -> Unit,
+) {
+    if (uiState.isLoading) {
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center,
+        ) {
+            CircularProgressIndicator()
+        }
+        return
+    }
+
+    val summary = uiState.summary
+
+    Scaffold(
+        bottomBar = {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surface)
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+            ) {
+                if (uiState.unsavedStudents.isNotEmpty()) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Color(0xFFFFF3E0))
+                            .padding(12.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                    ) {
+                        Text(text = "i", fontSize = 16.sp)
+                        Spacer(Modifier.width(8.dp))
+                        Text(
+                            text = "Voce tem ${uiState.unsavedStudents.size} nota(s) nao salva(s).",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = Color(0xFFE65100),
+                        )
+                    }
+                }
+
+                Spacer(Modifier.width(16.dp))
+
+
+                uiState.error?.let {
+                    Text(
+                        text = it,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
+
+                uiState.success?.let {
+                    Text(
+                        text = it,
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
+
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surface)
-                        .padding(16.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
-                    // Aviso de notas não salvas
-                    if (uiState.unsavedStudents.isNotEmpty()) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clip(RoundedCornerShape(8.dp))
-                                .background(Color(0xFFFFF3E0))
-                                .padding(12.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Text(text = "ℹ", fontSize = 16.sp)
-                            Spacer(Modifier.width(8.dp))
-                            Text(
-                                text = "Você tem ${uiState.unsavedStudents.size} nota(s) não salva(s).",
-                                style = MaterialTheme.typography.bodySmall,
-                                color = Color(0xFFE65100),
-                            )
-                        }
-                    }
-
-                    uiState.error?.let {
-                        Text(
-                            text = it,
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodySmall,
-                        )
-                    }
-
-                    uiState.success?.let {
-                        Text(
-                            text = it,
-                            color = MaterialTheme.colorScheme.primary,
-                            style = MaterialTheme.typography.bodySmall,
-                        )
-                    }
-
-                    Row(
+                    AppActionButton(
+                        text = "Cancelar Alteracoes",
+                        onClick = onCancelChanges,
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        OutlinedButton(
-                            onClick = { viewModel.cancelChanges(token, classId) },
-                            modifier = Modifier.weight(1f),
-                            shape = RoundedCornerShape(50.dp),
-                        ) {
-                            Text(
-                                text = "Cancelar Alterações",
-                                color = MaterialTheme.colorScheme.primary,
-                            )
-                        }
+                        containerColor = MaterialTheme.colorScheme.error,
+                    )
 
-                        Button(
-                            onClick = { viewModel.finalizeAllGrades(token, classId) },
-                            enabled = !uiState.isSaving,
-                            modifier = Modifier.weight(1f),
-                            shape = RoundedCornerShape(50.dp),
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = MaterialTheme.colorScheme.primary,
-                            ),
-                        ) {
-                            if (uiState.isSaving) {
-                                CircularProgressIndicator(
-                                    modifier = Modifier.size(18.dp),
-                                    color = MaterialTheme.colorScheme.onPrimary,
-                                )
-                            } else {
-                                Text("💾 Finalizar Notas")
-                            }
-                        }
-                    }
+                    AppActionButton(
+                        text = if (uiState.isSaving) "Salvando..." else "Salvar Notas",
+                        onClick = onFinalizeAllGrades,
+                        enabled = !uiState.isSaving,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
                 }
             }
-        ) { innerPadding ->
-            LazyColumn(
+        }
+    ) { innerPadding ->
+        if (summary == null) {
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(horizontal = 20.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp),
+                    .padding(innerPadding),
+                contentAlignment = Alignment.Center,
             ) {
-                // Header
-                item {
-                    Spacer(Modifier.height(8.dp))
-
-                    // Badges
-                    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Badge(
-                            text = "1º Bimestre (B1)",
-                            color = Color(0xFFE8F4FD),
-                            textColor = Color(0xFF1565C0),
-                        )
-                        Badge(
-                            text = "SESSÃO ATIVA",
-                            color = Color(0xFFFFF3E0),
-                            textColor = Color(0xFFE65100),
-                        )
-                    }
-
-                    Spacer(Modifier.height(8.dp))
-
-                    Text(
-                        text = summary.subject,
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold,
-                    )
-                    Spacer(Modifier.height(4.dp))
-                }
-
-                // Lista de alunos
-                items(summary.students) { student ->
-                    val isExpanded = uiState.expandedStudentId == student.id
-                    val hasUnsaved = student.id in uiState.unsavedStudents
-
-                    StudentGradeCard(
-                        student = student,
-                        isExpanded = isExpanded,
-                        hasUnsaved = hasUnsaved,
-                        editedGrades = uiState.editedGrades,
-                        isSaving = uiState.isSaving,
-                        onToggle = { viewModel.toggleStudentExpanded(student.id) },
-                        onGradeChange = { evaluation, value ->
-                            viewModel.setGrade(student.id, evaluation, value)
-                        },
-                        onSave = {
-                            viewModel.saveStudentGrades(token, classId, student.id)
-                        },
-                    )
-                }
-
-                item { Spacer(Modifier.height(8.dp)) }
+                Text(
+                    text = "Nao foi possivel carregar as notas.",
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    style = MaterialTheme.typography.bodyMedium,
+                )
             }
+            return@Scaffold
         }
-    }
 
-    @Composable
-    private fun Badge(text: String, color: Color, textColor: Color) {
-        Box(
+        LazyColumn(
             modifier = Modifier
-                .clip(RoundedCornerShape(50.dp))
-                .background(color)
-                .padding(horizontal = 10.dp, vertical = 4.dp),
+                .fillMaxSize()
+                .padding(innerPadding)
+                .padding(horizontal = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            Text(
-                text = text,
-                style = MaterialTheme.typography.labelSmall,
-                color = textColor,
-                fontWeight = FontWeight.SemiBold,
-            )
+            item {
+                Spacer(Modifier.height(8.dp))
+                AppHeader(
+                    icon = Icons.AutoMirrored.Filled.ArrowBack,
+                    iconBackgroundColor = MaterialTheme.colorScheme.surface,
+                    title = "Notas",
+                    userInitial = summary.subject.firstOrNull()?.uppercaseChar()?.toString() ?: "?",
+                    isTitleCentered = true,
+                    onIconClick = onBackClick,
+                )
+                Spacer(Modifier.height(16.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Badge(
+                        text = "${summary.bimester}o Bimestre",
+                        color = Color(0xFFE8F4FD),
+                        textColor = Color(0xFF1565C0),
+                    )
+                    Badge(
+                        text = "SESSAO ATIVA",
+                        color = Color(0xFFFFF3E0),
+                        textColor = Color(0xFFE65100),
+                    )
+                }
+
+                Spacer(Modifier.height(8.dp))
+
+                Text(
+                    text = summary.subject,
+                    style = MaterialTheme.typography.headlineMedium,
+                    fontWeight = FontWeight.Bold,
+                )
+                Spacer(Modifier.height(32.dp))
+            }
+
+            itemsIndexed(summary.students) { index, student ->
+                val isExpanded = uiState.expandedStudentId == student.id
+                val hasUnsaved = student.id in uiState.unsavedStudents
+
+                StudentGradeCard(
+                    student = student,
+                    isExpanded = isExpanded,
+                    hasUnsaved = hasUnsaved,
+                    editedGrades = uiState.editedGrades,
+                    isSaving = uiState.isSaving,
+                    onToggle = { onToggleStudent(student.id) },
+                    onGradeChange = { evaluation, value ->
+                        onGradeChange(student.id, evaluation, value)
+                    },
+                    onSave = { onSaveStudent(student.id) },
+                )
+
+                if (index < summary.students.lastIndex) {
+                    Spacer(Modifier.height(8.dp))
+                }
+            }
+
+            item { Spacer(Modifier.height(8.dp)) }
         }
     }
+}
 
-    @Composable
-    private fun StudentGradeCard(
-        student: StudentGradeSummary,
-        isExpanded: Boolean,
-        hasUnsaved: Boolean,
-        editedGrades: Map<Pair<Int, String>, Double>,
-        isSaving: Boolean,
-        onToggle: () -> Unit,
-        onGradeChange: (String, Double) -> Unit,
-        onSave: () -> Unit,
+@Composable
+private fun Badge(text: String, color: Color, textColor: Color) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(50.dp))
+            .background(color)
+            .padding(horizontal = 10.dp, vertical = 4.dp),
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
-                .background(MaterialTheme.colorScheme.surface),
-        ) {
+        Text(
+            text = text,
+            style = MaterialTheme.typography.labelSmall,
+            color = textColor,
+            fontWeight = FontWeight.SemiBold,
+        )
+    }
+}
+
+@Composable
+private fun StudentGradeCard(
+    student: StudentGradeSummary,
+    isExpanded: Boolean,
+    hasUnsaved: Boolean,
+    editedGrades: Map<Pair<Int, String>, Double>,
+    isSaving: Boolean,
+    onToggle: () -> Unit,
+    onGradeChange: (String, Double) -> Unit,
+    onSave: () -> Unit,
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.onPrimary,
+        ),
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
             // Header do aluno
             Row(
                 modifier = Modifier
@@ -277,7 +317,7 @@ data class GradeBookScreen(
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        text = student.name.first().uppercaseChar().toString(),
+                        text = student.name.firstOrNull()?.uppercaseChar()?.toString() ?: "?",
                         fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onPrimaryContainer,
                     )
@@ -294,7 +334,7 @@ data class GradeBookScreen(
                     val average = student.average
                     if (average != null) {
                         Text(
-                            text = "Média: ${formatOneDecimal(average)}",
+                            text = "Media: ${formatOneDecimal(average)}",
                             style = MaterialTheme.typography.bodySmall,
                             color = when {
                                 average >= 7.0 -> Color(0xFF1565C0)
@@ -305,7 +345,7 @@ data class GradeBookScreen(
                         )
                     } else {
                         Text(
-                            text = "Média: N/D",
+                            text = "Media: N/D",
                             style = MaterialTheme.typography.bodySmall,
                             color = Color(0xFFE65100),
                             fontStyle = FontStyle.Italic,
@@ -313,10 +353,14 @@ data class GradeBookScreen(
                     }
                 }
 
-                Text(
-                    text = if (isExpanded) "∧" else "∨",
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                Icon(
+                    imageVector = if (isExpanded) {
+                        Icons.Outlined.KeyboardArrowUp
+                    } else {
+                        Icons.Outlined.KeyboardArrowDown
+                    },
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
 
@@ -363,6 +407,9 @@ data class GradeBookScreen(
                                 keyboardOptions = KeyboardOptions(
                                     keyboardType = KeyboardType.Decimal,
                                 ),
+                                textStyle = MaterialTheme.typography.bodyMedium.copy(
+                                    textAlign = TextAlign.Center,
+                                ),
                                 singleLine = true,
                                 modifier = Modifier.width(80.dp),
                                 shape = RoundedCornerShape(8.dp),
@@ -370,17 +417,86 @@ data class GradeBookScreen(
                         }
                     }
 
-                    Button(
+                    val isSaveEnabled = !isSaving && hasUnsaved
+
+                    AppActionButton(
+                        text = "Salvar Notas do Aluno",
                         onClick = onSave,
-                        enabled = !isSaving && hasUnsaved,
+                        enabled = isSaveEnabled,
                         modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(50.dp),
-                    ) {
-                        Text("💾 Salvar Notas do Aluno")
-                    }
+                    )
                 }
             }
         }
     }
-
 }
+
+@Preview
+@Composable
+private fun GradeBookScreenContentPreview() {
+    MaterialTheme {
+        GradeBookScreenContent(
+            uiState = GradeBookUiState(
+                summary = previewSummary,
+                editedGrades = mapOf(
+                    Pair(1, "P1") to 8.5,
+                    Pair(1, "P2") to 7.0,
+                    Pair(2, "P1") to 6.5,
+                ),
+                unsavedStudents = setOf(1),
+                expandedStudentId = 1,
+            ),
+            onBackClick = {},
+            onCancelChanges = {},
+            onFinalizeAllGrades = {},
+            onToggleStudent = {},
+            onGradeChange = { _, _, _ -> },
+            onSaveStudent = {},
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun GradeBookScreenLoadingPreview() {
+    MaterialTheme {
+        GradeBookScreenContent(
+            uiState = GradeBookUiState(isLoading = true),
+            onBackClick = {},
+            onCancelChanges = {},
+            onFinalizeAllGrades = {},
+            onToggleStudent = {},
+            onGradeChange = { _, _, _ -> },
+            onSaveStudent = {},
+        )
+    }
+}
+
+private val previewSummary = ClassGradeSummary(
+    classId = 1,
+    subject = "Matematica",
+    bimester = 1,
+    evaluations = listOf("P1", "P2", "Trabalho"),
+    students = listOf(
+        StudentGradeSummary(
+            id = 1,
+            name = "Ana Clara",
+            average = 7.8,
+            grades = listOf(
+                GradeItem(evaluation = "P1", value = 8.5),
+                GradeItem(evaluation = "P2", value = 7.0),
+                GradeItem(evaluation = "Trabalho", value = 8.0),
+            ),
+        ),
+        StudentGradeSummary(
+            id = 2,
+            name = "Bruno Souza",
+            average = null,
+            grades = listOf(
+                GradeItem(evaluation = "P1", value = 6.5),
+                GradeItem(evaluation = "P2", value = null),
+                GradeItem(evaluation = "Trabalho", value = null),
+            ),
+        ),
+    ),
+)

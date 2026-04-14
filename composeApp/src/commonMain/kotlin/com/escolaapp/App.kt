@@ -3,9 +3,9 @@ package com.escolaapp
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.Navigator
-import com.escolaapp.navigation.NavigationHandler
-import com.escolaapp.navigation.NavigationViewModel
-import com.escolaapp.presentation.login.LoginScreen
+import com.escolaapp.core.navigation.NavigationHandler
+import com.escolaapp.core.navigation.NavigationViewModel
+import com.escolaapp.features.auth.presentation.login.LoginScreen
 import org.koin.compose.KoinApplication
 import org.koin.compose.koinInject
 

@@ -1,0 +1,15 @@
+package com.escolaapp.core.data.repository
+
+import com.escolaapp.core.data.mapper.toDomain
+import com.escolaapp.features.auth.data.mapper.toDomain
+import com.escolaapp.core.data.remote.gateway.ApiClient
+import com.escolaapp.core.domain.model.Student
+
+class StudentRepository(private val apiClient: ApiClient) {
+
+    suspend fun getStudents(token: String): List<Student> =
+        apiClient.getStudents(token).map { it.toDomain() }
+
+    suspend fun getStudentById(token: String, id: Int): Student =
+        apiClient.getStudentById(token, id).toDomain()
+}

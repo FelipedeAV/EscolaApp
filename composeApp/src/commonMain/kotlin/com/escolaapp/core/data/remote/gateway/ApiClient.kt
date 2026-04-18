@@ -17,6 +17,8 @@ import com.escolaapp.core.data.models.StudentResponse
 import com.escolaapp.core.data.models.UserRequest
 import com.escolaapp.core.data.models.UserResponse
 import com.escolaapp.data.gateway.dto.ClassResponse
+import com.escolaapp.features.coordinator.data.model.CoordinatorClassSummaryResponse
+import com.escolaapp.features.coordinator.data.model.CoordinatorDashboardResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
@@ -203,5 +205,15 @@ class ApiClient {
             header("Authorization", "Bearer $token")
             contentType(ContentType.Application.Json)
             setBody(request)
+        }.body()
+
+    suspend fun getCoordinatorDashboard(token: String): CoordinatorDashboardResponse =
+        client.get("$baseUrl/coordinator/dashboard") {
+            header("Authorization", "Bearer $token")
+        }.body()
+
+    suspend fun getCoordinatorClasses(token: String): List<CoordinatorClassSummaryResponse> =
+        client.get("$baseUrl/coordinator/classes") {
+            header("Authorization", "Bearer $token")
         }.body()
 }

@@ -16,6 +16,8 @@ import com.escolaapp.features.guardian.presentation.dashboard.DashboardViewModel
 import com.escolaapp.features.teacher.presentation.dashboard.TeacherDashboardViewModel
 import com.escolaapp.features.guardian.presentation.grades.GradesViewModel
 import com.escolaapp.features.auth.presentation.login.LoginViewModel
+import com.escolaapp.features.coordinator.data.repository.CoordinatorRepository
+import com.escolaapp.features.coordinator.presentation.dashboard.CoordinatorDashboardViewModel
 import com.escolaapp.features.guardian.presentation.notices.NoticesViewModel
 import com.escolaapp.shared.presentation.profile.ProfileSettingsViewModel
 import com.escolaapp.shared.presentation.profile.ProfileViewModel
@@ -42,6 +44,7 @@ val appModule = module {
     single { UserRepository(get()) }
     single { ClassRepository(get()) }
     single { GradeBookRepository(get()) }
+    single  { CoordinatorRepository(get()) }
 
     // Navigation
     single { NavigationViewModel() }
@@ -63,4 +66,5 @@ val appModule = module {
     factory { TeacherDashboardViewModel(get(), get()) }
     factory { GradeBookViewModel(get(), get()) }
     factory { ClassListViewModel(get(), get()) }
+    factory { CoordinatorDashboardViewModel(get(), get()) }
 }

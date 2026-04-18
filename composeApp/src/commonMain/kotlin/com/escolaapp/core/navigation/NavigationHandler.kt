@@ -6,6 +6,7 @@ import cafe.adriel.voyager.navigator.Navigator
 import com.escolaapp.features.guardian.presentation.attendance.AttendanceScreen
 import com.escolaapp.features.guardian.presentation.dashboard.DashboardScreen
 import com.escolaapp.features.teacher.presentation.dashboard.TeacherDashboardScreen
+import com.escolaapp.features.coordinator.presentation.dashboard.CoordinatorDashboardScreen
 import com.escolaapp.features.guardian.presentation.grades.GradesScreen
 import com.escolaapp.features.auth.presentation.login.LoginScreen
 import com.escolaapp.features.guardian.presentation.notices.NoticesScreen
@@ -27,26 +28,40 @@ fun NavigationHandler(
         events.collect { event ->
             when (event) {
                 is NavigationEvent.ToDashboard -> {
-                    if (event.role == "Teacher") {
-                        navigator.replace(
-                            TeacherDashboardScreen(
-                                token = event.token,
-                                userId = event.userId,
-                                name = event.name,
-                                email = event.email,
-                                role = event.role,
+                    when (event.role) {
+                        "Teacher" -> {
+                            navigator.replace(
+                                TeacherDashboardScreen(
+                                    token = event.token,
+                                    userId = event.userId,
+                                    name = event.name,
+                                    email = event.email,
+                                    role = event.role,
+                                )
                             )
-                        )
-                    } else {
-                        navigator.replace(
-                            DashboardScreen(
-                                token  = event.token,
-                                userId = event.userId,
-                                name   = event.name,
-                                email  = event.email,
-                                role   = event.role,
+                        }
+                        "Coordinator" -> {
+                            navigator.replace(
+                                CoordinatorDashboardScreen(
+                                    token = event.token,
+                                    userId = event.userId,
+                                    name = event.name,
+                                    email = event.email,
+                                    role = event.role,
+                                )
                             )
-                        )
+                        }
+                        else -> {
+                            navigator.replace(
+                                DashboardScreen(
+                                    token = event.token,
+                                    userId = event.userId,
+                                    name = event.name,
+                                    email = event.email,
+                                    role = event.role,
+                                )
+                            )
+                        }
                     }
                 }
 
@@ -135,6 +150,16 @@ fun NavigationHandler(
                         role = event.role,
                     )
                 )
+
+                NavigationEvent.GoToAddTeacher -> TODO()
+                NavigationEvent.GoToClassManagement -> TODO()
+                NavigationEvent.GoToCoordinatorDashboard -> TODO()
+                NavigationEvent.GoToNotifications -> TODO()
+                NavigationEvent.GoToSettings -> TODO()
+                NavigationEvent.GoToStudentManagement -> TODO()
+                NavigationEvent.GoToStudentRegistration -> TODO()
+                NavigationEvent.GoToSubjectManagement -> TODO()
+                NavigationEvent.GoToTeacherManagement -> TODO()
             }
         }
     }

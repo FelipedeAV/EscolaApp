@@ -1,13 +1,16 @@
-package com.escolaapp.features.teacher.presentation
+package com.escolaapp.features.teacher.presentation.addattendance
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -19,28 +22,31 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import com.escolaapp.shared.components.AppTopBar
 import org.koin.compose.koinInject
 
-data class AddNoticeScreen(
+data class AddAttendanceScreen(
     val token: String,
 ) : Screen {
 
     @Composable
     override fun Content() {
-        val viewModel: AddNoticeViewModel = koinInject()
+        val viewModel: AddAttendanceViewModel = koinInject()
         val uiState by viewModel.uiState.collectAsState()
 
-        var title by remember { mutableStateOf("") }
-        var description by remember { mutableStateOf("") }
+        var studentId by remember { mutableStateOf("") }
+        var date by remember { mutableStateOf("") }
+        var isPresent by remember { mutableStateOf(true) }
 
         Scaffold(
             topBar = {
                 AppTopBar(
-                    title = "Criar Aviso",
+                    title = "Lançar Frequência",
                     onBackClick = { viewModel.navigateBack() },
                 )
             },
@@ -54,20 +60,31 @@ data class AddNoticeScreen(
             ) {
 
             OutlinedTextField(
-                value = title,
-                onValueChange = { title = it },
-                label = { Text("Título") },
+                value = studentId,
+                onValueChange = { studentId = it },
+                label = { Text("ID do Aluno") },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
 
             OutlinedTextField(
-                value = description,
-                onValueChange = { description = it },
-                label = { Text("Descrição") },
-                minLines = 4,
+                value = date,
+                onValueChange = { date = it },
+                label = { Text("Data (YYYY-MM-DD)") },
+                singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Checkbox(
+                    checked = isPresent,
+                    onCheckedChange = { isPresent = it },
+                )
+                Text("Presente")
+            }
 
             uiState.error?.let {
                 Text(
@@ -89,17 +106,18 @@ data class AddNoticeScreen(
 
             Button(
                 onClick = {
-                    viewModel.addNotice(
+                    viewModel.addAttendance(
                         token = token,
-                        title = title,
-                        description = description,
+                        studentId = studentId.toIntOrNull() ?: 0,
+                        date = date,
+                        isPresent = isPresent,
                     )
                 },
                 enabled = !uiState.isLoading,
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 if (uiState.isLoading) CircularProgressIndicator()
-                else Text("Publicar Aviso")
+                else Text("Salvar Frequência")
             }
             }
         }

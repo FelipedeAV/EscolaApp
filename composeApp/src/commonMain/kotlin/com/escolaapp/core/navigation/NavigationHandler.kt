@@ -11,9 +11,9 @@ import com.escolaapp.features.guardian.presentation.grades.GradesScreen
 import com.escolaapp.features.auth.presentation.login.LoginScreen
 import com.escolaapp.features.guardian.presentation.notices.NoticesScreen
 import com.escolaapp.shared.presentation.profile.*
-import com.escolaapp.features.teacher.presentation.AddAttendanceScreen
-import com.escolaapp.features.teacher.presentation.AddGradeScreen
-import com.escolaapp.features.teacher.presentation.AddNoticeScreen
+import com.escolaapp.features.teacher.presentation.addattendance.AddAttendanceScreen
+import com.escolaapp.features.teacher.presentation.grade.AddGradeScreen
+import com.escolaapp.features.teacher.presentation.notice.AddNoticeScreen
 import com.escolaapp.features.teacher.presentation.attendance.AttendanceCallScreen
 import com.escolaapp.features.teacher.presentation.classlist.ClassListScreen
 import com.escolaapp.features.teacher.presentation.gradebook.GradeBookScreen

@@ -2,7 +2,7 @@ package com.escolaapp.features.teacher.data.mapper
 
 import com.escolaapp.core.data.mapper.toDomain
 import com.escolaapp.features.teacher.domain.model.Class
-import com.escolaapp.data.gateway.dto.ClassResponse
+import com.escolaapp.core.data.models.ClassResponse
 
 fun ClassResponse.toDomain() = Class(
     id = id,

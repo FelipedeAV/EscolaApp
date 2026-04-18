@@ -7,6 +7,7 @@ import com.escolaapp.core.data.models.BatchAttendanceRequest
 import com.escolaapp.core.data.models.BatchGradeRequest
 import com.escolaapp.core.data.models.ChangePasswordRequest
 import com.escolaapp.core.data.models.ClassGradeSummaryResponse
+import com.escolaapp.core.data.models.ClassResponse
 import com.escolaapp.core.data.models.GradeRequest
 import com.escolaapp.core.data.models.GradeResponse
 import com.escolaapp.core.data.models.LoginRequest
@@ -16,7 +17,6 @@ import com.escolaapp.core.data.models.NoticeResponse
 import com.escolaapp.core.data.models.StudentResponse
 import com.escolaapp.core.data.models.UserRequest
 import com.escolaapp.core.data.models.UserResponse
-import com.escolaapp.data.gateway.dto.ClassResponse
 import com.escolaapp.features.coordinator.data.model.CoordinatorClassSummaryResponse
 import com.escolaapp.features.coordinator.data.model.CoordinatorDashboardResponse
 import io.ktor.client.HttpClient

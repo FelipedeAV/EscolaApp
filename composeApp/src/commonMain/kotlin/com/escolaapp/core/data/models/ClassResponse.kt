@@ -1,6 +1,5 @@
-package com.escolaapp.data.gateway.dto
+package com.escolaapp.core.data.models
 
-import com.escolaapp.core.data.models.StudentResponse
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 

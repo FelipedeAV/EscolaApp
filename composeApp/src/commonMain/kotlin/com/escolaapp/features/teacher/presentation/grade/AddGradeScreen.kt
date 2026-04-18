@@ -1,4 +1,4 @@
-package com.escolaapp.features.teacher.presentation
+package com.escolaapp.features.teacher.presentation.grade
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

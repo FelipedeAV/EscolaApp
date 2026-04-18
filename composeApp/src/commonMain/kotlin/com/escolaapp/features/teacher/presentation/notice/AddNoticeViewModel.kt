@@ -1,4 +1,4 @@
-package com.escolaapp.features.teacher.presentation
+package com.escolaapp.features.teacher.presentation.notice
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope

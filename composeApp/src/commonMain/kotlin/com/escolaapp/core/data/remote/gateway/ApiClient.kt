@@ -32,7 +32,9 @@ import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
 import io.ktor.serialization.kotlinx.json.json
+import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonNamingStrategy
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.json.jsonPrimitive
 
@@ -42,12 +44,16 @@ class ApiClient {
 
     private val baseUrl = "http://10.0.2.2:5239/api"
 
+    @OptIn(ExperimentalSerializationApi::class)
+    private val jsonConfig = Json {
+        namingStrategy = JsonNamingStrategy.SnakeCase
+        ignoreUnknownKeys = true
+        isLenient = true
+    }
+
     private val client = HttpClient {
         install(ContentNegotiation) {
-            json(Json {
-                ignoreUnknownKeys = true
-                isLenient = true
-            })
+            json(jsonConfig)
         }
         install(Logging) {
             level = LogLevel.ALL
@@ -59,10 +65,7 @@ class ApiClient {
         }
     }
 
-    private val json = Json {
-        ignoreUnknownKeys = true
-        isLenient = true
-    }
+    private val json = jsonConfig
 
     suspend fun login(email: String, password: String): LoginResponse {
         val response = client.post("$baseUrl/auth/login") {

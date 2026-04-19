@@ -23,12 +23,18 @@ data class ProfileUiState(
 class ProfileViewModel(
     private val userRepository: UserRepository,
     private val navigationViewModel: NavigationViewModel,
+    private val token: String,
+    private val userId: Int,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
-    fun loadProfile(token: String, userId: Int) {
+    init {
+        loadProfile()
+    }
+
+    private fun loadProfile() {
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
@@ -50,23 +56,30 @@ class ProfileViewModel(
         }
     }
 
-    fun onTabSelected(tab: TeacherNavigationTab, token: String, userId: Int, name: String, email: String, role: String) {
+    fun onTabSelected(tab: TeacherNavigationTab, name: String, email: String, role: String) {
         when (tab) {
             TeacherNavigationTab.CLASSES -> {
-                navigateToClassList(token, userId, ClassListMode.SELECT_ACTION, name, email, role)
+                navigateToClassList(
+                    mode = ClassListMode.SELECT_ACTION,
+                    name = name,
+                    email = email,
+                    role = role,
+                )
             }
 
             TeacherNavigationTab.SETTINGS -> Unit
 
             TeacherNavigationTab.HOME -> {
-                navigateToHome(token, userId, name, email, role)
+                navigateToHome(
+                    name = name,
+                    email = email,
+                    role = role,
+                )
             }
         }
     }
 
     fun navigateToClassList(
-        token: String,
-        teacherId: Int,
         mode: ClassListMode,
         name: String,
         email: String,
@@ -76,17 +89,17 @@ class ProfileViewModel(
             navigationViewModel.emit(
                 NavigationEvent.ToClassList(
                     token     = token,
-                    teacherId = teacherId,
+                    teacherId = userId,
                     name      = name,
                     email     = email,
                     role      = role,
-                    mode      = mode
+                    mode      = mode,
                 )
             )
         }
     }
 
-    fun navigateToHome(token: String, userId: Int, name: String, email: String, role: String) {
+    fun navigateToHome(name: String, email: String, role: String) {
         screenModelScope.launch {
             navigationViewModel.emit(
                 NavigationEvent.ToDashboard(
@@ -94,7 +107,7 @@ class ProfileViewModel(
                     userId = userId,
                     name = name,
                     email = email,
-                    role = role
+                    role = role,
                 )
             )
         }
@@ -112,7 +125,3 @@ class ProfileViewModel(
         }
     }
 }
-
-
-
-

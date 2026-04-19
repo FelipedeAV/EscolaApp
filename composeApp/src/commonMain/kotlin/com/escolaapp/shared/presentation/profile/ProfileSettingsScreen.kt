@@ -25,6 +25,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import com.escolaapp.shared.components.AppTopBar
 import org.koin.compose.koinInject
+import org.koin.core.parameter.parametersOf
 
 data class ProfileSettingsScreen(
     val token: String,
@@ -33,7 +34,7 @@ data class ProfileSettingsScreen(
 
     @Composable
     override fun Content() {
-        val viewModel: ProfileSettingsViewModel = koinInject()
+        val viewModel: ProfileSettingsViewModel = koinInject { parametersOf(token, userId) }
         val uiState by viewModel.uiState.collectAsState()
 
         var currentPassword by remember { mutableStateOf("") }
@@ -103,8 +104,6 @@ data class ProfileSettingsScreen(
                 Button(
                     onClick = {
                         viewModel.updatePassword(
-                            token = token,
-                            userId = userId,
                             currentPassword = currentPassword,
                             newPassword = newPassword,
                             confirmPassword = confirmPassword,
@@ -123,4 +122,3 @@ data class ProfileSettingsScreen(
         }
     }
 }
-

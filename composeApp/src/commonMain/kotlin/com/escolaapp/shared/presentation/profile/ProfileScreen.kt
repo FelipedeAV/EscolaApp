@@ -41,6 +41,7 @@ import com.escolaapp.shared.components.AppHeader
 import com.escolaapp.features.teacher.presentation.components.TeacherNavigationBar
 import com.escolaapp.features.teacher.presentation.components.TeacherNavigationTab
 import org.koin.compose.koinInject
+import org.koin.core.parameter.parametersOf
 
 data class ProfileScreen(
     val token: String,
@@ -52,14 +53,14 @@ data class ProfileScreen(
 
     @Composable
     override fun Content() {
-        val viewModel: ProfileViewModel = koinInject()
+        val viewModel: ProfileViewModel = koinInject { parametersOf(token, userId) }
 
         ProfileScreenContent(
             name = name,
             email = email,
             role = role,
             onTabSelected = { tab ->
-                viewModel.onTabSelected(tab, token, userId, name, email, role)
+                viewModel.onTabSelected(tab = tab, name = token, email = email, role = role)
             },
         )
     }

@@ -24,12 +24,18 @@ data class TeacherDashboardUiState(
 class TeacherDashboardViewModel(
     private val classRepository: ClassRepository,
     private val navigationViewModel: NavigationViewModel,
+    private val token: String,
+    private val teacherId: Int,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(TeacherDashboardUiState())
     val uiState: StateFlow<TeacherDashboardUiState> = _uiState.asStateFlow()
 
-    fun loadDashboard(token: String, teacherId: Int) {
+    init {
+        loadDashboard()
+    }
+
+    private fun loadDashboard() {
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
@@ -54,8 +60,6 @@ class TeacherDashboardViewModel(
     }
 
     fun navigateToClassList(
-        token: String,
-        teacherId: Int,
         mode: ClassListMode,
         name: String,
         email: String,
@@ -76,8 +80,6 @@ class TeacherDashboardViewModel(
     }
 
     fun navigateToSettings(
-        token: String,
-        userId: Int,
         name: String,
         email: String,
         role: String,
@@ -86,7 +88,7 @@ class TeacherDashboardViewModel(
             navigationViewModel.emit(
                 NavigationEvent.ToProfile(
                     token = token,
-                    userId = userId,
+                    userId = teacherId,
                     name = name,
                     email = email,
                     role = role,
@@ -97,8 +99,6 @@ class TeacherDashboardViewModel(
 
     fun onTabSelected(
         tab: TeacherNavigationTab,
-        token: String,
-        userId: Int,
         name: String,
         email: String,
         role: String,
@@ -106,8 +106,6 @@ class TeacherDashboardViewModel(
         when (tab) {
             TeacherNavigationTab.CLASSES -> {
                 navigateToClassList(
-                    token = token,
-                    teacherId = userId,
                     mode = ClassListMode.SELECT_ACTION,
                     name = name,
                     email = email,
@@ -116,20 +114,20 @@ class TeacherDashboardViewModel(
             }
 
             TeacherNavigationTab.SETTINGS -> {
-                navigateToSettings(token, userId, name, email, role)
+                navigateToSettings(name, email, role)
             }
 
             TeacherNavigationTab.HOME -> Unit
         }
     }
 
-    fun navigateToAddNotice(token: String) {
+    fun navigateToAddNotice() {
         screenModelScope.launch {
             navigationViewModel.emit(NavigationEvent.ToAddNotice(token = token))
         }
     }
 
-    fun navigateToAttendanceCall(token: String) {
+    fun navigateToAttendanceCall() {
         val currentClass = _uiState.value.currentClass ?: return
         screenModelScope.launch {
             navigationViewModel.emit(
@@ -141,7 +139,7 @@ class TeacherDashboardViewModel(
         }
     }
 
-    fun navigateToGradeBook(token: String, classId: Int) {
+    fun navigateToGradeBook(classId: Int) {
         screenModelScope.launch {
             navigationViewModel.emit(
                 NavigationEvent.ToGradeBook(

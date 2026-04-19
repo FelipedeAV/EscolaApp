@@ -17,7 +17,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -42,6 +41,7 @@ import com.escolaapp.features.teacher.domain.model.ClassListMode
 import com.escolaapp.features.teacher.presentation.components.TeacherNavigationBar
 import com.escolaapp.features.teacher.presentation.components.TeacherNavigationTab
 import org.koin.compose.koinInject
+import org.koin.core.parameter.parametersOf
 
 data class TeacherDashboardScreen(
     val token: String,
@@ -53,36 +53,22 @@ data class TeacherDashboardScreen(
 
     @Composable
     override fun Content() {
-        val viewModel: TeacherDashboardViewModel = koinInject()
+        val viewModel: TeacherDashboardViewModel = koinInject { parametersOf(token, userId) }
         val uiState by viewModel.uiState.collectAsState()
         var selectedTab by remember { mutableStateOf(TeacherNavigationTab.HOME) }
-
-        LaunchedEffect(Unit) {
-            viewModel.loadDashboard(token, userId)
-        }
 
         TeacherDashboardContent(
             uiState = uiState,
             name = name,
             selectedTab = selectedTab,
             onTabSelected = { tab ->
-                viewModel.onTabSelected(tab, token, userId, name, email, role)
+                viewModel.onTabSelected(tab, name, email, role)
             },
             onAttendanceClick = {
-                viewModel.navigateToAttendanceCall(token = token)
-//                viewModel.navigateToClassList(
-//                    token = token,
-//                    teacherId = userId,
-//                    mode = ClassListMode.ATTENDANCE,
-//                    name = name,
-//                    email = email,
-//                    role = role,
-//                )
+                viewModel.navigateToAttendanceCall()
             },
             onGradeBookClick = {
                 viewModel.navigateToClassList(
-                    token = token,
-                    teacherId = userId,
                     mode = ClassListMode.GRADEBOOK,
                     name = name,
                     email = email,

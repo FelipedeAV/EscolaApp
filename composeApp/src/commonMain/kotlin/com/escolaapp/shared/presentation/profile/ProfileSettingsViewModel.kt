@@ -20,14 +20,14 @@ data class ProfileSettingsUiState(
 class ProfileSettingsViewModel(
     private val userRepository: UserRepository,
     private val navigationViewModel: NavigationViewModel,
+    private val token: String,
+    private val userId: Int,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(ProfileSettingsUiState())
     val uiState: StateFlow<ProfileSettingsUiState> = _uiState.asStateFlow()
 
     fun updatePassword(
-        token: String,
-        userId: Int,
         currentPassword: String,
         newPassword: String,
         confirmPassword: String,
@@ -69,4 +69,3 @@ class ProfileSettingsViewModel(
         }
     }
 }
-

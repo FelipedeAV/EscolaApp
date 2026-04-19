@@ -210,10 +210,16 @@ class ApiClient {
             setBody(request)
         }.body()
 
-    suspend fun getCoordinatorDashboard(token: String): CoordinatorDashboardResponse =
-        client.get("$baseUrl/coordinator/dashboard") {
+    suspend fun getCoordinatorDashboard(token: String): CoordinatorDashboardResponse {
+        val response = client.get("$baseUrl/coordinator/dashboard") {
             header("Authorization", "Bearer $token")
-        }.body()
+        }
+
+        val rawJson = response.bodyAsText()
+        println("DEBUG COORDINATOR RAW: $rawJson")
+
+        return json.decodeFromString(rawJson)
+    }
 
     suspend fun getCoordinatorClasses(token: String): List<CoordinatorClassSummaryResponse> =
         client.get("$baseUrl/coordinator/classes") {

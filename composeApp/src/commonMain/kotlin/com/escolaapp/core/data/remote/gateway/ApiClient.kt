@@ -14,6 +14,8 @@ import com.escolaapp.core.data.models.LoginRequest
 import com.escolaapp.core.data.models.LoginResponse
 import com.escolaapp.core.data.models.NoticeRequest
 import com.escolaapp.core.data.models.NoticeResponse
+import com.escolaapp.core.data.models.StudentRegistrationRequest
+import com.escolaapp.core.data.models.StudentRegistrationResponse
 import com.escolaapp.core.data.models.StudentResponse
 import com.escolaapp.core.data.models.UserRequest
 import com.escolaapp.core.data.models.UserResponse
@@ -224,5 +226,15 @@ class ApiClient {
     suspend fun getCoordinatorClasses(token: String): List<CoordinatorClassSummaryResponse> =
         client.get("$baseUrl/coordinator/classes") {
             header("Authorization", "Bearer $token")
+        }.body()
+
+    suspend fun registerStudent(
+        token: String,
+        request: StudentRegistrationRequest,
+    ): StudentRegistrationResponse =
+        client.post("$baseUrl/coordinator/students") {
+            header("Authorization", "Bearer $token")
+            contentType(ContentType.Application.Json)
+            setBody(request)
         }.body()
 }

@@ -21,12 +21,13 @@ data class AddAttendanceUiState(
 class AddAttendanceViewModel(
     private val apiClient: ApiClient,
     private val navigationViewModel: NavigationViewModel,
+    private val token: String,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(AddAttendanceUiState())
     val uiState: StateFlow<AddAttendanceUiState> = _uiState.asStateFlow()
 
-    fun addAttendance(token: String, studentId: Int, date: String, isPresent: Boolean) {
+    fun addAttendance(studentId: Int, date: String, isPresent: Boolean) {
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null, success = null) }
             try {
@@ -36,7 +37,7 @@ class AddAttendanceViewModel(
                         studentId = studentId,
                         date = date,
                         isPresent = isPresent,
-                    )
+                    ),
                 )
                 _uiState.update {
                     it.copy(

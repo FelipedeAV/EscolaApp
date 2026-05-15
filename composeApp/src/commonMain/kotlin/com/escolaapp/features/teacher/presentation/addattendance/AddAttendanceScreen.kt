@@ -29,6 +29,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import com.escolaapp.shared.components.AppTopBar
 import org.koin.compose.koinInject
+import org.koin.core.parameter.parametersOf
 
 data class AddAttendanceScreen(
     val token: String,
@@ -36,7 +37,7 @@ data class AddAttendanceScreen(
 
     @Composable
     override fun Content() {
-        val viewModel: AddAttendanceViewModel = koinInject()
+        val viewModel: AddAttendanceViewModel = koinInject { parametersOf(token) }
         val uiState by viewModel.uiState.collectAsState()
 
         var studentId by remember { mutableStateOf("") }
@@ -107,7 +108,6 @@ data class AddAttendanceScreen(
             Button(
                 onClick = {
                     viewModel.addAttendance(
-                        token = token,
                         studentId = studentId.toIntOrNull() ?: 0,
                         date = date,
                         isPresent = isPresent,

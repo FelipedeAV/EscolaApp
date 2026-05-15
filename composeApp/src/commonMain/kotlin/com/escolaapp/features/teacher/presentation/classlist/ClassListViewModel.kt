@@ -25,12 +25,18 @@ data class ClassListUiState(
 class ClassListViewModel(
     private val classRepository: ClassRepository,
     private val navigationViewModel: NavigationViewModel,
+    private val token: String,
+    private val teacherId: Int,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(ClassListUiState())
     val uiState: StateFlow<ClassListUiState> = _uiState.asStateFlow()
 
-    fun loadClasses(token: String, teacherId: Int) {
+    init {
+        loadClasses()
+    }
+
+    fun loadClasses() {
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
@@ -69,7 +75,7 @@ class ClassListViewModel(
     }
 
     // navigation functions
-    fun navigateToClass(token: String, classId: Int, mode: ClassListMode) {
+    fun navigateToClass(classId: Int, mode: ClassListMode, bimester: Int = 1) {
         screenModelScope.launch {
             when (mode) {
                 ClassListMode.SELECT_ACTION -> Unit
@@ -84,13 +90,14 @@ class ClassListViewModel(
                     NavigationEvent.ToGradeBook(
                         token = token,
                         classId = classId,
+                        bimester = bimester,
                     )
                 )
             }
         }
     }
 
-    fun navigateToHome(token: String, userId: Int, name: String, email: String, role: String) {
+    fun navigateToHome(userId: Int, name: String, email: String, role: String) {
         screenModelScope.launch {
             navigationViewModel.emit(
                 NavigationEvent.ToDashboard(
@@ -104,7 +111,7 @@ class ClassListViewModel(
         }
     }
 
-    fun navigateToSettings(token: String, userId: Int, name: String, email: String, role: String) {
+    fun navigateToSettings(userId: Int, name: String, email: String, role: String) {
         screenModelScope.launch {
             navigationViewModel.emit(
                 NavigationEvent.ToProfile(
@@ -120,7 +127,6 @@ class ClassListViewModel(
 
     fun onTabSelected(
         tab: AppNavigationTab,
-        token: String,
         userId: Int,
         name: String,
         email: String,
@@ -130,11 +136,11 @@ class ClassListViewModel(
             AppNavigationTab.CLASSES -> Unit
 
             AppNavigationTab.SETTINGS -> {
-                navigateToSettings(token, userId, name, email, role)
+                navigateToSettings(userId, name, email, role)
             }
 
             AppNavigationTab.HOME -> {
-                navigateToHome(token, userId, name, email, role)
+                navigateToHome(userId, name, email, role)
             }
         }
     }

@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import com.escolaapp.shared.components.AppTopBar
 import org.koin.compose.koinInject
+import org.koin.core.parameter.parametersOf
 
 data class AddNoticeScreen(
     val token: String,
@@ -31,7 +32,7 @@ data class AddNoticeScreen(
 
     @Composable
     override fun Content() {
-        val viewModel: AddNoticeViewModel = koinInject()
+        val viewModel: AddNoticeViewModel = koinInject { parametersOf(token) }
         val uiState by viewModel.uiState.collectAsState()
 
         var title by remember { mutableStateOf("") }
@@ -90,7 +91,6 @@ data class AddNoticeScreen(
             Button(
                 onClick = {
                     viewModel.addNotice(
-                        token = token,
                         title = title,
                         description = description,
                     )

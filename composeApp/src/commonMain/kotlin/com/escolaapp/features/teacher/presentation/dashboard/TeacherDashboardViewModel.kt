@@ -139,12 +139,13 @@ class TeacherDashboardViewModel(
         }
     }
 
-    fun navigateToGradeBook(classId: Int) {
+    fun navigateToGradeBook(classId: Int, bimester: Int = 1) {
         screenModelScope.launch {
             navigationViewModel.emit(
                 NavigationEvent.ToGradeBook(
                     token = token,
                     classId = classId,
+                    bimester = bimester,
                 )
             )
         }

@@ -25,7 +25,6 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -41,8 +40,9 @@ import com.escolaapp.features.teacher.domain.model.AttendanceSummary
 import com.escolaapp.core.domain.model.StudentAttendanceStatus
 import com.escolaapp.shared.components.AppActionButton
 import com.escolaapp.shared.components.AppTopBar
-import com.escolaapp.core.utils.getCurrentDate
+import io.ktor.http.parametersOf
 import org.koin.compose.koinInject
+import org.koin.core.parameter.parametersOf
 
 data class AttendanceCallScreen(
     val token: String,
@@ -51,19 +51,13 @@ data class AttendanceCallScreen(
 
     @Composable
     override fun Content() {
-        val viewModel: AttendanceCallViewModel = koinInject()
+        val viewModel: AttendanceCallViewModel = koinInject { parametersOf(token, classId) }
         val uiState by viewModel.uiState.collectAsState()
-        val today = getCurrentDate()
-
-        LaunchedEffect(Unit) {
-            viewModel.loadSummary(token, classId, today)
-        }
 
         AttendanceCallScreenContent(
             uiState = uiState,
-            today = today,
             onBackClick = { viewModel.navigateBack() },
-            onSendAttendance = { viewModel.sendAttendance(token) },
+            onSendAttendance = { viewModel.sendAttendance() },
             onMarkAllPresent = { viewModel.markAllPresent() },
             onSetStudentStatus = { studentId, isPresent ->
                 viewModel.setStudentStatus(studentId, isPresent)
@@ -75,7 +69,6 @@ data class AttendanceCallScreen(
 @Composable
 private fun AttendanceCallScreenContent(
     uiState: AttendanceCallUiState,
-    today: String,
     onBackClick: () -> Unit,
     onSendAttendance: () -> Unit,
     onMarkAllPresent: () -> Unit,
@@ -181,7 +174,7 @@ private fun AttendanceCallScreenContent(
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                         Text(
-                            text = today,
+                            text = uiState.currentDate,
                             style = MaterialTheme.typography.titleMedium,
                             color = MaterialTheme.colorScheme.primary,
                             fontWeight = FontWeight.SemiBold,
@@ -465,7 +458,6 @@ private fun AttendanceCallScreenContentPreview() {
                 ),
                 currentDate = "2026-04-12",
             ),
-            today = "2026-04-12",
             onBackClick = {},
             onSendAttendance = {},
             onMarkAllPresent = {},
@@ -480,7 +472,6 @@ private fun AttendanceCallScreenLoadingPreview() {
     MaterialTheme {
         AttendanceCallScreenContent(
             uiState = AttendanceCallUiState(isLoading = true),
-            today = "2026-04-12",
             onBackClick = {},
             onSendAttendance = {},
             onMarkAllPresent = {},

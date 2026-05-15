@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import com.escolaapp.shared.components.AppTopBar
 import org.koin.compose.koinInject
+import org.koin.core.parameter.parametersOf
 
 data class AddGradeScreen(
     val token: String,
@@ -33,7 +34,7 @@ data class AddGradeScreen(
 
     @Composable
     override fun Content() {
-        val viewModel: AddGradeViewModel = koinInject()
+        val viewModel: AddGradeViewModel = koinInject { parametersOf(token) }
         val uiState by viewModel.uiState.collectAsState()
 
         var studentId by remember { mutableStateOf("") }
@@ -113,7 +114,6 @@ data class AddGradeScreen(
             Button(
                 onClick = {
                     viewModel.addGrade(
-                        token = token,
                         studentId = studentId.toIntOrNull() ?: 0,
                         subject = subject,
                         bimester = bimester.toIntOrNull() ?: 0,

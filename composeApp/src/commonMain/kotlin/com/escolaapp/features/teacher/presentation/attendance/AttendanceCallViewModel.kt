@@ -5,6 +5,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.features.teacher.data.repository.AttendanceSummaryRepository
 import com.escolaapp.features.teacher.domain.model.AttendanceSummary
 import com.escolaapp.core.navigation.NavigationEvent
+import com.escolaapp.core.utils.getCurrentDate
 import com.escolaapp.core.navigation.NavigationViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,12 +27,20 @@ data class AttendanceCallUiState(
 class AttendanceCallViewModel(
     private val repository: AttendanceSummaryRepository,
     private val navigationViewModel: NavigationViewModel,
+    private val token: String,
+    private val classId: Int,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(AttendanceCallUiState())
     val uiState: StateFlow<AttendanceCallUiState> = _uiState.asStateFlow()
 
-    fun loadSummary(token: String, classId: Int, date: String) {
+    init {
+        val today = getCurrentDate()
+        loadSummary(today)
+    }
+
+
+    private fun loadSummary(date: String) {
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null, currentDate = date) }
             try {
@@ -88,7 +97,7 @@ class AttendanceCallViewModel(
         updateCounts()
     }
 
-    fun sendAttendance(token: String) {
+    fun sendAttendance() {
         val state = _uiState.value
         val summary = state.summary ?: return
 
@@ -96,9 +105,9 @@ class AttendanceCallViewModel(
             _uiState.update { it.copy(isSending = true, error = null) }
             try {
                 repository.sendBatchAttendance(
-                    token = token,
                     classId = summary.classId,
                     date = state.currentDate,
+                    token = token,
                     attendances = state.studentStatuses.filterValues { it != null }
                         .mapValues { it.value!! },
                     notes = state.studentNotes,

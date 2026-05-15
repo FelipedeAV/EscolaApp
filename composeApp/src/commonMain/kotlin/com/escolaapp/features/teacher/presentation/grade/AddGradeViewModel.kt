@@ -21,12 +21,13 @@ data class AddGradeUiState(
 class AddGradeViewModel(
     private val apiClient: ApiClient,
     private val navigationViewModel: NavigationViewModel,
+    private val token: String,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(AddGradeUiState())
     val uiState: StateFlow<AddGradeUiState> = _uiState.asStateFlow()
 
-    fun addGrade(token: String, studentId: Int, subject: String, bimester: Int, value: Double) {
+    fun addGrade(studentId: Int, subject: String, bimester: Int, value: Double) {
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null, success = null) }
             try {

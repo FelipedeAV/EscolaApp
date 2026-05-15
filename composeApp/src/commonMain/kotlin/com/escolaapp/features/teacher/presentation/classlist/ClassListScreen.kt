@@ -51,7 +51,9 @@ import com.escolaapp.shared.components.AppHeader
 import com.escolaapp.features.teacher.presentation.components.TeacherClassCard
 import com.escolaapp.shared.components.AppNavigationBar
 import com.escolaapp.shared.components.AppNavigationTab
+import io.ktor.http.parametersOf
 import org.koin.compose.koinInject
+import org.koin.core.parameter.parametersOf
 
 data class ClassListScreen(
     val token: String,
@@ -65,12 +67,8 @@ data class ClassListScreen(
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val viewModel: ClassListViewModel = koinInject()
+        val viewModel: ClassListViewModel = koinInject { parametersOf(token, teacherId) }
         val uiState by viewModel.uiState.collectAsState()
-
-        LaunchedEffect(Unit) {
-            viewModel.loadClasses(token, teacherId)
-        }
 
         ClassListScreenContent(
             uiState = uiState,
@@ -80,7 +78,6 @@ data class ClassListScreen(
             onTabSelected = { tab ->
                 viewModel.onTabSelected(
                     tab,
-                    token,
                     teacherId,
                     name,
                     email,
@@ -89,7 +86,6 @@ data class ClassListScreen(
             },
             onClassSelected = { classId, classMode ->
                 viewModel.navigateToClass(
-                    token,
                     classId,
                     classMode,
                 )

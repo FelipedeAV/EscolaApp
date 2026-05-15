@@ -21,12 +21,13 @@ data class AddNoticeUiState(
 class AddNoticeViewModel(
     private val apiClient: ApiClient,
     private val navigationViewModel: NavigationViewModel,
+    private val token: String,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(AddNoticeUiState())
     val uiState: StateFlow<AddNoticeUiState> = _uiState.asStateFlow()
 
-    fun addNotice(token: String, title: String, description: String) {
+    fun addNotice(title: String, description: String) {
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null, success = null) }
             try {
@@ -35,7 +36,7 @@ class AddNoticeViewModel(
                     request = NoticeRequest(
                         title = title,
                         description = description,
-                    )
+                    ),
                 )
                 _uiState.update {
                     it.copy(

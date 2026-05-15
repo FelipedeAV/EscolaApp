@@ -28,12 +28,19 @@ data class GradeBookUiState(
 class GradeBookViewModel(
     private val repository: GradeBookRepository,
     private val navigationViewModel: NavigationViewModel,
+    private val token: String,
+    private val classId: Int,
+    private val initialBimester: Int = 1,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(GradeBookUiState())
     val uiState: StateFlow<GradeBookUiState> = _uiState.asStateFlow()
 
-    fun loadGrades(token: String, classId: Int, bimester: Int) {
+    init {
+        loadGrades(initialBimester)
+    }
+
+    fun loadGrades(bimester: Int) {
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
@@ -79,7 +86,7 @@ class GradeBookViewModel(
         updateStudentAverage(studentId)
     }
 
-    fun saveStudentGrades(token: String, classId: Int, studentId: Int) {
+    fun saveStudentGrades(studentId: Int) {
         val state = _uiState.value
         val bimester = state.selectedBimester
         val grades = state.editedGrades.filter { it.key.first == studentId }
@@ -113,7 +120,7 @@ class GradeBookViewModel(
         }
     }
 
-    fun finalizeAllGrades(token: String, classId: Int) {
+    fun finalizeAllGrades() {
         val state = _uiState.value
         val grades = state.editedGrades
 
@@ -146,8 +153,8 @@ class GradeBookViewModel(
         }
     }
 
-    fun cancelChanges(token: String, classId: Int) {
-        loadGrades(token, classId, _uiState.value.selectedBimester)
+    fun cancelChanges() {
+        loadGrades(_uiState.value.selectedBimester)
         _uiState.update {
             it.copy(
                 unsavedStudents = emptySet(),

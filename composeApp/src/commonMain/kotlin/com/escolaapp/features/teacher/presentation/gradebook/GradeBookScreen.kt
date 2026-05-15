@@ -58,33 +58,32 @@ import com.escolaapp.core.domain.model.StudentGradeSummary
 import com.escolaapp.shared.components.AppActionButton
 import com.escolaapp.shared.components.AppHeader
 import com.escolaapp.core.utils.formatOneDecimal
+import io.ktor.http.parametersOf
 import org.koin.compose.koinInject
+import org.koin.core.parameter.parametersOf
 
 data class GradeBookScreen(
     val token: String,
     val classId: Int,
+    val bimester: Int = 1,
 ) : Screen {
 
     @Composable
     override fun Content() {
-        val viewModel: GradeBookViewModel = koinInject()
+        val viewModel: GradeBookViewModel = koinInject { parametersOf(token, classId, bimester) }
         val uiState by viewModel.uiState.collectAsState()
-
-        LaunchedEffect(Unit) {
-            viewModel.loadGrades(token, classId, 1)
-        }
 
         GradeBookScreenContent(
             uiState = uiState,
             onBackClick = { viewModel.navigateBack() },
-            onCancelChanges = { viewModel.cancelChanges(token, classId) },
-            onFinalizeAllGrades = { viewModel.finalizeAllGrades(token, classId) },
+            onCancelChanges = { viewModel.cancelChanges() },
+            onFinalizeAllGrades = { viewModel.finalizeAllGrades() },
             onToggleStudent = { studentId -> viewModel.toggleStudentExpanded(studentId) },
             onGradeChange = { studentId, evaluation, value ->
                 viewModel.setGrade(studentId, evaluation, value)
             },
             onSaveStudent = { studentId ->
-                viewModel.saveStudentGrades(token, classId, studentId)
+                viewModel.saveStudentGrades(studentId)
             },
         )
     }

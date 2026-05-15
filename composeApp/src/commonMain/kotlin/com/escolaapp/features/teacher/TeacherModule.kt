@@ -19,10 +19,28 @@ val teacherModule = module {
     single { AttendanceSummaryRepository(get()) }
     single { GradeBookRepository(get()) }
 
-    // ViewModels
-    factory { AddGradeViewModel(get(), get()) }
-    factory { AddAttendanceViewModel(get(), get()) }
-    factory { AddNoticeViewModel(get(), get()) }
+    // ViewModels with parameters
+    factory { (token: String) ->
+        AddGradeViewModel(
+            apiClient = get(),
+            navigationViewModel = get(),
+            token = token,
+        )
+    }
+    factory { (token: String) ->
+        AddAttendanceViewModel(
+            apiClient = get(),
+            navigationViewModel = get(),
+            token = token,
+        )
+    }
+    factory { (token: String) ->
+        AddNoticeViewModel(
+            apiClient = get(),
+            navigationViewModel = get(),
+            token = token,
+        )
+    }
     factory { (token: String, teacherId: Int) ->
         TeacherDashboardViewModel(
             classRepository = get(),
@@ -31,7 +49,29 @@ val teacherModule = module {
             teacherId = teacherId,
         )
     }
-    factory { AttendanceCallViewModel(repository = get(), navigationViewModel = get()) }
-    factory { GradeBookViewModel(repository = get(), navigationViewModel = get()) }
-    factory { ClassListViewModel(classRepository = get(), navigationViewModel = get()) }
+    factory { (token: String, classId: Int) ->
+        AttendanceCallViewModel(
+            repository = get(),
+            navigationViewModel = get(),
+            token = token,
+            classId = classId,
+        )
+    }
+    factory { (token: String, classId: Int, bimester: Int) ->
+        GradeBookViewModel(
+            repository = get(),
+            navigationViewModel = get(),
+            token = token,
+            classId = classId,
+            initialBimester = bimester,
+        )
+    }
+    factory { (token: String, teacherId: Int) ->
+        ClassListViewModel(
+            classRepository = get(),
+            navigationViewModel = get(),
+            token = token,
+            teacherId = teacherId,
+        )
+    }
 }

@@ -7,7 +7,7 @@ import com.escolaapp.core.domain.model.User
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.navigation.NavigationViewModel
 import com.escolaapp.features.teacher.domain.model.ClassListMode
-import com.escolaapp.features.teacher.presentation.components.TeacherNavigationTab
+import com.escolaapp.shared.components.AppNavigationTab
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -56,9 +56,9 @@ class ProfileViewModel(
         }
     }
 
-    fun onTabSelected(tab: TeacherNavigationTab, name: String, email: String, role: String) {
+    fun onTabSelected(tab: AppNavigationTab, name: String, email: String, role: String) {
         when (tab) {
-            TeacherNavigationTab.CLASSES -> {
+            AppNavigationTab.CLASSES -> {
                 navigateToClassList(
                     mode = ClassListMode.SELECT_ACTION,
                     name = name,
@@ -67,9 +67,9 @@ class ProfileViewModel(
                 )
             }
 
-            TeacherNavigationTab.SETTINGS -> Unit
+            AppNavigationTab.SETTINGS -> Unit
 
-            TeacherNavigationTab.HOME -> {
+            AppNavigationTab.HOME -> {
                 navigateToHome(
                     name = name,
                     email = email,

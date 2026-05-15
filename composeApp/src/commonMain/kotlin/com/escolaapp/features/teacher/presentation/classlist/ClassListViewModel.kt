@@ -7,7 +7,7 @@ import com.escolaapp.core.navigation.NavigationViewModel
 import com.escolaapp.features.teacher.data.repository.ClassRepository
 import com.escolaapp.features.teacher.domain.model.Class
 import com.escolaapp.features.teacher.domain.model.ClassListMode
-import com.escolaapp.features.teacher.presentation.components.TeacherNavigationTab
+import com.escolaapp.shared.components.AppNavigationTab
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -119,7 +119,7 @@ class ClassListViewModel(
     }
 
     fun onTabSelected(
-        tab: TeacherNavigationTab,
+        tab: AppNavigationTab,
         token: String,
         userId: Int,
         name: String,
@@ -127,13 +127,13 @@ class ClassListViewModel(
         role: String,
     ) {
         when (tab) {
-            TeacherNavigationTab.CLASSES -> Unit
+            AppNavigationTab.CLASSES -> Unit
 
-            TeacherNavigationTab.SETTINGS -> {
+            AppNavigationTab.SETTINGS -> {
                 navigateToSettings(token, userId, name, email, role)
             }
 
-            TeacherNavigationTab.HOME -> {
+            AppNavigationTab.HOME -> {
                 navigateToHome(token, userId, name, email, role)
             }
         }

@@ -38,8 +38,8 @@ import com.escolaapp.features.teacher.domain.model.Class
 import com.escolaapp.shared.components.AppHeader
 import com.escolaapp.features.teacher.presentation.components.TeacherActionCard
 import com.escolaapp.features.teacher.domain.model.ClassListMode
-import com.escolaapp.features.teacher.presentation.components.TeacherNavigationBar
-import com.escolaapp.features.teacher.presentation.components.TeacherNavigationTab
+import com.escolaapp.shared.components.AppNavigationBar
+import com.escolaapp.shared.components.AppNavigationTab
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 
@@ -55,7 +55,7 @@ data class TeacherDashboardScreen(
     override fun Content() {
         val viewModel: TeacherDashboardViewModel = koinInject { parametersOf(token, userId) }
         val uiState by viewModel.uiState.collectAsState()
-        var selectedTab by remember { mutableStateOf(TeacherNavigationTab.HOME) }
+        var selectedTab by remember { mutableStateOf(AppNavigationTab.HOME) }
 
         TeacherDashboardContent(
             uiState = uiState,
@@ -83,8 +83,8 @@ data class TeacherDashboardScreen(
 private fun TeacherDashboardContent(
     uiState: TeacherDashboardUiState,
     name: String,
-    selectedTab: TeacherNavigationTab,
-    onTabSelected: (TeacherNavigationTab) -> Unit,
+    selectedTab: AppNavigationTab,
+    onTabSelected: (AppNavigationTab) -> Unit,
     onAttendanceClick: () -> Unit,
     onGradeBookClick: () -> Unit,
 ) {
@@ -100,7 +100,7 @@ private fun TeacherDashboardContent(
 
     Scaffold(
         bottomBar = {
-            TeacherNavigationBar(
+            AppNavigationBar(
                 selectedTab = selectedTab,
                 onTabSelected = onTabSelected,
             )
@@ -219,7 +219,7 @@ private fun TeacherDashboardScreenPreview() {
                 currentClass = previewTeacherClasses.first(),
             ),
             name = "Carlos Silva",
-            selectedTab = TeacherNavigationTab.HOME,
+            selectedTab = AppNavigationTab.HOME,
             onTabSelected = {},
             onAttendanceClick = {},
             onGradeBookClick = {},

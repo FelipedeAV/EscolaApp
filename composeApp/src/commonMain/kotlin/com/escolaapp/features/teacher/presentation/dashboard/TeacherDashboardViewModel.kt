@@ -2,12 +2,12 @@ package com.escolaapp.features.teacher.presentation.dashboard
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.escolaapp.features.teacher.data.repository.ClassRepository
-import com.escolaapp.features.teacher.domain.model.Class
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.navigation.NavigationViewModel
+import com.escolaapp.features.teacher.data.repository.ClassRepository
+import com.escolaapp.features.teacher.domain.model.Class
 import com.escolaapp.features.teacher.domain.model.ClassListMode
-import com.escolaapp.features.teacher.presentation.components.TeacherNavigationTab
+import com.escolaapp.shared.components.AppNavigationTab
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -98,13 +98,13 @@ class TeacherDashboardViewModel(
     }
 
     fun onTabSelected(
-        tab: TeacherNavigationTab,
+        tab: AppNavigationTab,
         name: String,
         email: String,
         role: String,
     ) {
         when (tab) {
-            TeacherNavigationTab.CLASSES -> {
+            AppNavigationTab.CLASSES -> {
                 navigateToClassList(
                     mode = ClassListMode.SELECT_ACTION,
                     name = name,
@@ -113,11 +113,11 @@ class TeacherDashboardViewModel(
                 )
             }
 
-            TeacherNavigationTab.SETTINGS -> {
+            AppNavigationTab.SETTINGS -> {
                 navigateToSettings(name, email, role)
             }
 
-            TeacherNavigationTab.HOME -> Unit
+            AppNavigationTab.HOME -> Unit
         }
     }
 

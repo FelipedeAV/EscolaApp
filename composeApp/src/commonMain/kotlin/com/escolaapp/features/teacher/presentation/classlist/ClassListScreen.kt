@@ -49,8 +49,8 @@ import com.escolaapp.features.teacher.domain.model.Class
 import com.escolaapp.features.teacher.domain.model.ClassListMode
 import com.escolaapp.shared.components.AppHeader
 import com.escolaapp.features.teacher.presentation.components.TeacherClassCard
-import com.escolaapp.features.teacher.presentation.components.TeacherNavigationBar
-import com.escolaapp.features.teacher.presentation.components.TeacherNavigationTab
+import com.escolaapp.shared.components.AppNavigationBar
+import com.escolaapp.shared.components.AppNavigationTab
 import org.koin.compose.koinInject
 
 data class ClassListScreen(
@@ -105,10 +105,10 @@ private fun ClassListScreenContent(
     name: String,
     mode: ClassListMode,
     onSearchQueryChanged: (String) -> Unit,
-    onTabSelected: (TeacherNavigationTab) -> Unit,
+    onTabSelected: (AppNavigationTab) -> Unit,
     onClassSelected: (classId: Int, mode: ClassListMode) -> Unit,
 ) {
-    var selectedTab by remember { mutableStateOf(TeacherNavigationTab.CLASSES) }
+    var selectedTab by remember { mutableStateOf(AppNavigationTab.CLASSES) }
     var selectedClassId by remember { mutableStateOf<Int?>(null) }
     var selectedClassSubject by remember { mutableStateOf<String?>(null) }
 
@@ -124,7 +124,7 @@ private fun ClassListScreenContent(
 
     Scaffold(
         bottomBar = {
-            TeacherNavigationBar(
+            AppNavigationBar(
                 selectedTab = selectedTab,
                 onTabSelected = { tab ->
                     selectedTab = tab

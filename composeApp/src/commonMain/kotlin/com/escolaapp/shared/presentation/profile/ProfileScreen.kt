@@ -38,8 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import com.escolaapp.shared.components.AppHeader
-import com.escolaapp.features.teacher.presentation.components.TeacherNavigationBar
-import com.escolaapp.features.teacher.presentation.components.TeacherNavigationTab
+import com.escolaapp.shared.components.AppNavigationBar
+import com.escolaapp.shared.components.AppNavigationTab
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 
@@ -71,13 +71,13 @@ private fun ProfileScreenContent(
     name: String,
     email: String,
     role: String,
-    onTabSelected: (TeacherNavigationTab) -> Unit,
+    onTabSelected: (AppNavigationTab) -> Unit,
 ) {
-    var selectedTab by remember { mutableStateOf(TeacherNavigationTab.SETTINGS) }
+    var selectedTab by remember { mutableStateOf(AppNavigationTab.SETTINGS) }
 
     Scaffold(
         bottomBar = {
-            TeacherNavigationBar(
+            AppNavigationBar(
                 selectedTab = selectedTab,
                 onTabSelected = { tab ->
                     selectedTab = tab

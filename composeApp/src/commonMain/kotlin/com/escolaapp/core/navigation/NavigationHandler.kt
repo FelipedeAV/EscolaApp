@@ -9,6 +9,7 @@ import com.escolaapp.features.teacher.presentation.dashboard.TeacherDashboardScr
 import com.escolaapp.features.coordinator.presentation.dashboard.CoordinatorDashboardScreen
 import com.escolaapp.features.guardian.presentation.grades.GradesScreen
 import com.escolaapp.features.auth.presentation.login.LoginScreen
+import com.escolaapp.features.coordinator.presentation.studentRegistration.StudentRegistrationScreen
 import com.escolaapp.features.guardian.presentation.notices.NoticesScreen
 import com.escolaapp.shared.presentation.profile.*
 import com.escolaapp.features.teacher.presentation.addattendance.AddAttendanceScreen
@@ -139,7 +140,7 @@ fun NavigationHandler(
 
                 is NavigationEvent.ToLogin -> navigator.replace(LoginScreen())
 
-                is NavigationEvent.Back -> navigator.pop()
+                is NavigationEvent.GoBack -> navigator.pop()
 
                 is NavigationEvent.ToTeacherDashboard -> navigator.replace(
                     TeacherDashboardScreen(
@@ -151,13 +152,16 @@ fun NavigationHandler(
                     )
                 )
 
+                is NavigationEvent.GoToStudentRegistration -> navigator.push(
+                    StudentRegistrationScreen(token = event.token)
+                )
+
                 NavigationEvent.GoToAddTeacher -> TODO()
                 NavigationEvent.GoToClassManagement -> TODO()
                 NavigationEvent.GoToCoordinatorDashboard -> TODO()
                 NavigationEvent.GoToNotifications -> TODO()
                 NavigationEvent.GoToSettings -> TODO()
                 NavigationEvent.GoToStudentManagement -> TODO()
-                NavigationEvent.GoToStudentRegistration -> TODO()
                 NavigationEvent.GoToSubjectManagement -> TODO()
                 NavigationEvent.GoToTeacherManagement -> TODO()
             }

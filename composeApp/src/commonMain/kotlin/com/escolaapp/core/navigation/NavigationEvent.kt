@@ -77,16 +77,19 @@ sealed class NavigationEvent {
         val mode: ClassListMode,
     ) : NavigationEvent()
 
+    data class GoToStudentRegistration(
+        val token: String,
+    ) : NavigationEvent()
+
     object ToLogin : NavigationEvent()
 
-    object Back : NavigationEvent()
+    object GoBack : NavigationEvent()
 
     data object GoToCoordinatorDashboard : NavigationEvent()
     data object GoToClassManagement : NavigationEvent()
     data object GoToSubjectManagement : NavigationEvent()
     data object GoToTeacherManagement : NavigationEvent()
     data object GoToStudentManagement : NavigationEvent()
-    data object GoToStudentRegistration : NavigationEvent()
     data object GoToAddTeacher : NavigationEvent()
     data object GoToNotifications : NavigationEvent()
     data object GoToSettings : NavigationEvent()

@@ -50,7 +50,7 @@ class AttendanceViewModel(
 
     fun navigateBack() {
         screenModelScope.launch {
-            navigationViewModel.emit(NavigationEvent.Back)
+            navigationViewModel.emit(NavigationEvent.GoBack)
         }
     }
 }

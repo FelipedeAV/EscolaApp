@@ -56,7 +56,7 @@ class AddNoticeViewModel(
 
     fun navigateBack() {
         screenModelScope.launch {
-            navigationViewModel.emit(NavigationEvent.Back)
+            navigationViewModel.emit(NavigationEvent.GoBack)
         }
     }
 }

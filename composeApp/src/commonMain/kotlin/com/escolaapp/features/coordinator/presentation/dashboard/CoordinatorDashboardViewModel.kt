@@ -60,7 +60,7 @@ class CoordinatorDashboardViewModel(
 
     fun onQuickActionTap(key: String) {
         val event = when (key) {
-            "register_student" -> NavigationEvent.GoToStudentRegistration
+            "register_student" -> NavigationEvent.GoToStudentRegistration(token = token)
             "add_teacher"      -> NavigationEvent.GoToAddTeacher
             else               -> return
         }

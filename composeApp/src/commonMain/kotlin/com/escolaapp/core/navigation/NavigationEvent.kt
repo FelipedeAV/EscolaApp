@@ -1,6 +1,6 @@
 package com.escolaapp.core.navigation
 
-import com.escolaapp.features.teacher.domain.model.ClassListMode
+import com.escolaapp.core.domain.model.ClassListMode
 
 sealed class NavigationEvent {
     data class ToDashboard(

@@ -46,7 +46,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import com.escolaapp.features.teacher.domain.model.Class
-import com.escolaapp.features.teacher.domain.model.ClassListMode
+import com.escolaapp.core.domain.model.ClassListMode
 import com.escolaapp.shared.components.AppHeader
 import com.escolaapp.features.teacher.presentation.components.TeacherClassCard
 import com.escolaapp.shared.components.AppNavigationBar

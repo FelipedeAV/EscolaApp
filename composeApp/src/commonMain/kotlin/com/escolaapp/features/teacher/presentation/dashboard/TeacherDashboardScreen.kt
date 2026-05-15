@@ -37,7 +37,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import com.escolaapp.features.teacher.domain.model.Class
 import com.escolaapp.shared.components.AppHeader
 import com.escolaapp.features.teacher.presentation.components.TeacherActionCard
-import com.escolaapp.features.teacher.domain.model.ClassListMode
+import com.escolaapp.core.domain.model.ClassListMode
 import com.escolaapp.shared.components.AppNavigationBar
 import com.escolaapp.shared.components.AppNavigationTab
 import org.koin.compose.koinInject

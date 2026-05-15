@@ -5,7 +5,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.features.coordinator.data.repository.StudentRegistrationRepository
 import com.escolaapp.features.coordinator.domain.model.StudentRegistrationForm
-import com.escolaapp.features.teacher.domain.model.ClassListMode
+import com.escolaapp.core.domain.model.ClassListMode
 import com.escolaapp.shared.components.AppNavigationTab
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

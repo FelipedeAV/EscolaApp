@@ -1,4 +1,4 @@
-package com.escolaapp.features.teacher.domain.model
+package com.escolaapp.core.domain.model
 
 enum class ClassListMode {
     SELECT_ACTION,

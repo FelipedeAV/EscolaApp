@@ -66,6 +66,7 @@ sealed class NavigationEvent {
     data class ToGradeBook(
         val token: String,
         val classId: Int,
+        val bimester: Int = 1,
     ) : NavigationEvent()
 
     data class ToClassList(

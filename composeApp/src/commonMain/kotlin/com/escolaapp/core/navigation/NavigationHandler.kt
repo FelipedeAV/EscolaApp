@@ -124,6 +124,7 @@ fun NavigationHandler(
                     GradeBookScreen(
                         token = event.token,
                         classId = event.classId,
+                        bimester = event.bimester,
                     )
                 )
 

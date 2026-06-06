@@ -24,6 +24,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.shared.components.AppErrorState
+import com.escolaapp.shared.components.AppLoadingIndicator
 import com.escolaapp.shared.components.AppTopBar
 import org.koin.compose.koinInject
 
@@ -63,26 +65,12 @@ data class DashboardScreen(
             },
         ) { innerPadding ->
             if (uiState.isLoading) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    CircularProgressIndicator()
-                }
+                AppLoadingIndicator(modifier = Modifier.padding(innerPadding))
                 return@Scaffold
             }
 
             uiState.error?.let {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Text(text = it, color = MaterialTheme.colorScheme.error)
-                }
+                AppErrorState(message = it, modifier = Modifier.padding(innerPadding))
                 return@Scaffold
             }
 

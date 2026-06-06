@@ -36,8 +36,7 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import com.escolaapp.features.teacher.domain.model.Class
 import com.escolaapp.shared.components.AppHeader
-import com.escolaapp.features.teacher.presentation.components.TeacherActionCard
-import com.escolaapp.core.domain.model.ClassListMode
+import com.escolaapp.shared.components.AppLoadingIndicator
 import com.escolaapp.shared.components.AppNavigationBar
 import com.escolaapp.shared.components.AppNavigationTab
 import com.escolaapp.shared.theme.AppColors
@@ -90,12 +89,7 @@ private fun TeacherDashboardContent(
     onGradeBookClick: () -> Unit,
 ) {
     if (uiState.isLoading) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,
-        ) {
-            CircularProgressIndicator()
-        }
+        AppLoadingIndicator()
         return
     }
 

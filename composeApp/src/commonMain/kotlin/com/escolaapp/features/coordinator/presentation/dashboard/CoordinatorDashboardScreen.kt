@@ -21,7 +21,6 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ChevronRight
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.outlined.AssignmentInd
-import androidx.compose.material.icons.outlined.ErrorOutline
 import androidx.compose.material.icons.outlined.GridView
 import androidx.compose.material.icons.outlined.Groups
 import androidx.compose.material.icons.automirrored.outlined.MenuBook
@@ -29,13 +28,6 @@ import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.PersonAdd
 import androidx.compose.material.icons.outlined.School
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -63,6 +55,8 @@ import cafe.adriel.voyager.core.screen.Screen
 import com.escolaapp.core.navigation.NavigationViewModel
 import com.escolaapp.features.coordinator.domain.model.ActivityType
 import com.escolaapp.features.coordinator.domain.model.CoordinatorDashboard
+import com.escolaapp.shared.components.AppErrorState
+import com.escolaapp.shared.components.AppLoadingIndicator
 import com.escolaapp.features.coordinator.domain.model.QuickAction
 import com.escolaapp.features.coordinator.domain.model.RecentActivity
 import com.escolaapp.features.coordinator.domain.model.SemesterStats
@@ -114,8 +108,12 @@ private fun CoordinatorDashboardContent(
         containerColor = AppColors.Background,
     ) { padding ->
         when {
-            uiState.isLoading -> LoadingState(padding)
-            uiState.errorMessage != null -> ErrorState(uiState.errorMessage, onRetry, padding)
+            uiState.isLoading -> AppLoadingIndicator(modifier = Modifier.padding(padding))
+            uiState.errorMessage != null -> AppErrorState(
+                message = uiState.errorMessage,
+                onRetry = onRetry,
+                modifier = Modifier.padding(padding),
+            )
             uiState.dashboard != null -> DashboardBody(
                 dashboard = uiState.dashboard,
                 onQuickAction = onQuickAction,
@@ -561,43 +559,6 @@ private fun DashboardBottomBar() {
             icon = { Icon(Icons.Outlined.Settings, contentDescription = "Ajustes") },
             label = { Text("Ajustes", fontSize = 10.sp) }
         )
-    }
-}
-
-// ─── Loading / Error states ───────────────────────────────────────────────────
-
-@Composable
-private fun LoadingState(padding: PaddingValues) {
-    Box(
-        modifier = Modifier.fillMaxSize().padding(padding),
-        contentAlignment = Alignment.Center
-    ) {
-        CircularProgressIndicator(color = AppColors.PrimaryVariant,)
-    }
-}
-
-@Composable
-private fun ErrorState(message: String, onRetry: () -> Unit, padding: PaddingValues) {
-    Column(
-        modifier = Modifier.fillMaxSize().padding(padding).padding(24.dp),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Icon(
-            Icons.Outlined.ErrorOutline,
-            contentDescription = null,
-            modifier = Modifier.size(48.dp),
-            tint = MaterialTheme.colorScheme.error
-        )
-        Spacer(Modifier.height(12.dp))
-        Text(message, fontSize = 14.sp, color = MaterialTheme.colorScheme.onSurface)
-        Spacer(Modifier.height(16.dp))
-        Button(
-            onClick = onRetry,
-            colors = ButtonDefaults.buttonColors(containerColor = AppColors.PrimaryVariant)
-        ) {
-            Text("Tentar novamente")
-        }
     }
 }
 

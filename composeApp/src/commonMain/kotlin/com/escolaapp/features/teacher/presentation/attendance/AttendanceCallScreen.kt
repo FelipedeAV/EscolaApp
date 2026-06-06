@@ -39,6 +39,8 @@ import cafe.adriel.voyager.core.screen.Screen
 import com.escolaapp.features.teacher.domain.model.AttendanceSummary
 import com.escolaapp.core.domain.model.StudentAttendanceStatus
 import com.escolaapp.shared.components.AppActionButton
+import com.escolaapp.shared.components.AppErrorState
+import com.escolaapp.shared.components.AppLoadingIndicator
 import com.escolaapp.shared.components.AppTopBar
 import com.escolaapp.shared.theme.AppColors
 import org.koin.compose.koinInject
@@ -75,22 +77,12 @@ private fun AttendanceCallScreenContent(
     onSetStudentStatus: (studentId: Int, isPresent: Boolean) -> Unit,
 ) {
     if (uiState.isLoading) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,
-        ) {
-            CircularProgressIndicator()
-        }
+        AppLoadingIndicator()
         return
     }
 
     uiState.error?.let {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,
-        ) {
-            Text(text = it, color = MaterialTheme.colorScheme.error)
-        }
+        AppErrorState(message = it)
         return
     }
 

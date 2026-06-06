@@ -57,6 +57,7 @@ import com.escolaapp.features.teacher.domain.model.GradeItem
 import com.escolaapp.core.domain.model.StudentGradeSummary
 import com.escolaapp.shared.components.AppActionButton
 import com.escolaapp.shared.components.AppHeader
+import com.escolaapp.shared.components.AppLoadingIndicator
 import com.escolaapp.shared.theme.AppColors
 import com.escolaapp.core.utils.formatOneDecimal
 import io.ktor.http.parametersOf
@@ -101,12 +102,7 @@ private fun GradeBookScreenContent(
     onSaveStudent: (Int) -> Unit,
 ) {
     if (uiState.isLoading) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,
-        ) {
-            CircularProgressIndicator()
-        }
+        AppLoadingIndicator()
         return
     }
 

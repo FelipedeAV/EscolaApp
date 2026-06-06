@@ -48,7 +48,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import com.escolaapp.features.teacher.domain.model.Class
 import com.escolaapp.core.domain.model.ClassListMode
 import com.escolaapp.shared.components.AppHeader
-import com.escolaapp.features.teacher.presentation.components.TeacherClassCard
+import com.escolaapp.shared.components.AppLoadingIndicator
 import com.escolaapp.shared.components.AppNavigationBar
 import com.escolaapp.shared.components.AppNavigationTab
 import io.ktor.http.parametersOf
@@ -109,12 +109,7 @@ private fun ClassListScreenContent(
     var selectedClassSubject by remember { mutableStateOf<String?>(null) }
 
     if (uiState.isLoading) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center,
-        ) {
-            CircularProgressIndicator()
-        }
+        AppLoadingIndicator()
         return
     }
 

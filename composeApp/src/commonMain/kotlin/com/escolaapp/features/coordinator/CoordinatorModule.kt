@@ -1,5 +1,6 @@
 package com.escolaapp.features.coordinator
 
+import com.escolaapp.core.i18n.AppStrings
 import com.escolaapp.features.coordinator.data.repository.CoordinatorRepository
 import com.escolaapp.features.coordinator.data.repository.StudentRegistrationRepository
 import com.escolaapp.features.coordinator.presentation.dashboard.CoordinatorDashboardViewModel
@@ -12,6 +13,6 @@ val coordinatorModule = module {
     single { StudentRegistrationRepository(get()) }
 
     // ViewModels
-    factory { CoordinatorDashboardViewModel(repository = get(), appEventNavigator = get(), sessionManager = get()) }
-    factory { StudentRegistrationViewModel(repository = get(), appEventNavigator = get(), sessionManager = get()) }
+    factory { CoordinatorDashboardViewModel(repository = get(), appEventNavigator = get(), sessionManager = get(), strings = get()) }
+    factory { StudentRegistrationViewModel(repository = get(), appEventNavigator = get(), sessionManager = get(), strings = get()) }
 }

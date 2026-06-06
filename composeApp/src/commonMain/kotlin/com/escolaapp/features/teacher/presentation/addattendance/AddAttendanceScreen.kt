@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.core.i18n.LocalAppStrings
 import com.escolaapp.shared.components.AppTopBar
 import org.koin.compose.koinInject
 
@@ -34,6 +35,7 @@ class AddAttendanceScreen() : Screen {
 
     @Composable
     override fun Content() {
+        val s = LocalAppStrings.current
         val viewModel: AddAttendanceViewModel = koinInject()
         val uiState by viewModel.uiState.collectAsState()
 
@@ -44,7 +46,7 @@ class AddAttendanceScreen() : Screen {
         Scaffold(
             topBar = {
                 AppTopBar(
-                    title = "Lançar Frequência",
+                    title = s.teacher.addAttendanceTitle,
                     onBackClick = { viewModel.navigateBack() },
                 )
             },
@@ -60,7 +62,7 @@ class AddAttendanceScreen() : Screen {
             OutlinedTextField(
                 value = studentId,
                 onValueChange = { studentId = it },
-                label = { Text("ID do Aluno") },
+                label = { Text(s.teacher.studentIdLabel) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
@@ -69,7 +71,7 @@ class AddAttendanceScreen() : Screen {
             OutlinedTextField(
                 value = date,
                 onValueChange = { date = it },
-                label = { Text("Data (YYYY-MM-DD)") },
+                label = { Text(s.teacher.dateLabel) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -81,7 +83,7 @@ class AddAttendanceScreen() : Screen {
                     checked = isPresent,
                     onCheckedChange = { isPresent = it },
                 )
-                Text("Presente")
+                Text(s.teacher.isPresentLabel)
             }
 
             uiState.error?.let {
@@ -114,7 +116,7 @@ class AddAttendanceScreen() : Screen {
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 if (uiState.isLoading) CircularProgressIndicator()
-                else Text("Salvar Frequência")
+                else Text(s.teacher.saveAttendance)
             }
             }
         }

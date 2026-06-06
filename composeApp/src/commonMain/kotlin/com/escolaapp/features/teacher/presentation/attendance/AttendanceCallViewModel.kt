@@ -2,6 +2,7 @@ package com.escolaapp.features.teacher.presentation.attendance
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.escolaapp.core.i18n.AppStrings
 import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.teacher.data.repository.AttendanceSummaryRepository
@@ -27,6 +28,7 @@ data class AttendanceCallUiState(
 )
 
 class AttendanceCallViewModel(
+    private val strings: AppStrings,
     private val repository: AttendanceSummaryRepository,
     private val appEventNavigator: AppEventNavigator,
     private val sessionManager: SessionManager,
@@ -117,7 +119,7 @@ class AttendanceCallViewModel(
                 _uiState.update {
                     it.copy(
                         isSending = false,
-                        success = "Frequência enviada com sucesso!",
+                        success = strings.teacher.attendanceSent,
                     )
                 }
             } catch (e: Exception) {

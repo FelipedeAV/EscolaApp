@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.core.i18n.LocalAppStrings
 import org.koin.compose.koinInject
 
 class LoginScreen : Screen {
@@ -33,6 +34,7 @@ class LoginScreen : Screen {
     override fun Content() {
         val viewModel: LoginViewModel = koinInject()
         val uiState by viewModel.uiState.collectAsState()
+        val s = LocalAppStrings.current
 
         var email by remember { mutableStateOf("") }
         var password by remember { mutableStateOf("") }
@@ -49,14 +51,14 @@ class LoginScreen : Screen {
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 Text(
-                    text = "EscolaApp",
+                    text = s.common.appName,
                     style = MaterialTheme.typography.headlineMedium,
                 )
 
                 Spacer(Modifier.height(8.dp))
 
                 Text(
-                    text = "Acompanhamento escolar",
+                    text = s.login.subtitle,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -66,7 +68,7 @@ class LoginScreen : Screen {
                 OutlinedTextField(
                     value = email,
                     onValueChange = { email = it },
-                    label = { Text("E-mail") },
+                    label = { Text(s.login.emailLabel) },
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
                 )
@@ -76,7 +78,7 @@ class LoginScreen : Screen {
                 OutlinedTextField(
                     value = password,
                     onValueChange = { password = it },
-                    label = { Text("Senha") },
+                    label = { Text(s.login.passwordLabel) },
                     visualTransformation = PasswordVisualTransformation(),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
@@ -104,7 +106,7 @@ class LoginScreen : Screen {
                             color = MaterialTheme.colorScheme.onPrimary,
                         )
                     } else {
-                        Text("Entrar")
+                        Text(s.login.signInButton)
                     }
                 }
             }

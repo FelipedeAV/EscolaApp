@@ -2,6 +2,7 @@ package com.escolaapp
 
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.Navigator
+import com.escolaapp.core.i18n.ProvideAppStrings
 import com.escolaapp.core.navigation.NavigationHandler
 import com.escolaapp.core.navigation.AppEventNavigator
 import com.escolaapp.features.auth.presentation.login.LoginScreen
@@ -16,14 +17,16 @@ fun App() {
     }) {
         val navigationViewModel: AppEventNavigator = koinInject()
 
-        AppTheme {
-            Navigator(LoginScreen()) { navigator ->
-                NavigationHandler(
-                    navigator = navigator,
-                    events = navigationViewModel.events,
-                )
-                navigator.saveableState("currentScreen") {
-                    navigator.lastItem.Content()
+        ProvideAppStrings {
+            AppTheme {
+                Navigator(LoginScreen()) { navigator ->
+                    NavigationHandler(
+                        navigator = navigator,
+                        events = navigationViewModel.events,
+                    )
+                    navigator.saveableState("currentScreen") {
+                        navigator.lastItem.Content()
+                    }
                 }
             }
         }

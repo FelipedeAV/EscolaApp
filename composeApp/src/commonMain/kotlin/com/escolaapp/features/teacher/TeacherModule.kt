@@ -1,5 +1,6 @@
 package com.escolaapp.features.teacher
 
+import com.escolaapp.core.i18n.AppStrings
 import com.escolaapp.features.teacher.data.repository.AttendanceSummaryRepository
 import com.escolaapp.features.teacher.data.repository.ClassRepository
 import com.escolaapp.features.teacher.data.repository.GradeBookRepository
@@ -19,11 +20,11 @@ val teacherModule = module {
     single { GradeBookRepository(get()) }
 
     // ViewModels
-    factory { AddGradeViewModel(apiClient = get(), appEventNavigator = get(), sessionManager = get()) }
-    factory { AddAttendanceViewModel(apiClient = get(), appEventNavigator = get(), sessionManager = get()) }
-    factory { AddNoticeViewModel(apiClient = get(), appEventNavigator = get(), sessionManager = get()) }
+    factory { AddGradeViewModel(strings = get(), apiClient = get(), appEventNavigator = get(), sessionManager = get()) }
+    factory { AddAttendanceViewModel(strings = get(), apiClient = get(), appEventNavigator = get(), sessionManager = get()) }
+    factory { AddNoticeViewModel(strings = get(), apiClient = get(), appEventNavigator = get(), sessionManager = get()) }
     factory { TeacherDashboardViewModel(classRepository = get(), appEventNavigator = get(), sessionManager = get()) }
-    factory { (classId: Int) -> AttendanceCallViewModel(repository = get(), appEventNavigator = get(), sessionManager = get(), classId = classId) }
-    factory { (classId: Int, bimester: Int) -> GradeBookViewModel(repository = get(), appEventNavigator = get(), sessionManager = get(), classId = classId, initialBimester = bimester) }
+    factory { (classId: Int) -> AttendanceCallViewModel(strings = get(), repository = get(), appEventNavigator = get(), sessionManager = get(), classId = classId) }
+    factory { (classId: Int, bimester: Int) -> GradeBookViewModel(strings = get(), repository = get(), appEventNavigator = get(), sessionManager = get(), classId = classId, initialBimester = bimester) }
     factory { (teacherId: Int) -> ClassListViewModel(classRepository = get(), appEventNavigator = get(), sessionManager = get(), teacherId = teacherId) }
 }

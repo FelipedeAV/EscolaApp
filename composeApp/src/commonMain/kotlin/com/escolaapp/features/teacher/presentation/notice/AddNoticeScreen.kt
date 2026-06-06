@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.core.i18n.LocalAppStrings
 import com.escolaapp.shared.components.AppTopBar
 import org.koin.compose.koinInject
 
@@ -29,6 +30,7 @@ class AddNoticeScreen() : Screen {
 
     @Composable
     override fun Content() {
+        val s = LocalAppStrings.current
         val viewModel: AddNoticeViewModel = koinInject()
         val uiState by viewModel.uiState.collectAsState()
 
@@ -38,7 +40,7 @@ class AddNoticeScreen() : Screen {
         Scaffold(
             topBar = {
                 AppTopBar(
-                    title = "Criar Aviso",
+                    title = s.teacher.addNoticeTitle,
                     onBackClick = { viewModel.navigateBack() },
                 )
             },
@@ -54,7 +56,7 @@ class AddNoticeScreen() : Screen {
             OutlinedTextField(
                 value = title,
                 onValueChange = { title = it },
-                label = { Text("Título") },
+                label = { Text(s.teacher.noticeTitleLabel) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -62,7 +64,7 @@ class AddNoticeScreen() : Screen {
             OutlinedTextField(
                 value = description,
                 onValueChange = { description = it },
-                label = { Text("Descrição") },
+                label = { Text(s.teacher.noticeDescriptionLabel) },
                 minLines = 4,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -96,7 +98,7 @@ class AddNoticeScreen() : Screen {
                 modifier = Modifier.fillMaxWidth(),
             ) {
                 if (uiState.isLoading) CircularProgressIndicator()
-                else Text("Publicar Aviso")
+                else Text(s.teacher.publishNotice)
             }
             }
         }

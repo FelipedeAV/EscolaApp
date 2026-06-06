@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.core.i18n.LocalAppStrings
 import com.escolaapp.shared.components.AppTopBar
 import org.koin.compose.koinInject
 
@@ -31,6 +32,7 @@ class AddGradeScreen() : Screen {
 
     @Composable
     override fun Content() {
+        val s = LocalAppStrings.current
         val viewModel: AddGradeViewModel = koinInject()
         val uiState by viewModel.uiState.collectAsState()
 
@@ -42,7 +44,7 @@ class AddGradeScreen() : Screen {
         Scaffold(
             topBar = {
                 AppTopBar(
-                    title = "Lançar Nota",
+                    title = s.teacher.addGradeTitle,
                     onBackClick = { viewModel.navigateBack() },
                 )
             },
@@ -58,7 +60,7 @@ class AddGradeScreen() : Screen {
             OutlinedTextField(
                 value = studentId,
                 onValueChange = { studentId = it },
-                label = { Text("ID do Aluno") },
+                label = { Text(s.teacher.studentIdLabel) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
@@ -67,7 +69,7 @@ class AddGradeScreen() : Screen {
             OutlinedTextField(
                 value = subject,
                 onValueChange = { subject = it },
-                label = { Text("Matéria") },
+                label = { Text(s.teacher.subjectLabel) },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
             )
@@ -75,7 +77,7 @@ class AddGradeScreen() : Screen {
             OutlinedTextField(
                 value = bimester,
                 onValueChange = { bimester = it },
-                label = { Text("Bimestre (1-4)") },
+                label = { Text(s.teacher.bimesterLabel) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
@@ -84,7 +86,7 @@ class AddGradeScreen() : Screen {
             OutlinedTextField(
                 value = value,
                 onValueChange = { value = it },
-                label = { Text("Nota (0-10)") },
+                label = { Text(s.teacher.gradeLabel) },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
@@ -121,7 +123,7 @@ class AddGradeScreen() : Screen {
                 modifier = Modifier.fillMaxWidth()
             ) {
                 if (uiState.isLoading) CircularProgressIndicator()
-                else Text("Salvar Nota")
+                else Text(s.teacher.saveGrade)
             }
             }
         }

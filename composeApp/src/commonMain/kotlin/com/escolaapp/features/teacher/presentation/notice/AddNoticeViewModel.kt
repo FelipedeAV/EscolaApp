@@ -3,6 +3,7 @@ package com.escolaapp.features.teacher.presentation.notice
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.data.remote.gateway.ApiClient
+import com.escolaapp.core.i18n.AppStrings
 import com.escolaapp.core.data.models.NoticeRequest
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.session.SessionManager
@@ -21,6 +22,7 @@ data class AddNoticeUiState(
 )
 
 class AddNoticeViewModel(
+    private val strings: AppStrings,
     private val apiClient: ApiClient,
     private val appEventNavigator: AppEventNavigator,
     private val sessionManager: SessionManager,
@@ -43,7 +45,7 @@ class AddNoticeViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        success = "Aviso publicado com sucesso!",
+                        success = strings.teacher.noticePublished,
                     )
                 }
             } catch (e: Exception) {

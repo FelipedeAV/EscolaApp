@@ -26,57 +26,65 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.escolaapp.core.i18n.LocalAppStrings
 import com.escolaapp.features.teacher.domain.model.Class
 
 fun LazyListScope.teacherAssignedClassesSection(
     classes: List<Class>,
     onSeeFullScheduleClick: () -> Unit = {},
 ) {
-    item {
-        Card(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = MaterialTheme.colorScheme.onPrimary,
-            ),
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(bottom = 16.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically,
-                ) {
-                    Text(
-                        text = "Aulas Atribuídas",
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold,
-                    )
-                    if (classes.isNotEmpty()) {
-                        TextButton(onClick = onSeeFullScheduleClick) {
-                            Text(
-                                text = "Ver Horário\nCompleto",
-                                color = MaterialTheme.colorScheme.primary,
-                                style = MaterialTheme.typography.bodySmall,
-                            )
-                        }
+    item { AssignedClassesContent(classes = classes, onSeeFullScheduleClick = onSeeFullScheduleClick) }
+}
+
+@Composable
+private fun AssignedClassesContent(
+    classes: List<Class>,
+    onSeeFullScheduleClick: () -> Unit,
+) {
+    val s = LocalAppStrings.current
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(12.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.onPrimary,
+        ),
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = s.teacher.assignedClassesTitle,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                )
+                if (classes.isNotEmpty()) {
+                    TextButton(onClick = onSeeFullScheduleClick) {
+                        Text(
+                            text = s.teacher.viewFullSchedule,
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.bodySmall,
+                        )
                     }
                 }
+            }
 
-                if (classes.isEmpty()) {
-                    Text(
-                        text = "Nenhuma aula atribuída no momento.",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    )
-                } else {
-                    classes.forEachIndexed { index, schoolClass ->
-                        if (index > 0) {
-                            Spacer(Modifier.size(12.dp))
-                        }
-                        AssignedClassItem(schoolClass = schoolClass)
+            if (classes.isEmpty()) {
+                Text(
+                    text = s.teacher.noAssignedClasses,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            } else {
+                classes.forEachIndexed { index, schoolClass ->
+                    if (index > 0) {
+                        Spacer(Modifier.size(12.dp))
                     }
+                    AssignedClassItem(schoolClass = schoolClass)
                 }
             }
         }

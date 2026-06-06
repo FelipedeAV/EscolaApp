@@ -2,6 +2,7 @@ package com.escolaapp.features.teacher.presentation.gradebook
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.escolaapp.core.i18n.AppStrings
 import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.teacher.data.repository.GradeBookRepository
@@ -28,6 +29,7 @@ data class GradeBookUiState(
 )
 
 class GradeBookViewModel(
+    private val strings: AppStrings,
     private val repository: GradeBookRepository,
     private val appEventNavigator: AppEventNavigator,
     private val sessionManager: SessionManager,
@@ -107,7 +109,7 @@ class GradeBookViewModel(
                         isSaving = false,
                         unsavedStudents = s.unsavedStudents - studentId,
                         hasPendingGrades = s.unsavedStudents.size > 1,
-                        success = "Notas salvas!",
+                        success = strings.teacher.gradesSaved,
                     )
                 }
             } catch (e: Exception) {
@@ -140,7 +142,7 @@ class GradeBookViewModel(
                         isSaving = false,
                         unsavedStudents = emptySet(),
                         hasPendingGrades = false,
-                        success = "Todas as notas finalizadas!",
+                        success = strings.teacher.allGradesFinalized,
                     )
                 }
             } catch (e: Exception) {

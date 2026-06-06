@@ -2,6 +2,7 @@ package com.escolaapp.features.coordinator.presentation.dashboard
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.escolaapp.core.i18n.AppStrings
 import com.escolaapp.core.navigation.AppEventNavigator
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.session.SessionManager
@@ -28,6 +29,7 @@ class CoordinatorDashboardViewModel(
     private val repository: CoordinatorRepository,
     private val appEventNavigator: AppEventNavigator,
     private val sessionManager: SessionManager,
+    private val strings: AppStrings,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(CoordinatorDashboardUiState())
@@ -50,7 +52,7 @@ class CoordinatorDashboardViewModel(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            errorMessage = error.toUserMessage(),
+                            errorMessage = error.toUserMessage(strings),
                         )
                     }
                 }

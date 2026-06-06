@@ -64,6 +64,9 @@ kotlin {
             // Serialization
             implementation(libs.kotlinx.serialization.json)
 
+            // Lyricist
+            implementation(libs.lyricist)
+
             // Navigation
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.koin)

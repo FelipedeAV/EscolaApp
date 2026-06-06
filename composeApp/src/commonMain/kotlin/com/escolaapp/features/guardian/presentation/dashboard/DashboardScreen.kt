@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.core.i18n.LocalAppStrings
 import com.escolaapp.core.session.SessionManager
 import com.escolaapp.shared.components.AppErrorState
 import com.escolaapp.core.domain.model.Role
@@ -39,6 +40,7 @@ class DashboardScreen() : Screen {
         val sessionManager: SessionManager = koinInject()
         val uiState by viewModel.uiState.collectAsState()
 
+        val s = LocalAppStrings.current
         val isTeacher = sessionManager.role == Role.TEACHER
         val linkedStudentId = uiState.student?.id
 
@@ -51,7 +53,7 @@ class DashboardScreen() : Screen {
         Scaffold(
             topBar = {
                 AppTopBar(
-                    title = "Dashboard",
+                    title = s.common.home,
                     showBackButton = false,
                     actions = {
                         IconButton(onClick = { viewModel.navigateToProfile() }) {
@@ -79,12 +81,12 @@ class DashboardScreen() : Screen {
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 Text(
-                    text = "Olá, ${sessionManager.name}",
+                    text = s.guardian.greeting(sessionManager.name),
                     style = MaterialTheme.typography.headlineSmall,
                 )
 
                 Text(
-                    text = if (isTeacher) "Professor" else "Responsável",
+                    text = if (isTeacher) s.guardian.roleTeacher else s.guardian.roleGuardian,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -93,7 +95,7 @@ class DashboardScreen() : Screen {
                     Card(modifier = Modifier.fillMaxWidth()) {
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text(
-                                text = "Aluno",
+                                text = s.guardian.studentLabel,
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -117,25 +119,25 @@ class DashboardScreen() : Screen {
                     onClick = { linkedStudentId?.let { viewModel.navigateToGrades(it) } },
                     enabled = linkedStudentId != null,
                     modifier = Modifier.fillMaxWidth(),
-                ) { Text("Ver Notas") }
+                ) { Text(s.guardian.viewGrades) }
 
                 Button(
                     onClick = { linkedStudentId?.let { viewModel.navigateToAttendance(it) } },
                     enabled = linkedStudentId != null,
                     modifier = Modifier.fillMaxWidth(),
-                ) { Text("Ver Frequência") }
+                ) { Text(s.guardian.viewAttendance) }
 
                 Button(
                     onClick = { viewModel.navigateToNotices() },
                     modifier = Modifier.fillMaxWidth(),
-                ) { Text("Ver Avisos") }
+                ) { Text(s.guardian.viewNotices) }
 
                 // Botões exclusivos do Teacher
                 if (isTeacher) {
                     Spacer(Modifier.height(8.dp))
 
                     Text(
-                        text = "Ações do professor",
+                        text = s.guardian.teacherActions,
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -143,17 +145,17 @@ class DashboardScreen() : Screen {
                     OutlinedButton(
                         onClick = { viewModel.navigateToAddGrade() },
                         modifier = Modifier.fillMaxWidth(),
-                    ) { Text("Lançar Nota") }
+                    ) { Text(s.guardian.addGrade) }
 
                     OutlinedButton(
                         onClick = { viewModel.navigateToAddAttendance() },
                         modifier = Modifier.fillMaxWidth(),
-                    ) { Text("Lançar Frequência") }
+                    ) { Text(s.guardian.addAttendance) }
 
                     OutlinedButton(
                         onClick = { viewModel.navigateToAddNotice() },
                         modifier = Modifier.fillMaxWidth(),
-                    ) { Text("Criar Aviso") }
+                    ) { Text(s.guardian.addNotice) }
                 }
             }
         }

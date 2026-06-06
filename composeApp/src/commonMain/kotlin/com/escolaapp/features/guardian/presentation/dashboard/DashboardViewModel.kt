@@ -4,6 +4,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.data.repository.StudentRepository
 import com.escolaapp.core.domain.model.Student
+import com.escolaapp.core.i18n.AppStrings
 import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.core.navigation.NavigationEvent
@@ -24,6 +25,7 @@ class DashboardViewModel(
     private val studentRepository: StudentRepository,
     private val appEventNavigator: AppEventNavigator,
     private val sessionManager: SessionManager,
+    private val strings: AppStrings,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(DashboardUiState())
@@ -36,7 +38,7 @@ class DashboardViewModel(
                 val student = studentRepository
                     .getStudents(sessionManager.token)
                     .firstOrNull { it.userId == sessionManager.userId }
-                    ?: throw IllegalStateException("Aluno não encontrado para este responsável")
+                    ?: throw IllegalStateException(strings.guardian.studentNotFound)
 
                 _uiState.update {
                     it.copy(

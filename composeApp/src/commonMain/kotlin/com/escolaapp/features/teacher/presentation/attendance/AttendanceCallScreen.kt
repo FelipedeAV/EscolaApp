@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.core.i18n.LocalAppStrings
 import com.escolaapp.features.teacher.domain.model.AttendanceSummary
 import com.escolaapp.core.domain.model.StudentAttendanceStatus
 import com.escolaapp.shared.components.AppActionButton
@@ -81,6 +82,8 @@ private fun AttendanceCallScreenContent(
         return
     }
 
+    val s = LocalAppStrings.current
+
     uiState.error?.let {
         AppErrorState(message = it)
         return
@@ -111,7 +114,7 @@ private fun AttendanceCallScreenContent(
                     )
                 }
                 AppActionButton(
-                    text = if (uiState.isSending) "Enviando..." else "✓ Enviar Frequência",
+                    text = if (uiState.isSending) s.teacher.sendingLabel else s.teacher.sendAttendance,
                     onClick = onSendAttendance,
                     enabled = !uiState.isSending,
                     modifier = Modifier.fillMaxWidth(),
@@ -128,7 +131,7 @@ private fun AttendanceCallScreenContent(
         ) {
             item {
                 Text(
-                    text = "CHAMADA",
+                    text = s.teacher.callTitle,
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.primary,
                 )
@@ -138,7 +141,7 @@ private fun AttendanceCallScreenContent(
                     fontWeight = FontWeight.Bold,
                 )
                 Text(
-                    text = "Turma A • ${summary.period} • ${summary.room}",
+                    text = s.teacher.callInfo(summary.period, summary.room),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -161,7 +164,7 @@ private fun AttendanceCallScreenContent(
                     )
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            text = "HOJE",
+                            text = s.teacher.today,
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -182,7 +185,7 @@ private fun AttendanceCallScreenContent(
 
             item {
                 Text(
-                    text = "Total de Alunos",
+                    text = s.teacher.totalStudents,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -207,7 +210,7 @@ private fun AttendanceCallScreenContent(
                     ) {
                         Column {
                             Text(
-                                text = "Presentes",
+                                text = s.teacher.presentHeader,
                                 style = MaterialTheme.typography.bodySmall,
                                 color = AppColors.Success,
                             )
@@ -233,7 +236,7 @@ private fun AttendanceCallScreenContent(
                         ) {
                             Column {
                                 Text(
-                                    text = "Ausentes",
+                                    text = s.teacher.absentHeader,
                                     style = MaterialTheme.typography.bodySmall,
                                     color = AppColors.Warning,
                                 )
@@ -255,7 +258,7 @@ private fun AttendanceCallScreenContent(
                         ) {
                             Column {
                                 Text(
-                                    text = "Pendente",
+                                    text = s.teacher.pendingHeader,
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
@@ -296,7 +299,7 @@ private fun AttendanceCallScreenContent(
                             ),
                             border = null,
                             content = {
-                                Text("Marcar Todos como Presentes")
+                                Text(s.teacher.markAllPresent)
                             },
                         )
                     }
@@ -326,6 +329,7 @@ private fun AttendanceStudentCard(
     onPresent: () -> Unit,
     onAbsent: () -> Unit,
 ) {
+    val s = LocalAppStrings.current
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -358,7 +362,7 @@ private fun AttendanceStudentCard(
             )
             if (student.consecutiveAbsences >= 3) {
                 Text(
-                    text = "⚠ ${student.consecutiveAbsences}ª Ausência Consecutiva",
+                    text = s.teacher.consecutiveAbsence(student.consecutiveAbsences),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.error,
                 )
@@ -371,7 +375,7 @@ private fun AttendanceStudentCard(
             } else {
                 student.lastAttendance?.let {
                     Text(
-                        text = "Última presença: $it",
+                        text = s.teacher.lastPresence(it),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -393,7 +397,7 @@ private fun AttendanceStudentCard(
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = "Presente",
+                    text = s.teacher.presentToggle,
                     style = MaterialTheme.typography.bodySmall,
                     color = if (isPresent == true) {
                         MaterialTheme.colorScheme.onPrimary
@@ -415,7 +419,7 @@ private fun AttendanceStudentCard(
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = "Ausente",
+                    text = s.teacher.absentToggle,
                     style = MaterialTheme.typography.bodySmall,
                     color = if (isPresent == false) Color.White else MaterialTheme.colorScheme.onSurfaceVariant,
                     fontWeight = FontWeight.SemiBold,

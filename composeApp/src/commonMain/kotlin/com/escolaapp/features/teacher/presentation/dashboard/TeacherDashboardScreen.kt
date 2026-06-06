@@ -32,6 +32,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.core.i18n.LocalAppStrings
 import com.escolaapp.core.session.SessionManager
 import com.escolaapp.features.teacher.domain.model.Class
 import com.escolaapp.shared.components.AppHeader
@@ -77,6 +78,8 @@ private fun TeacherDashboardContent(
     onAttendanceClick: () -> Unit,
     onGradeBookClick: () -> Unit,
 ) {
+    val s = LocalAppStrings.current
+
     if (uiState.isLoading) {
         AppLoadingIndicator()
         return
@@ -101,7 +104,7 @@ private fun TeacherDashboardContent(
                 Spacer(Modifier.height(8.dp))
                 AppHeader(
                     icon = Icons.Outlined.School,
-                    title = "EscolaApp",
+                    title = s.common.appName,
                     userInitial = name.firstOrNull()?.uppercaseChar()?.toString() ?: "?",
                 )
             }
@@ -109,7 +112,7 @@ private fun TeacherDashboardContent(
             item {
                 Column {
                     Text(
-                        text = if (name.isBlank()) "Bom dia, Professor(a)" else "Bom dia, Professor(a) $name",
+                        text = s.teacher.morningGreeting(name.ifBlank { null }),
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -158,15 +161,15 @@ private fun TeacherDashboardContent(
                 TeacherActionCard(
                     icon = Icons.Outlined.HowToReg,
                     iconBackgroundColor = AppColors.WarningContainer,
-                    title = "Fazer Chamada",
+                    title = s.teacher.makeCallLabel,
                     description = uiState.currentClass?.let {
-                        "Sessão Atual: ${it.subject} (${it.room})"
-                    } ?: "Nenhuma aula em andamento",
-                    buttonText = "Marcar Presença ✓",
+                        s.teacher.activeSession.replace("{subject}", it.subject).replace("{room}", it.room)
+                    } ?: s.teacher.noActiveClass,
+                    buttonText = s.teacher.markPresence,
                     onButtonClick = onAttendanceClick,
                     buttonBackgroundColor = MaterialTheme.colorScheme.primary,
                     buttonTextColor = MaterialTheme.colorScheme.onPrimary,
-                    topLabel = "ACESSO RÁPIDO",
+                    topLabel = s.teacher.quickAccess,
                 )
             }
 
@@ -174,11 +177,11 @@ private fun TeacherDashboardContent(
                 TeacherActionCard(
                     icon = Icons.Outlined.AutoStories,
                     iconBackgroundColor = AppColors.SuccessContainer,
-                    title = "Lançar Notas",
+                    title = s.teacher.launchGrades,
                     description = uiState.currentClass?.let {
-                        "Atualizar notas finais do semestre para ${it.subject}."
-                    } ?: "Selecione uma turma para lançar notas.",
-                    buttonText = "Abrir Diário de Classe ->",
+                        s.teacher.updateGradesDesc(it.subject)
+                    } ?: s.teacher.selectClassForGrades,
+                    buttonText = s.teacher.openGradeBook,
                     onButtonClick = onGradeBookClick,
                     buttonBackgroundColor = MaterialTheme.colorScheme.primary,
                     buttonTextColor = MaterialTheme.colorScheme.onPrimary,

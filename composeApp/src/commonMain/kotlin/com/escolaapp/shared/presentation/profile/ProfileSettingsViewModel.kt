@@ -3,6 +3,7 @@ package com.escolaapp.shared.presentation.profile
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.data.repository.UserRepository
+import com.escolaapp.core.i18n.AppStrings
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
@@ -23,6 +24,7 @@ class ProfileSettingsViewModel(
     private val userRepository: UserRepository,
     private val appEventNavigator: AppEventNavigator,
     private val sessionManager: SessionManager,
+    private val strings: AppStrings,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(ProfileSettingsUiState())
@@ -34,12 +36,12 @@ class ProfileSettingsViewModel(
         confirmPassword: String,
     ) {
         if (newPassword.length < 6) {
-            _uiState.update { it.copy(error = "A nova senha deve ter ao menos 6 caracteres", success = null) }
+            _uiState.update { it.copy(error = strings.profile.passwordMinLength, success = null) }
             return
         }
 
         if (newPassword != confirmPassword) {
-            _uiState.update { it.copy(error = "As senhas não conferem", success = null) }
+            _uiState.update { it.copy(error = strings.profile.passwordsDontMatch, success = null) }
             return
         }
 
@@ -50,14 +52,14 @@ class ProfileSettingsViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        success = "Senha alterada com sucesso",
+                        success = strings.profile.passwordChanged,
                     )
                 }
             } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = e.toUserMessage(),
+                        error = e.toUserMessage(strings),
                     )
                 }
             }

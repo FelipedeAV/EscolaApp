@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.core.i18n.LocalAppStrings
 import com.escolaapp.shared.components.AppErrorState
 import com.escolaapp.shared.components.AppLoadingIndicator
 import com.escolaapp.shared.components.AppTopBar
@@ -30,6 +31,7 @@ class NoticesScreen() : Screen {
     override fun Content() {
         val viewModel: NoticesViewModel = koinInject()
         val uiState by viewModel.uiState.collectAsState()
+        val s = LocalAppStrings.current
 
         LaunchedEffect(Unit) {
             viewModel.loadNotices()
@@ -38,7 +40,7 @@ class NoticesScreen() : Screen {
         Scaffold(
             topBar = {
                 AppTopBar(
-                    title = "Avisos",
+                    title = s.guardian.noticesTitle,
                     onBackClick = { viewModel.navigateBack() },
                 )
             },

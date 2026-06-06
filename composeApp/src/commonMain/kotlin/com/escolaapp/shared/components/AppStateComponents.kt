@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.escolaapp.core.i18n.LocalAppStrings
 import com.escolaapp.shared.theme.AppColors
 
 @Composable
@@ -40,6 +41,7 @@ fun AppErrorState(
     onRetry: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
+    val s = LocalAppStrings.current
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -65,7 +67,7 @@ fun AppErrorState(
                 onClick = onRetry,
                 colors = ButtonDefaults.buttonColors(containerColor = AppColors.PrimaryVariant),
             ) {
-                Text("Tentar novamente")
+                Text(s.common.retry)
             }
         }
     }

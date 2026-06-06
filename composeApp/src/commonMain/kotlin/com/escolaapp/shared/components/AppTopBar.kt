@@ -8,6 +8,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import com.escolaapp.core.i18n.LocalAppStrings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -17,6 +18,7 @@ fun AppTopBar(
     onBackClick: (() -> Unit)? = null,
     actions: @Composable () -> Unit = {},
 ) {
+    val s = LocalAppStrings.current
     CenterAlignedTopAppBar(
         title = { Text(text = title) },
         navigationIcon = {
@@ -24,7 +26,7 @@ fun AppTopBar(
                 IconButton(onClick = onBackClick) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Voltar",
+                        contentDescription = s.common.back,
                     )
                 }
             }

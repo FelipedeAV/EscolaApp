@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.escolaapp.core.i18n.LocalAppStrings
 
 enum class AppNavigationTab {
     HOME,
@@ -37,6 +38,7 @@ fun AppNavigationBar(
     selectedTab: AppNavigationTab,
     onTabSelected: (AppNavigationTab) -> Unit,
 ) {
+    val s = LocalAppStrings.current
     NavigationBar(
         modifier = Modifier.clip(RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)),
         containerColor = MaterialTheme.colorScheme.onPrimary,
@@ -51,21 +53,21 @@ fun AppNavigationBar(
                 selected = selectedTab == AppNavigationTab.HOME,
                 onClick = { onTabSelected(AppNavigationTab.HOME) },
                 icon = Icons.Outlined.Home,
-                label = "Início",
+                label = s.common.home,
             )
 
             AppNavigationBarItem(
                 selected = selectedTab == AppNavigationTab.CLASSES,
                 onClick = { onTabSelected(AppNavigationTab.CLASSES) },
                 icon = Icons.Outlined.Class,
-                label = "Turmas",
+                label = s.common.classes,
             )
 
             AppNavigationBarItem(
                 selected = selectedTab == AppNavigationTab.SETTINGS,
                 onClick = { onTabSelected(AppNavigationTab.SETTINGS) },
                 icon = Icons.Outlined.ManageAccounts,
-                label = "Configurações",
+                label = s.common.settings,
             )
         }
     }

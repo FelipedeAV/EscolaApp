@@ -51,6 +51,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.core.i18n.LocalAppStrings
 import com.escolaapp.features.teacher.domain.model.ClassGradeSummary
 import com.escolaapp.features.teacher.domain.model.GradeItem
 import com.escolaapp.core.domain.model.StudentGradeSummary
@@ -98,6 +99,8 @@ private fun GradeBookScreenContent(
     onGradeChange: (Int, String, Double) -> Unit,
     onSaveStudent: (Int) -> Unit,
 ) {
+    val s = LocalAppStrings.current
+
     if (uiState.isLoading) {
         AppLoadingIndicator()
         return
@@ -126,7 +129,7 @@ private fun GradeBookScreenContent(
                         Text(text = "i", fontSize = 16.sp)
                         Spacer(Modifier.width(8.dp))
                         Text(
-                            text = "Voce tem ${uiState.unsavedStudents.size} nota(s) nao salva(s).",
+                            text = s.teacher.unsavedWarning(uiState.unsavedStudents.size),
                             style = MaterialTheme.typography.bodySmall,
                             color = AppColors.Warning,
                         )
@@ -157,14 +160,14 @@ private fun GradeBookScreenContent(
                     verticalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
                     AppActionButton(
-                        text = "Cancelar Alteracoes",
+                        text = s.teacher.cancelChanges,
                         onClick = onCancelChanges,
                         modifier = Modifier.fillMaxWidth(),
                         containerColor = MaterialTheme.colorScheme.error,
                     )
 
                     AppActionButton(
-                        text = if (uiState.isSaving) "Salvando..." else "Salvar Notas",
+                        text = if (uiState.isSaving) s.teacher.savingLabel else s.teacher.saveGrades,
                         onClick = onFinalizeAllGrades,
                         enabled = !uiState.isSaving,
                         modifier = Modifier.fillMaxWidth(),
@@ -181,7 +184,7 @@ private fun GradeBookScreenContent(
                 contentAlignment = Alignment.Center,
             ) {
                 Text(
-                    text = "Não foi possivel carregar as notas.",
+                    text = s.teacher.loadGradesError,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     style = MaterialTheme.typography.bodyMedium,
                 )
@@ -201,7 +204,7 @@ private fun GradeBookScreenContent(
                 AppHeader(
                     icon = Icons.AutoMirrored.Filled.ArrowBack,
                     iconBackgroundColor = MaterialTheme.colorScheme.surface,
-                    title = "Notas",
+                    title = s.teacher.gradeBookTitle,
                     userInitial = summary.subject.firstOrNull()?.uppercaseChar()?.toString() ?: "?",
                     isTitleCentered = true,
                     onIconClick = onBackClick,
@@ -209,12 +212,12 @@ private fun GradeBookScreenContent(
                 Spacer(Modifier.height(16.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Badge(
-                        text = "${summary.bimester}o Bimestre",
+                        text = s.teacher.bimesterBadge(summary.bimester),
                         color = AppColors.SuccessContainer,
                         textColor = AppColors.Success,
                     )
                     Badge(
-                        text = "SESSÃO ATIVA",
+                        text = s.teacher.activeSessionBadge,
                         color = AppColors.WarningContainer,
                         textColor = AppColors.Warning,
                     )
@@ -283,6 +286,7 @@ private fun StudentGradeCard(
     onGradeChange: (String, Double) -> Unit,
     onSave: () -> Unit,
 ) {
+    val s = LocalAppStrings.current
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -325,7 +329,7 @@ private fun StudentGradeCard(
                     val average = student.average
                     if (average != null) {
                         Text(
-                            text = "Media: ${formatOneDecimal(average)}",
+                            text = s.teacher.averageLabel(formatOneDecimal(average)),
                             style = MaterialTheme.typography.bodySmall,
                             color = when {
                                 average >= 7.0 -> AppColors.Success
@@ -336,7 +340,7 @@ private fun StudentGradeCard(
                         )
                     } else {
                         Text(
-                            text = "Media: N/D",
+                            text = s.teacher.averageNd,
                             style = MaterialTheme.typography.bodySmall,
                             color = AppColors.Warning,
                             fontStyle = FontStyle.Italic,
@@ -411,7 +415,7 @@ private fun StudentGradeCard(
                     val isSaveEnabled = !isSaving && hasUnsaved
 
                     AppActionButton(
-                        text = "Salvar Notas do Aluno",
+                        text = s.teacher.saveStudentGrades,
                         onClick = onSave,
                         enabled = isSaveEnabled,
                         modifier = Modifier.fillMaxWidth(),

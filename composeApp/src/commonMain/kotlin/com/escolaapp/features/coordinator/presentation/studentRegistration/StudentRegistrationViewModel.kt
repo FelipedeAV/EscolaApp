@@ -2,6 +2,7 @@ package com.escolaapp.features.coordinator.presentation.studentRegistration
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.escolaapp.core.i18n.AppStrings
 import com.escolaapp.core.navigation.AppEventNavigator
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.session.SessionManager
@@ -31,6 +32,7 @@ class StudentRegistrationViewModel(
     private val repository: StudentRegistrationRepository,
     private val appEventNavigator: AppEventNavigator,
     private val sessionManager: SessionManager,
+    private val strings: AppStrings,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(StudentRegistrationUiState())
@@ -84,7 +86,7 @@ class StudentRegistrationViewModel(
                     _uiState.update {
                         it.copy(
                             isSubmitting = false,
-                            errorMessage = error.toUserMessage(),
+                            errorMessage = error.toUserMessage(strings),
                         )
                     }
                 }
@@ -108,12 +110,12 @@ class StudentRegistrationViewModel(
 
     private fun validate(form: StudentRegistrationForm): Map<String, String> {
         val errors = mutableMapOf<String, String>()
-        if (form.fullName.isBlank()) errors["fullName"] = "Nome obrigatório"
-        if (form.academicEmail.isBlank()) errors["academicEmail"] = "E-mail obrigatório"
-        if (form.guardianName.isBlank()) errors["guardianName"] = "Nome do responsável obrigatório"
+        if (form.fullName.isBlank()) errors["fullName"] = strings.coordinator.nameRequired
+        if (form.academicEmail.isBlank()) errors["academicEmail"] = strings.coordinator.emailRequired
+        if (form.guardianName.isBlank()) errors["guardianName"] = strings.coordinator.guardianNameRequired
         if (form.guardianEmail.isBlank()) errors["guardianEmail"] =
-            "E-mail do responsável obrigatório"
-        if (form.guardianPhone.isBlank()) errors["guardianPhone"] = "Telefone obrigatório"
+            strings.coordinator.guardianEmailRequired
+        if (form.guardianPhone.isBlank()) errors["guardianPhone"] = strings.coordinator.phoneRequired
         return errors
     }
 }

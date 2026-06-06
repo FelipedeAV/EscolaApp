@@ -45,6 +45,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.core.i18n.LocalAppStrings
 import com.escolaapp.core.session.SessionManager
 import com.escolaapp.features.teacher.domain.model.Class
 import com.escolaapp.core.domain.model.ClassListMode
@@ -94,6 +95,7 @@ private fun ClassListScreenContent(
     onTabSelected: (AppNavigationTab) -> Unit,
     onClassSelected: (classId: Int, mode: ClassListMode) -> Unit,
 ) {
+    val s = LocalAppStrings.current
     var selectedTab by remember { mutableStateOf(AppNavigationTab.CLASSES) }
     var selectedClassId by remember { mutableStateOf<Int?>(null) }
     var selectedClassSubject by remember { mutableStateOf<String?>(null) }
@@ -133,7 +135,7 @@ private fun ClassListScreenContent(
                         fontWeight = FontWeight.Bold,
                     )
                     Text(
-                        text = "Escolha o que deseja acessar para esta turma.",
+                        text = s.teacher.classSelectTitle,
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -146,7 +148,7 @@ private fun ClassListScreenContent(
                         },
                         modifier = Modifier.fillMaxWidth(),
                     ) {
-                        Text("Ir para Presença")
+                        Text(s.teacher.goToAttendance)
                     }
                     Button(
                         onClick = {
@@ -157,7 +159,7 @@ private fun ClassListScreenContent(
                         },
                         modifier = Modifier.fillMaxWidth(),
                     ) {
-                        Text("Ir para Notas")
+                        Text(s.teacher.goToGrades)
                     }
                     Spacer(Modifier.height(12.dp))
                 }
@@ -176,7 +178,7 @@ private fun ClassListScreenContent(
 
                 AppHeader(
                     icon = Icons.Outlined.School,
-                    title = "EscolaApp",
+                    title = s.common.appName,
                     userInitial = name.firstOrNull()?.uppercaseChar()?.toString() ?: "?",
                 )
             }
@@ -184,23 +186,23 @@ private fun ClassListScreenContent(
                 Spacer(Modifier.height(8.dp))
 
                 Text(
-                    text = "SEMESTRE 2024.1",
+                    text = s.teacher.semesterLabel,
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 Text(
                     text = when (mode) {
-                        ClassListMode.SELECT_ACTION -> "Turmas"
-                        ClassListMode.ATTENDANCE -> "Fazer Chamada"
-                        ClassListMode.GRADEBOOK -> "Lançar Notas"
+                        ClassListMode.SELECT_ACTION -> s.teacher.classesTitle
+                        ClassListMode.ATTENDANCE -> s.teacher.makeCallLabel
+                        ClassListMode.GRADEBOOK -> s.teacher.launchGradesLabel
                     },
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                 )
                 Text(
                     text = when (mode) {
-                        ClassListMode.SELECT_ACTION -> "Escolha uma turma para continuar"
-                        else -> "Selecione uma turma"
+                        ClassListMode.SELECT_ACTION -> s.teacher.chooseClassToContinue
+                        else -> s.teacher.chooseClassPrompt
                     },
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -214,11 +216,11 @@ private fun ClassListScreenContent(
                         .fillMaxWidth()
                         .padding(top = 8.dp),
                     shape = androidx.compose.foundation.shape.RoundedCornerShape(16.dp),
-                    placeholder = { Text("Buscar turma ou disciplina...") },
+                    placeholder = { Text(s.teacher.searchPlaceholder) },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Search,
-                            contentDescription = "Buscar",
+                            contentDescription = s.teacher.searchContentDesc,
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     },
@@ -247,9 +249,9 @@ private fun ClassListScreenContent(
                     ) {
                         Text(
                             text = if (uiState.searchQuery.isBlank()) {
-                                "Nenhuma turma disponível no momento."
+                                s.teacher.noClassesAvailable
                             } else {
-                                "Nenhuma turma encontrada para sua busca."
+                                s.teacher.noClassesFound
                             },
                             style = MaterialTheme.typography.bodyMedium,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -324,14 +326,14 @@ private fun ClassListScreenContent(
                         }
                         Spacer(Modifier.height(12.dp))
                         Text(
-                            text = "Solicitar Nova Turma",
+                            text = s.teacher.requestNewClass,
                             style = MaterialTheme.typography.titleSmall,
                             fontWeight = FontWeight.SemiBold,
                             color = MaterialTheme.colorScheme.onSurface,
                         )
                         Spacer(Modifier.height(4.dp))
                         Text(
-                            text = "Entre em contato com a coordenação para novos horários",
+                            text = s.teacher.requestNewClassDesc,
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                             textAlign = TextAlign.Center,

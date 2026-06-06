@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.core.i18n.LocalAppStrings
 import com.escolaapp.shared.components.AppErrorState
 import com.escolaapp.shared.components.AppLoadingIndicator
 import com.escolaapp.shared.components.AppTopBar
@@ -33,6 +34,7 @@ data class AttendanceScreen(
     override fun Content() {
         val viewModel: AttendanceViewModel = koinInject()
         val uiState by viewModel.uiState.collectAsState()
+        val s = LocalAppStrings.current
 
         LaunchedEffect(Unit) {
             viewModel.loadAttendance(studentId)
@@ -41,7 +43,7 @@ data class AttendanceScreen(
         Scaffold(
             topBar = {
                 AppTopBar(
-                    title = "Frequência",
+                    title = s.guardian.attendanceTitle,
                     onBackClick = { viewModel.navigateBack() },
                 )
             },
@@ -68,7 +70,7 @@ data class AttendanceScreen(
             ) {
 
             Text(
-                text = "Presença: $percent%",
+                text = s.guardian.attendancePercent(percent.toString()),
                 style = MaterialTheme.typography.titleMedium,
                 color = if (percent >= 75)
                     MaterialTheme.colorScheme.primary
@@ -92,7 +94,7 @@ data class AttendanceScreen(
                                 style = MaterialTheme.typography.bodyMedium,
                             )
                             Text(
-                                text = if (attendance.isPresent) "Presente" else "Falta",
+                                text = if (attendance.isPresent) s.guardian.attendancePresent else s.guardian.attendanceAbsent,
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = if (attendance.isPresent)
                                     MaterialTheme.colorScheme.primary

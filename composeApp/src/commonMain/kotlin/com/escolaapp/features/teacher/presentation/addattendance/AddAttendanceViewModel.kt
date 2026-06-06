@@ -3,6 +3,7 @@ package com.escolaapp.features.teacher.presentation.addattendance
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.data.remote.gateway.ApiClient
+import com.escolaapp.core.i18n.AppStrings
 import com.escolaapp.core.data.models.AttendanceRequest
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.session.SessionManager
@@ -21,6 +22,7 @@ data class AddAttendanceUiState(
 )
 
 class AddAttendanceViewModel(
+    private val strings: AppStrings,
     private val apiClient: ApiClient,
     private val appEventNavigator: AppEventNavigator,
     private val sessionManager: SessionManager,
@@ -44,7 +46,7 @@ class AddAttendanceViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        success = "Frequência lançada com sucesso!",
+                        success = strings.teacher.attendanceSaved,
                     )
                 }
             } catch (e: Exception) {

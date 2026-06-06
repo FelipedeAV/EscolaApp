@@ -3,6 +3,7 @@ package com.escolaapp.features.teacher.presentation.grade
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.data.remote.gateway.ApiClient
+import com.escolaapp.core.i18n.AppStrings
 import com.escolaapp.core.data.models.GradeRequest
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.session.SessionManager
@@ -21,6 +22,7 @@ data class AddGradeUiState(
 )
 
 class AddGradeViewModel(
+    private val strings: AppStrings,
     private val apiClient: ApiClient,
     private val appEventNavigator: AppEventNavigator,
     private val sessionManager: SessionManager,
@@ -45,7 +47,7 @@ class AddGradeViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        success = "Nota lançada com sucesso!",
+                        success = strings.teacher.gradeSaved,
                     )
                 }
             } catch (e: Exception) {

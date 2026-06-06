@@ -23,6 +23,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.escolaapp.core.i18n.LocalAppStrings
 
 @Composable
 fun TeacherClassCard(
@@ -33,6 +34,7 @@ fun TeacherClassCard(
     studentCount: Int,
     onClick: () -> Unit,
 ) {
+    val s = LocalAppStrings.current
     Card(
         onClick = onClick,
         modifier = Modifier.fillMaxWidth(),
@@ -108,7 +110,7 @@ fun TeacherClassCard(
                 }
                 Spacer(Modifier.width(4.dp))
                 Text(
-                    text = "$studentCount alunos",
+                    text = s.teacher.studentCount(studentCount),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )

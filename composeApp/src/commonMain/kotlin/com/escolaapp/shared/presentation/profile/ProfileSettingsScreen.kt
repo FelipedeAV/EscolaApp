@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.core.i18n.LocalAppStrings
 import com.escolaapp.shared.components.AppTopBar
 import org.koin.compose.koinInject
 
@@ -30,6 +31,7 @@ class ProfileSettingsScreen() : Screen {
 
     @Composable
     override fun Content() {
+        val s = LocalAppStrings.current
         val viewModel: ProfileSettingsViewModel = koinInject()
         val uiState by viewModel.uiState.collectAsState()
 
@@ -40,7 +42,7 @@ class ProfileSettingsScreen() : Screen {
         Scaffold(
             topBar = {
                 AppTopBar(
-                    title = "Configurações",
+                    title = s.common.settings,
                     onBackClick = { viewModel.navigateBack() },
                 )
             },
@@ -55,7 +57,7 @@ class ProfileSettingsScreen() : Screen {
                 OutlinedTextField(
                     value = currentPassword,
                     onValueChange = { currentPassword = it },
-                    label = { Text("Senha atual") },
+                    label = { Text(s.profile.currentPassword) },
                     visualTransformation = PasswordVisualTransformation(),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
@@ -64,7 +66,7 @@ class ProfileSettingsScreen() : Screen {
                 OutlinedTextField(
                     value = newPassword,
                     onValueChange = { newPassword = it },
-                    label = { Text("Nova senha") },
+                    label = { Text(s.profile.newPassword) },
                     visualTransformation = PasswordVisualTransformation(),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
@@ -73,7 +75,7 @@ class ProfileSettingsScreen() : Screen {
                 OutlinedTextField(
                     value = confirmPassword,
                     onValueChange = { confirmPassword = it },
-                    label = { Text("Confirmar nova senha") },
+                    label = { Text(s.profile.confirmPassword) },
                     visualTransformation = PasswordVisualTransformation(),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
@@ -111,7 +113,7 @@ class ProfileSettingsScreen() : Screen {
                     if (uiState.isLoading) {
                         CircularProgressIndicator()
                     } else {
-                        Text("Alterar senha")
+                        Text(s.profile.changePasswordButton)
                     }
                 }
             }

@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.core.i18n.LocalAppStrings
 import com.escolaapp.shared.components.AppErrorState
 import com.escolaapp.shared.components.AppLoadingIndicator
 import com.escolaapp.shared.components.AppTopBar
@@ -33,6 +34,7 @@ data class GradesScreen(
     override fun Content() {
         val viewModel: GradesViewModel = koinInject()
         val uiState by viewModel.uiState.collectAsState()
+        val s = LocalAppStrings.current
 
         LaunchedEffect(Unit) {
             viewModel.loadGrades(studentId)
@@ -41,7 +43,7 @@ data class GradesScreen(
         Scaffold(
             topBar = {
                 AppTopBar(
-                    title = "Notas",
+                    title = s.guardian.gradesTitle,
                     onBackClick = { viewModel.navigateBack() },
                 )
             },
@@ -79,7 +81,7 @@ data class GradesScreen(
                                     style = MaterialTheme.typography.titleMedium,
                                 )
                                 Text(
-                                    text = "${grade.bimester}º Bimestre",
+                                    text = s.teacher.bimesterBadge(grade.bimester),
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )

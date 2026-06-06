@@ -55,6 +55,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.core.i18n.LocalAppStrings
 import com.escolaapp.features.coordinator.domain.model.ActivityType
 import com.escolaapp.features.coordinator.domain.model.CoordinatorDashboard
 import com.escolaapp.shared.components.AppErrorState
@@ -115,6 +116,7 @@ private fun CoordinatorDashboardContent(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun DashboardTopBar(onNotification: () -> Unit) {
+    val s = LocalAppStrings.current
     TopAppBar(
         title = {
             Row(
@@ -144,7 +146,7 @@ private fun DashboardTopBar(onNotification: () -> Unit) {
         },
         actions = {
             IconButton(onClick = onNotification) {
-                Icon(Icons.Outlined.Notifications, contentDescription = "Notificações")
+                Icon(Icons.Outlined.Notifications, contentDescription = s.coordinator.notifications)
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
@@ -160,6 +162,7 @@ private fun DashboardBody(
     onManagementCard: (CoordinatorDestination) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val s = LocalAppStrings.current
     LazyColumn(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(bottom = 24.dp)
@@ -169,12 +172,12 @@ private fun DashboardBody(
         item {
             Column(Modifier.padding(horizontal = 16.dp, vertical = 16.dp)) {
                 Text(
-                    "Bem-vindo de volta,",
+                    s.coordinator.welcome,
                     fontSize = 12.sp,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    "Painel de Coordenação",
+                    s.coordinator.panelTitle,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     lineHeight = 28.sp
@@ -216,13 +219,14 @@ private fun QuickActionsSection(
     pendingCount: Int,
     onAction: (String) -> Unit
 ) {
+    val s = LocalAppStrings.current
     Column(Modifier.padding(horizontal = 16.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Ações Rápidas", fontWeight = FontWeight.Medium, fontSize = 14.sp)
+            Text(s.coordinator.quickActions, fontWeight = FontWeight.Medium, fontSize = 14.sp)
             if (pendingCount > 0) {
                 Surface(
                     shape = RoundedCornerShape(20.dp),
@@ -312,32 +316,33 @@ private data class ManagementItem(
 
 @Composable
 private fun ManagementGrid(onTap: (CoordinatorDestination) -> Unit) {
+    val s = LocalAppStrings.current
     val items = listOf(
         ManagementItem(
             CoordinatorDestination.CLASSES,
-            "Gestão de Turmas",
-            "Organize turmas, períodos e horários.",
+            s.coordinator.classManagement,
+            s.coordinator.classManagementDesc,
             Icons.Outlined.Groups,
             AppColors.SuccessContainer
         ),
         ManagementItem(
             CoordinatorDestination.SUBJECTS,
-            "Gestão de Disciplinas",
-            "Curadoria de conteúdos e grade curricular.",
+            s.coordinator.subjectManagement,
+            s.coordinator.subjectManagementDesc,
             Icons.AutoMirrored.Outlined.MenuBook,
             AppColors.WarningContainer
         ),
         ManagementItem(
             CoordinatorDestination.TEACHERS,
-            "Gestão de Professores",
-            "Acompanhe o corpo docente e atribuições.",
+            s.coordinator.teacherManagement,
+            s.coordinator.teacherManagementDesc,
             Icons.Outlined.School,
             AppColors.AccentPurpleContainer
         ),
         ManagementItem(
             CoordinatorDestination.STUDENTS,
-            "Gestão de Alunos",
-            "Base de dados, desempenho e frequência.",
+            s.coordinator.studentManagement,
+            s.coordinator.studentManagementDesc,
             Icons.Outlined.AssignmentInd,
             AppColors.AccentGreenContainer
         )
@@ -372,6 +377,7 @@ private fun ManagementCard(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val s = LocalAppStrings.current
     Card(
         modifier = modifier.clickable(onClick = onClick),
         shape = RoundedCornerShape(14.dp),
@@ -413,7 +419,7 @@ private fun ManagementCard(
                 overflow = TextOverflow.Ellipsis
             )
             Spacer(Modifier.height(6.dp))
-            Text("Acessar →", fontSize = 11.sp, color = AppColors.PrimaryVariant,)
+            Text(s.coordinator.access, fontSize = 11.sp, color = AppColors.PrimaryVariant,)
         }
     }
 }
@@ -425,6 +431,7 @@ private fun SemesterOverviewCard(
     stats: SemesterStats,
     activities: List<RecentActivity>
 ) {
+    val s = LocalAppStrings.current
     Box(
         modifier = Modifier
             .padding(16.dp)
@@ -435,15 +442,14 @@ private fun SemesterOverviewCard(
     ) {
         Column {
             Text(
-                "Visão Geral do Semestre",
+                s.coordinator.semesterOverview,
                 color = Color.White,
                 fontWeight = FontWeight.Medium,
                 fontSize = 16.sp
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                "${stats.classesWithCompleteSchedulePercent.toInt()}% das turmas estão com a grade completa " +
-                        "e ${stats.newStudentsThisWeek} novos alunos integrados esta semana.",
+                s.coordinator.semesterOverviewDesc(stats.classesWithCompleteSchedulePercent.toInt(), stats.newStudentsThisWeek),
                 color = Color.White.copy(alpha = 0.85f),
                 fontSize = 11.sp,
                 lineHeight = 16.sp
@@ -451,8 +457,8 @@ private fun SemesterOverviewCard(
             Spacer(Modifier.height(14.dp))
 
             Row(horizontalArrangement = Arrangement.spacedBy(24.dp)) {
-                StatChip(label = "Turmas Ativas", value = stats.activeClasses.toString())
-                StatChip(label = "Professores", value = stats.totalTeachers.toString())
+                StatChip(label = s.coordinator.activeClasses, value = stats.activeClasses.toString())
+                StatChip(label = s.coordinator.teachers, value = stats.totalTeachers.toString())
             }
 
             if (activities.isNotEmpty()) {
@@ -466,7 +472,7 @@ private fun SemesterOverviewCard(
                 ) {
                     Column {
                         Text(
-                            "ATIVIDADE RECENTE",
+                            s.coordinator.recentActivity,
                             fontSize = 9.sp,
                             color = Color.White.copy(alpha = 0.75f),
                             letterSpacing = 0.5.sp
@@ -528,24 +534,25 @@ private fun ActivityRow(activity: RecentActivity) {
 
 @Composable
 private fun DashboardBottomBar() {
+    val s = LocalAppStrings.current
     NavigationBar(containerColor = MaterialTheme.colorScheme.surface) {
         NavigationBarItem(
             selected = true,
             onClick = {},
-            icon = { Icon(Icons.Default.Home, contentDescription = "Início") },
-            label = { Text("Início", fontSize = 10.sp) }
+            icon = { Icon(Icons.Default.Home, contentDescription = s.common.home) },
+            label = { Text(s.common.home, fontSize = 10.sp) }
         )
         NavigationBarItem(
             selected = false,
             onClick = {},
-            icon = { Icon(Icons.Outlined.GridView, contentDescription = "Gestão") },
-            label = { Text("Gestão", fontSize = 10.sp) }
+            icon = { Icon(Icons.Outlined.GridView, contentDescription = s.common.management) },
+            label = { Text(s.common.management, fontSize = 10.sp) }
         )
         NavigationBarItem(
             selected = false,
             onClick = {},
-            icon = { Icon(Icons.Outlined.Settings, contentDescription = "Ajustes") },
-            label = { Text("Ajustes", fontSize = 10.sp) }
+            icon = { Icon(Icons.Outlined.Settings, contentDescription = s.common.settings) },
+            label = { Text(s.common.settings, fontSize = 10.sp) }
         )
     }
 }

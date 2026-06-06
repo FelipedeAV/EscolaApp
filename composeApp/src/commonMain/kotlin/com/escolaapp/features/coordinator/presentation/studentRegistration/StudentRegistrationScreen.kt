@@ -62,6 +62,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.core.i18n.LocalAppStrings
 import com.escolaapp.core.session.SessionManager
 import com.escolaapp.features.coordinator.domain.model.StudentRegistrationForm
 import com.escolaapp.shared.theme.AppColors
@@ -125,11 +126,12 @@ private fun StudentRegistrationContent(
     uiState: StudentRegistrationUiState,
     actions: StudentRegistrationActions,
 ) {
+    val s = LocalAppStrings.current
     val form = uiState.form
     val errors = uiState.fieldErrors
 
     Scaffold(
-        topBar = { RegistrationTopBar(onBack = actions.onCancel) },
+        topBar = { RegistrationTopBar(s = s, onBack = actions.onCancel) },
         containerColor = AppColors.Background,
     ) { padding ->
 
@@ -142,82 +144,83 @@ private fun StudentRegistrationContent(
         ) {
 
             // ── Hero ──────────────────────────────────────────────────────────
-            HeroHeader()
+            HeroHeader(s = s)
 
             // ── Seção 1: Dados do Aluno ───────────────────────────────────────
             FormSection(
                 icon = Icons.Outlined.Person,
-                title = "Dados do Aluno",
+                title = s.coordinator.studentData,
             ) {
                 FormField(
-                    label = "Nome Completo",
+                    label = s.coordinator.fullName,
                     value = form.fullName,
                     onValueChange = actions.onFullNameChange,
-                    placeholder = "Ex: Lucas Silva Oliveira",
+                    placeholder = s.coordinator.fullNamePlaceholder,
                     errorMessage = errors["fullName"],
                 )
                 FormField(
-                    label = "E-mail Acadêmico",
+                    label = s.coordinator.academicEmail,
                     value = form.academicEmail,
                     onValueChange = actions.onAcademicEmailChange,
-                    placeholder = "lucas@editorialacademy.com",
+                    placeholder = s.coordinator.academicEmailPlaceholder,
                     keyboardType = KeyboardType.Email,
                     errorMessage = errors["academicEmail"],
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     Box(Modifier.weight(1f)) {
                         FormField(
-                            label = "Data de Nascimento",
+                            label = s.coordinator.birthDate,
                             value = form.birthDate?.toString() ?: "",
                             onValueChange = { /* date picker — ver nota abaixo */ },
-                            placeholder = "dd/MM/aaaa",
+                            placeholder = s.coordinator.birthDatePlaceholder,
                             keyboardType = KeyboardType.Number,
                         )
                     }
                     Box(Modifier.weight(1f)) {
                         GenderDropdown(
+                            s = s,
                             selected = form.gender,
                             onSelect = actions.onGenderChange,
                         )
                     }
                 }
                 FormField(
-                    label = "Endereço Residencial",
+                    label = s.coordinator.address,
                     value = form.address,
                     onValueChange = actions.onAddressChange,
-                    placeholder = "Rua, Número, Bairro, Cidade — UF",
+                    placeholder = s.coordinator.addressPlaceholder,
                 )
             }
 
             // ── Seção 2: Responsável Legal ────────────────────────────────────
             FormSection(
                 icon = Icons.Outlined.FamilyRestroom,
-                title = "Responsável Legal"
+                title = s.coordinator.legalGuardian
             ) {
                 FormField(
-                    label = "Nome do Responsável",
+                    label = s.coordinator.guardianName,
                     value = form.guardianName,
                     onValueChange = actions.onGuardianNameChange,
-                    placeholder = "Nome Completo",
+                    placeholder = s.coordinator.guardianNamePlaceholder,
                     errorMessage = errors["guardianName"],
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     Box(Modifier.weight(1f)) {
                         FormField(
-                            label = "Telefone de Contato",
+                            label = s.coordinator.phone,
                             value = form.guardianPhone,
                             onValueChange = actions.onGuardianPhoneChange,
-                            placeholder = "(00) 00000-0000",
+                            placeholder = s.coordinator.phonePlaceholder,
                             keyboardType = KeyboardType.Phone,
                             errorMessage = errors["guardianPhone"],
                         )
                     }
                     Box(Modifier.weight(1f)) {
                         FormField(
-                            label = "E-mail do Responsável",
+                            label = s.coordinator.guardianEmail,
                             value = form.guardianEmail,
                             onValueChange = actions.onGuardianEmailChange,
-                            placeholder = "responsavel@email.com",
+                            placeholder = s.coordinator.guardianEmailPlaceholder,
                             keyboardType = KeyboardType.Email,
                             errorMessage = errors["guardianEmail"],
                         )
@@ -228,9 +231,10 @@ private fun StudentRegistrationContent(
             // ── Seção 3: Informações Adicionais ───────────────────────────────
             FormSection(
                 icon = Icons.Outlined.EditNote,
-                title = "Informações Adicionais",
+                title = s.coordinator.additionalInfo,
             ) {
                 NotesField(
+                    s = s,
                     value = form.notes,
                     onValueChange = actions.onNotesChange,
                 )
@@ -264,6 +268,7 @@ private fun StudentRegistrationContent(
 
             // ── LGPD + Botões ─────────────────────────────────────────────────
             ActionArea(
+                s = s,
                 isSubmitting = uiState.isSubmitting,
                 onCancel = actions.onCancel,
                 onSubmit = actions.onSubmit,
@@ -276,12 +281,12 @@ private fun StudentRegistrationContent(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun RegistrationTopBar(onBack: () -> Unit) {
+private fun RegistrationTopBar(s: com.escolaapp.core.i18n.AppStrings, onBack: () -> Unit) {
     TopAppBar(
         title = {},
         navigationIcon = {
             IconButton(onClick = onBack) {
-                Icon(Icons.Outlined.ArrowBackIosNew, contentDescription = "Voltar")
+                Icon(Icons.Outlined.ArrowBackIosNew, contentDescription = s.common.back)
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
@@ -293,17 +298,17 @@ private fun RegistrationTopBar(onBack: () -> Unit) {
 // ─── Hero header ──────────────────────────────────────────────────────────────
 
 @Composable
-private fun HeroHeader() {
+private fun HeroHeader(s: com.escolaapp.core.i18n.AppStrings) {
     Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
         Text(
-            text = "Novo Registro de Estudante",
+            text = s.coordinator.newStudentHeader,
             fontSize = 26.sp,
             fontWeight = FontWeight.Bold,
             color = AppColors.Primary,
             lineHeight = 32.sp
         )
         Text(
-            text = "Preencha os dados abaixo para integrar um novo membro à nossa academia.",
+            text = s.coordinator.newStudentSubtitle,
             fontSize = 13.sp,
             color = AppColors.OnSurfaceVariant,
             lineHeight = 18.sp
@@ -388,9 +393,9 @@ private fun FormField(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun GenderDropdown(selected: String, onSelect: (String) -> Unit) {
+private fun GenderDropdown(s: com.escolaapp.core.i18n.AppStrings, selected: String, onSelect: (String) -> Unit) {
     var expanded by remember { mutableStateOf(false) }
-    val options = listOf("Masculino", "Feminino", "Outro", "Prefiro não informar")
+    val options = listOf(s.coordinator.male, s.coordinator.female, s.coordinator.other, s.coordinator.preferNotToSay)
 
     Column(
         modifier = Modifier
@@ -399,10 +404,10 @@ private fun GenderDropdown(selected: String, onSelect: (String) -> Unit) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        Text("Gênero", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = AppColors.OnSurfaceVariant)
+        Text(s.coordinator.gender, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = AppColors.OnSurfaceVariant)
         ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
             OutlinedTextField(
-                value = selected.ifBlank { "Selecione" },
+                value = selected.ifBlank { s.coordinator.genderSelect },
                 onValueChange = {},
                 readOnly = true,
                 modifier = Modifier.fillMaxWidth().menuAnchor(),
@@ -431,7 +436,7 @@ private fun GenderDropdown(selected: String, onSelect: (String) -> Unit) {
 // ─── Notes textarea ───────────────────────────────────────────────────────────
 
 @Composable
-private fun NotesField(value: String, onValueChange: (String) -> Unit) {
+private fun NotesField(s: com.escolaapp.core.i18n.AppStrings, value: String, onValueChange: (String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -440,7 +445,7 @@ private fun NotesField(value: String, onValueChange: (String) -> Unit) {
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         Text(
-            "Anotações e Observações",
+            s.coordinator.notes,
             fontSize = 12.sp,
             fontWeight = FontWeight.SemiBold,
             color = AppColors.OnSurfaceVariant
@@ -451,7 +456,7 @@ private fun NotesField(value: String, onValueChange: (String) -> Unit) {
             modifier = Modifier.fillMaxWidth().heightIn(min = 100.dp),
             placeholder = {
                 Text(
-                    "Descreva aqui informações médicas, comportamentais ou pedagógicas relevantes...",
+                    s.coordinator.notesPlaceholder,
                     fontSize = 12.sp,
                     color = AppColors.OnSurfaceVariant.copy(alpha = 0.5f),
                     lineHeight = 18.sp
@@ -473,6 +478,7 @@ private fun NotesField(value: String, onValueChange: (String) -> Unit) {
 
 @Composable
 private fun ActionArea(
+    s: com.escolaapp.core.i18n.AppStrings,
     isSubmitting: Boolean,
     onCancel: () -> Unit,
     onSubmit: () -> Unit
@@ -491,7 +497,7 @@ private fun ActionArea(
                 tint = AppColors.OnSurfaceVariant.copy(alpha = 0.7f)
             )
             Text(
-                "Os dados serão armazenados conforme a LGPD.",
+                s.coordinator.lgpdInfo,
                 fontSize = 11.sp,
                 color = AppColors.OnSurfaceVariant.copy(alpha = 0.7f)
             )
@@ -509,7 +515,7 @@ private fun ActionArea(
                     contentColor = AppColors.OnSurfaceVariant
                 )
             ) {
-                Text("Cancelar", fontWeight = FontWeight.Bold)
+                Text(s.coordinator.cancel, fontWeight = FontWeight.Bold)
             }
 
             Button(
@@ -529,7 +535,7 @@ private fun ActionArea(
                         strokeWidth = 2.dp
                     )
                 } else {
-                    Text("Finalizar Cadastro", fontWeight = FontWeight.Bold)
+                    Text(s.coordinator.finishRegistration, fontWeight = FontWeight.Bold)
                 }
             }
         }
@@ -540,24 +546,25 @@ private fun ActionArea(
 
 @Composable
 private fun RegistrationBottomBar() {
+    val s = LocalAppStrings.current
     NavigationBar(containerColor = Color.White.copy(alpha = 0.9f)) {
         NavigationBarItem(
             selected = false,
             onClick = {},
-            icon = { Icon(Icons.Outlined.Home, contentDescription = "Início") },
-            label = { Text("Início", fontSize = 10.sp) }
+            icon = { Icon(Icons.Outlined.Home, contentDescription = s.common.home) },
+            label = { Text(s.common.home, fontSize = 10.sp) }
         )
         NavigationBarItem(
             selected = true,
             onClick = {},
-            icon = { Icon(Icons.Outlined.GridView, contentDescription = "Gestão") },
-            label = { Text("Gestão", fontSize = 10.sp) }
+            icon = { Icon(Icons.Outlined.GridView, contentDescription = s.common.management) },
+            label = { Text(s.common.management, fontSize = 10.sp) }
         )
         NavigationBarItem(
             selected = false,
             onClick = {},
-            icon = { Icon(Icons.Outlined.Settings, contentDescription = "Ajustes") },
-            label = { Text("Ajustes", fontSize = 10.sp) }
+            icon = { Icon(Icons.Outlined.Settings, contentDescription = s.common.settings) },
+            label = { Text(s.common.settings, fontSize = 10.sp) }
         )
     }
 }

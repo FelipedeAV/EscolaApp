@@ -37,6 +37,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.core.i18n.LocalAppStrings
 import com.escolaapp.core.session.SessionManager
 import com.escolaapp.shared.components.AppHeader
 import com.escolaapp.shared.components.AppNavigationBar
@@ -68,6 +69,7 @@ private fun ProfileScreenContent(
     role: Role,
     onTabSelected: (AppNavigationTab) -> Unit,
 ) {
+    val s = LocalAppStrings.current
     var selectedTab by remember { mutableStateOf(AppNavigationTab.SETTINGS) }
 
     Scaffold(
@@ -92,7 +94,7 @@ private fun ProfileScreenContent(
                 Spacer(Modifier.height(8.dp))
                 AppHeader(
                     icon = Icons.Outlined.School,
-                    title = "EscolaApp",
+                    title = s.common.appName,
                     userInitial = name.firstOrNull()?.uppercaseChar()?.toString() ?: "?",
                 )
             }
@@ -197,12 +199,12 @@ private fun ProfileScreenContent(
                             Spacer(Modifier.width(12.dp))
                             Column {
                                 Text(
-                                    text = "Alterar Senha",
+                                    text = s.profile.changePassword,
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.SemiBold,
                                 )
                                 Text(
-                                    text = "Proteja seu acesso à academia",
+                                    text = s.profile.changePasswordSubtitle,
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
@@ -212,7 +214,7 @@ private fun ProfileScreenContent(
                         Spacer(Modifier.height(12.dp))
 
                         Text(
-                            text = "Garanta que sua conta permaneça privada atualizando suas credenciais de segurança regularmente.",
+                            text = s.profile.changePasswordDesc,
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -224,7 +226,7 @@ private fun ProfileScreenContent(
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Text(
-                                text = "Configurar segurança ->",
+                                text = s.profile.configureSecurity,
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.SemiBold,
@@ -257,12 +259,12 @@ private fun ProfileScreenContent(
                             Spacer(Modifier.width(12.dp))
                             Column {
                                 Text(
-                                    text = "Controle de Sessão",
+                                    text = s.profile.sessionControl,
                                     style = MaterialTheme.typography.titleMedium,
                                     fontWeight = FontWeight.SemiBold,
                                 )
                                 Text(
-                                    text = "Gerencie seus dispositivos ativos",
+                                    text = s.profile.sessionControlSubtitle,
                                     style = MaterialTheme.typography.bodySmall,
                                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 )
@@ -273,9 +275,9 @@ private fun ProfileScreenContent(
 
                         DeviceRow(
                             icon = "📱",
-                            deviceName = "Dispositivo atual",
-                            location = "Brasil",
-                            status = "Ativo agora",
+                            deviceName = s.profile.currentDevice,
+                            location = s.profile.deviceLocation,
+                            status = s.profile.activeNow,
                             isCurrentDevice = true,
                             onLogout = {},
                         )
@@ -295,7 +297,7 @@ private fun ProfileScreenContent(
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
-                        text = "Sair de todas as sessões",
+                        text = s.profile.logoutAll,
                         color = MaterialTheme.colorScheme.error,
                         fontWeight = FontWeight.SemiBold,
                         style = MaterialTheme.typography.bodyLarge,
@@ -311,12 +313,12 @@ private fun ProfileScreenContent(
                     verticalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
                     Text(
-                        text = "VERSÃO 1.0.0-ALPHA",
+                        text = s.profile.version,
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                     Text(
-                        text = "SISTEMA ACADÊMICO ONLINE",
+                        text = s.profile.systemTitle,
                         style = MaterialTheme.typography.labelSmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -335,8 +337,8 @@ private fun DeviceRow(
     location: String,
     status: String,
     isCurrentDevice: Boolean,
-    onLogout: () -> Unit,
 ) {
+    val s = LocalAppStrings.current
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
@@ -359,7 +361,7 @@ private fun DeviceRow(
                             .padding(horizontal = 8.dp, vertical = 2.dp),
                     ) {
                         Text(
-                            text = "Este dispositivo",
+                            text = s.profile.thisDevice,
                             style = MaterialTheme.typography.labelSmall,
                             color = AppColors.Success,
                         )

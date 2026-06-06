@@ -50,6 +50,7 @@ import com.escolaapp.core.domain.model.ClassListMode
 import com.escolaapp.shared.components.AppHeader
 import com.escolaapp.shared.components.AppLoadingIndicator
 import com.escolaapp.shared.components.AppNavigationBar
+import com.escolaapp.features.teacher.presentation.components.TeacherClassCard
 import com.escolaapp.shared.components.AppNavigationTab
 import io.ktor.http.parametersOf
 import org.koin.compose.koinInject

@@ -5,6 +5,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.data.remote.gateway.ApiClient
 import com.escolaapp.core.data.models.AttendanceRequest
 import com.escolaapp.core.navigation.NavigationEvent
+import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.core.navigation.NavigationViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -49,7 +50,7 @@ class AddAttendanceViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "Erro ao lançar frequência",
+                        error = e.toUserMessage(),
                     )
                 }
             }

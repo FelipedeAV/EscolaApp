@@ -3,6 +3,7 @@ package com.escolaapp.features.coordinator.presentation.studentRegistration
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.navigation.NavigationEvent
+import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.coordinator.data.repository.StudentRegistrationRepository
 import com.escolaapp.features.coordinator.domain.model.StudentRegistrationForm
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -83,7 +84,7 @@ class StudentRegistrationViewModel(
                     _uiState.update {
                         it.copy(
                             isSubmitting = false,
-                            errorMessage = error.message ?: "Erro ao cadastrar aluno",
+                            errorMessage = error.toUserMessage(),
                         )
                     }
                 }

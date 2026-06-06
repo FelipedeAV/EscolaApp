@@ -5,6 +5,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.navigation.NavigationViewModel
 import com.escolaapp.features.teacher.data.repository.ClassRepository
+import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.teacher.domain.model.Class
 import com.escolaapp.core.domain.model.ClassListMode
 import com.escolaapp.shared.components.AppNavigationTab
@@ -52,7 +53,7 @@ class TeacherDashboardViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "Erro ao carregar dashboard",
+                        error = e.toUserMessage(),
                     )
                 }
             }

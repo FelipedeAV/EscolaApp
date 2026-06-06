@@ -2,6 +2,7 @@ package com.escolaapp.features.guardian.presentation.grades
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.guardian.data.repository.GradeRepository
 import com.escolaapp.features.teacher.domain.model.Grade
 import com.escolaapp.core.navigation.NavigationEvent
@@ -41,7 +42,7 @@ class GradesViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "Erro ao carregar notas",
+                        error = e.toUserMessage(),
                     )
                 }
             }

@@ -3,6 +3,7 @@ package com.escolaapp.features.auth.presentation.login
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.data.remote.gateway.ApiException
+import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.auth.data.repository.AuthRepository
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.navigation.NavigationViewModel
@@ -46,11 +47,11 @@ class LoginViewModel(
                         error = e.message,
                     )
                 }
-            } catch (_: Exception) {
+            } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "Falha ao fazer login",
+                        error = e.toUserMessage(),
                     )
                 }
             }

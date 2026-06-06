@@ -4,6 +4,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.data.repository.UserRepository
 import com.escolaapp.core.navigation.NavigationEvent
+import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.core.navigation.NavigationViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -52,11 +53,11 @@ class ProfileSettingsViewModel(
                         success = "Senha alterada com sucesso",
                     )
                 }
-            } catch (_: Exception) {
+            } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "Não foi possível alterar a senha",
+                        error = e.toUserMessage(),
                     )
                 }
             }

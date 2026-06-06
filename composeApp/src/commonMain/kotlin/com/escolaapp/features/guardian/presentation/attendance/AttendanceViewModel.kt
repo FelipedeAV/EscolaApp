@@ -2,6 +2,7 @@ package com.escolaapp.features.guardian.presentation.attendance
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.guardian.data.repository.AttendanceRepository
 import com.escolaapp.features.teacher.domain.model.Attendance
 import com.escolaapp.core.navigation.NavigationEvent
@@ -41,7 +42,7 @@ class AttendanceViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "Erro ao carregar frequência",
+                        error = e.toUserMessage(),
                     )
                 }
             }

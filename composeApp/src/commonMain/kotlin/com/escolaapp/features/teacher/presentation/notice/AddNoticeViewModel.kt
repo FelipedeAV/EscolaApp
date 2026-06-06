@@ -5,6 +5,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.data.remote.gateway.ApiClient
 import com.escolaapp.core.data.models.NoticeRequest
 import com.escolaapp.core.navigation.NavigationEvent
+import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.core.navigation.NavigationViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -48,7 +49,7 @@ class AddNoticeViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "Erro ao publicar aviso",
+                        error = e.toUserMessage(),
                     )
                 }
             }

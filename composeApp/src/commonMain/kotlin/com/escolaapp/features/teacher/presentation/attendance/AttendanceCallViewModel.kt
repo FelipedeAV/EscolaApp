@@ -2,6 +2,7 @@ package com.escolaapp.features.teacher.presentation.attendance
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.teacher.data.repository.AttendanceSummaryRepository
 import com.escolaapp.features.teacher.domain.model.AttendanceSummary
 import com.escolaapp.core.navigation.NavigationEvent
@@ -65,7 +66,7 @@ class AttendanceCallViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "Erro ao carregar chamada",
+                        error = e.toUserMessage(),
                     )
                 }
             }
@@ -122,7 +123,7 @@ class AttendanceCallViewModel(
                 _uiState.update {
                     it.copy(
                         isSending = false,
-                        error = "Erro ao enviar frequência",
+                        error = e.toUserMessage(),
                     )
                 }
             }

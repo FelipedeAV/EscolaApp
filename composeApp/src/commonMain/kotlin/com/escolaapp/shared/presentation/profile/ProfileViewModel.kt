@@ -6,6 +6,7 @@ import com.escolaapp.core.data.repository.UserRepository
 import com.escolaapp.core.domain.model.User
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.navigation.NavigationViewModel
+import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.core.domain.model.ClassListMode
 import com.escolaapp.shared.components.AppNavigationTab
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -45,11 +46,11 @@ class ProfileViewModel(
                         user = user,
                     )
                 }
-            } catch (_: Exception) {
+            } catch (e: Exception) {
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "Erro ao carregar perfil",
+                        error = e.toUserMessage(),
                     )
                 }
             }

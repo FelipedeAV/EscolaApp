@@ -3,6 +3,7 @@ package com.escolaapp.features.coordinator.presentation.dashboard
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.navigation.NavigationEvent
+import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.coordinator.data.repository.CoordinatorRepository
 import com.escolaapp.features.coordinator.domain.model.CoordinatorDashboard
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -49,7 +50,7 @@ class CoordinatorDashboardViewModel(
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            errorMessage = error.message ?: "Erro ao carregar o painel",
+                            errorMessage = error.toUserMessage(),
                         )
                     }
                 }

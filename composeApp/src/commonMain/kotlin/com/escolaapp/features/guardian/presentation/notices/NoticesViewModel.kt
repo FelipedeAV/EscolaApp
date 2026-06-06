@@ -4,6 +4,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.data.repository.NoticeRepository
 import com.escolaapp.core.domain.model.Notice
+import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.navigation.NavigationViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,7 +42,7 @@ class NoticesViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "Erro ao carregar avisos",
+                        error = e.toUserMessage(),
                     )
                 }
             }

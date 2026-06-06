@@ -2,6 +2,7 @@ package com.escolaapp.features.teacher.presentation.gradebook
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.teacher.data.repository.GradeBookRepository
 import com.escolaapp.features.teacher.domain.model.ClassGradeSummary
 import com.escolaapp.core.navigation.NavigationEvent
@@ -65,7 +66,7 @@ class GradeBookViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        error = "Erro ao carregar notas",
+                        error = e.toUserMessage(),
                     )
                 }
             }
@@ -113,7 +114,7 @@ class GradeBookViewModel(
                     it.copy(
                         isSaving = false,
                         hasPendingGrades = true,
-                        error = "Erro ao salvar. Notas mantidas no cache.",
+                        error = e.toUserMessage(),
                     )
                 }
             }
@@ -146,7 +147,7 @@ class GradeBookViewModel(
                     it.copy(
                         isSaving = false,
                         hasPendingGrades = true,
-                        error = "Erro ao finalizar. Notas mantidas no cache.",
+                        error = e.toUserMessage(),
                     )
                 }
             }

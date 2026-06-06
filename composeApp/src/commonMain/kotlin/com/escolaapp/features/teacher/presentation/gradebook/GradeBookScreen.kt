@@ -235,7 +235,7 @@ private fun GradeBookScreenContent(
 
             val sortedStudents = summary.students.sortedBy { it.name.lowercase() }
 
-            itemsIndexed(sortedStudents) { index, student ->
+            items(sortedStudents, key = { it.id }) { student ->
                 val isExpanded = uiState.expandedStudentId == student.id
                 val hasUnsaved = student.id in uiState.unsavedStudents
 
@@ -251,10 +251,6 @@ private fun GradeBookScreenContent(
                     },
                     onSave = { onSaveStudent(student.id) },
                 )
-
-                if (index < sortedStudents.lastIndex) {
-                    Spacer(Modifier.height(8.dp))
-                }
             }
 
             item { Spacer(Modifier.height(8.dp)) }

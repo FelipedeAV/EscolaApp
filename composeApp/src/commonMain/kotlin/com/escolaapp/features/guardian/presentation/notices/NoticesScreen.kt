@@ -63,7 +63,7 @@ data class NoticesScreen(
             ) {
 
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(uiState.notices) { notice ->
+                items(uiState.notices, key = { it.id }) { notice ->
                     Card(modifier = Modifier.fillMaxWidth()) {
                         Column(modifier = Modifier.padding(16.dp)) {
                             Text(

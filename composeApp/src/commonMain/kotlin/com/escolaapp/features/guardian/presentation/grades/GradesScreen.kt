@@ -65,7 +65,7 @@ data class GradesScreen(
             ) {
 
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(uiState.grades) { grade ->
+                items(uiState.grades, key = { it.id }) { grade ->
                     Card(modifier = Modifier.fillMaxWidth()) {
                         Row(
                             modifier = Modifier

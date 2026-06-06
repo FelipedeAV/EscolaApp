@@ -268,7 +268,7 @@ private fun ClassListScreenContent(
                     }
                 }
             } else {
-                items(uiState.filteredClasses) { schoolClass ->
+                items(uiState.filteredClasses, key = { it.id }) { schoolClass ->
                     TeacherClassCard(
                         subject = schoolClass.subject,
                         room = schoolClass.room,

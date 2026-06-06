@@ -79,7 +79,7 @@ data class AttendanceScreen(
             )
 
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                items(uiState.attendances) { attendance ->
+                items(uiState.attendances, key = { it.id }) { attendance ->
                     Card(modifier = Modifier.fillMaxWidth()) {
                         Row(
                             modifier = Modifier

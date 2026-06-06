@@ -25,6 +25,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.escolaapp.shared.theme.AppColors
 
 @Composable
 fun AppHeader(
@@ -150,7 +151,7 @@ private fun AppHeaderCenteredPreview() {
             userInitial = "M",
             isTitleCentered = true,
             onIconClick = {},
-            iconBackgroundColor = Color(0xFFE8F4FD),
+            iconBackgroundColor = AppColors.SuccessContainer,
         )
     }
 }

@@ -40,6 +40,7 @@ import cafe.adriel.voyager.core.screen.Screen
 import com.escolaapp.shared.components.AppHeader
 import com.escolaapp.shared.components.AppNavigationBar
 import com.escolaapp.shared.components.AppNavigationTab
+import com.escolaapp.shared.theme.AppColors
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 
@@ -194,7 +195,7 @@ private fun ProfileScreenContent(
                                 modifier = Modifier
                                     .size(44.dp)
                                     .clip(RoundedCornerShape(12.dp))
-                                    .background(Color(0xFFE8F0FE)),
+                                    .background(AppColors.AccentPurpleContainer),
                                 contentAlignment = Alignment.Center,
                             ) {
                                 Text(text = "🔒", fontSize = 20.sp)
@@ -254,7 +255,7 @@ private fun ProfileScreenContent(
                                 modifier = Modifier
                                     .size(44.dp)
                                     .clip(RoundedCornerShape(12.dp))
-                                    .background(Color(0xFFE8F0FE)),
+                                    .background(AppColors.AccentPurpleContainer),
                                 contentAlignment = Alignment.Center,
                             ) {
                                 Text(text = "📱", fontSize = 20.sp)
@@ -294,7 +295,7 @@ private fun ProfileScreenContent(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp))
-                        .background(Color(0xFFFAF0F0))
+                        .background(AppColors.ErrorContainer)
                         .clickable { }
                         .padding(vertical = 16.dp),
                     contentAlignment = Alignment.Center,
@@ -360,13 +361,13 @@ private fun DeviceRow(
                     Box(
                         modifier = Modifier
                             .clip(RoundedCornerShape(50.dp))
-                            .background(Color(0xFFE8F4FD))
+                            .background(AppColors.SuccessContainer)
                             .padding(horizontal = 8.dp, vertical = 2.dp),
                     ) {
                         Text(
                             text = "Este dispositivo",
                             style = MaterialTheme.typography.labelSmall,
-                            color = Color(0xFF1565C0),
+                            color = AppColors.Success,
                         )
                     }
                 }

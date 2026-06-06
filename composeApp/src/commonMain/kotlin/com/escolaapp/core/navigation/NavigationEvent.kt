@@ -1,9 +1,10 @@
 package com.escolaapp.core.navigation
 
 import com.escolaapp.core.domain.model.ClassListMode
+import com.escolaapp.core.domain.model.Role
 
 sealed class NavigationEvent {
-    data class ToDashboard(val role: String) : NavigationEvent()
+    data class ToDashboard(val role: Role) : NavigationEvent()
 
     data class ToGrades(val studentId: Int) : NavigationEvent()
 

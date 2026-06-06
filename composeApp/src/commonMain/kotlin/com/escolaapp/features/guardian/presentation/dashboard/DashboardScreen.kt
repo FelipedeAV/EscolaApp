@@ -26,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import com.escolaapp.core.session.SessionManager
 import com.escolaapp.shared.components.AppErrorState
+import com.escolaapp.core.domain.model.Role
 import com.escolaapp.shared.components.AppLoadingIndicator
 import com.escolaapp.shared.components.AppTopBar
 import org.koin.compose.koinInject
@@ -38,7 +39,7 @@ class DashboardScreen() : Screen {
         val sessionManager: SessionManager = koinInject()
         val uiState by viewModel.uiState.collectAsState()
 
-        val isTeacher = sessionManager.role == "Teacher"
+        val isTeacher = sessionManager.role == Role.TEACHER
         val linkedStudentId = uiState.student?.id
 
         LaunchedEffect(isTeacher) {

@@ -41,6 +41,7 @@ import com.escolaapp.core.session.SessionManager
 import com.escolaapp.shared.components.AppHeader
 import com.escolaapp.shared.components.AppNavigationBar
 import com.escolaapp.shared.components.AppNavigationTab
+import com.escolaapp.core.domain.model.Role
 import com.escolaapp.shared.theme.AppColors
 import org.koin.compose.koinInject
 
@@ -64,7 +65,7 @@ class ProfileScreen() : Screen {
 private fun ProfileScreenContent(
     name: String,
     email: String,
-    role: String,
+    role: Role,
     onTabSelected: (AppNavigationTab) -> Unit,
 ) {
     var selectedTab by remember { mutableStateOf(AppNavigationTab.SETTINGS) }
@@ -163,7 +164,7 @@ private fun ProfileScreenContent(
                                 .padding(horizontal = 16.dp, vertical = 6.dp),
                         ) {
                             Text(
-                                text = if (role == "Teacher") "PROFESSOR" else "RESPONSÁVEL",
+                                text = if (role == Role.TEACHER) "PROFESSOR" else "RESPONSÁVEL",
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Bold,
@@ -396,7 +397,7 @@ private fun ProfileScreenContentPreview() {
         ProfileScreenContent(
             name = "Carlos Silva",
             email = "carlos@email.com",
-            role = "Teacher",
+            role = Role.TEACHER,
             onTabSelected = {},
         )
     }

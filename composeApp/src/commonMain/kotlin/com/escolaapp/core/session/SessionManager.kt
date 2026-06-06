@@ -1,13 +1,15 @@
 package com.escolaapp.core.session
 
+import com.escolaapp.core.domain.model.Role
+
 class SessionManager {
     var token: String = ""
     var userId: Int = 0
     var name: String = ""
     var email: String = ""
-    var role: String = ""
+    var role: Role = Role.GUARDIAN
 
-    fun save(token: String, userId: Int, name: String, email: String, role: String) {
+    fun save(token: String, userId: Int, name: String, email: String, role: Role) {
         this.token = token
         this.userId = userId
         this.name = name
@@ -20,7 +22,7 @@ class SessionManager {
         userId = 0
         name = ""
         email = ""
-        role = ""
+        role = Role.GUARDIAN
     }
 
     val isLoggedIn: Boolean get() = token.isNotBlank()

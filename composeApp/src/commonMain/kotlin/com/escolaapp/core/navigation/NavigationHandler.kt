@@ -18,6 +18,7 @@ import com.escolaapp.features.teacher.presentation.notice.AddNoticeScreen
 import com.escolaapp.features.teacher.presentation.attendance.AttendanceCallScreen
 import com.escolaapp.features.teacher.presentation.classlist.ClassListScreen
 import com.escolaapp.features.teacher.presentation.gradebook.GradeBookScreen
+import com.escolaapp.core.domain.model.Role
 import kotlinx.coroutines.flow.SharedFlow
 
 @Composable
@@ -30,9 +31,9 @@ fun NavigationHandler(
             when (event) {
                 is NavigationEvent.ToDashboard -> {
                     when (event.role) {
-                        "Teacher" -> navigator.replace(TeacherDashboardScreen())
-                        "Coordinator" -> navigator.replace(CoordinatorDashboardScreen())
-                        else -> navigator.replace(DashboardScreen())
+                        Role.TEACHER -> navigator.replace(TeacherDashboardScreen())
+                        Role.COORDINATOR -> navigator.replace(CoordinatorDashboardScreen())
+                        Role.GUARDIAN -> navigator.replace(DashboardScreen())
                     }
                 }
 

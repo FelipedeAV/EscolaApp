@@ -25,6 +25,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
@@ -134,10 +135,11 @@ private fun LanguageToggle() {
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {
+        val flagAlpha = if (isPt) 1f else 0.4f
         Text(
             text = "🇧🇷",
             style = MaterialTheme.typography.bodyLarge,
-            alpha = if (isPt) 1f else 0.4f,
+            modifier = Modifier.alpha(flagAlpha),
         )
         Spacer(Modifier.width(8.dp))
         OutlinedButton(
@@ -150,10 +152,11 @@ private fun LanguageToggle() {
             Text(if (isPt) "EN" else "PT")
         }
         Spacer(Modifier.width(8.dp))
+        val usAlpha = if (isPt) 0.4f else 1f
         Text(
             text = "🇺🇸",
             style = MaterialTheme.typography.bodyLarge,
-            alpha = if (isPt) 0.4f else 1f,
+            modifier = Modifier.alpha(usAlpha),
         )
     }
 }

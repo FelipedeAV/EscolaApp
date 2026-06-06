@@ -8,6 +8,7 @@ class SessionManager {
     var name: String = ""
     var email: String = ""
     var role: Role = Role.GUARDIAN
+    var languageTag: String = "pt"
 
     fun save(token: String, userId: Int, name: String, email: String, role: Role) {
         this.token = token

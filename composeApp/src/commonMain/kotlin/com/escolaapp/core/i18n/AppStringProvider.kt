@@ -9,6 +9,7 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import cafe.adriel.lyricist.Lyricist
 
 val LocalAppStrings = staticCompositionLocalOf { PtStrings }
+val LocalLyricist = staticCompositionLocalOf<Lyricist> { error("No Lyricist provided") }
 
 @Composable
 fun ProvideAppStrings(
@@ -18,5 +19,9 @@ fun ProvideAppStrings(
 ) {
     val lyricist = remember { Lyricist(defaultLanguageTag = defaultLanguageTag, translations = translations) }
     val state by lyricist.state.collectAsState()
-    CompositionLocalProvider(LocalAppStrings provides state.strings, content = content)
+    CompositionLocalProvider(
+        LocalAppStrings provides state.strings,
+        LocalLyricist provides lyricist,
+        content = content,
+    )
 }

@@ -2,15 +2,18 @@ package com.escolaapp.features.auth.presentation.login
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -26,6 +29,8 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
 import com.escolaapp.core.i18n.LocalAppStrings
+import com.escolaapp.core.i18n.LocalLyricist
+import com.escolaapp.core.session.SessionManager
 import org.koin.compose.koinInject
 
 class LoginScreen : Screen {
@@ -109,7 +114,46 @@ class LoginScreen : Screen {
                         Text(s.login.signInButton)
                     }
                 }
+
+                Spacer(Modifier.height(24.dp))
+
+                LanguageToggle()
             }
         }
+    }
+}
+
+@Composable
+private fun LanguageToggle() {
+    val lyricist = LocalLyricist.current
+    val sessionManager: SessionManager = koinInject()
+    val isPt = lyricist.languageTag == "pt"
+
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically,
+    ) {
+        Text(
+            text = "🇧🇷",
+            style = MaterialTheme.typography.bodyLarge,
+            alpha = if (isPt) 1f else 0.4f,
+        )
+        Spacer(Modifier.width(8.dp))
+        OutlinedButton(
+            onClick = {
+                val newLang = if (isPt) "en" else "pt"
+                lyricist.languageTag = newLang
+                sessionManager.languageTag = newLang
+            },
+        ) {
+            Text(if (isPt) "EN" else "PT")
+        }
+        Spacer(Modifier.width(8.dp))
+        Text(
+            text = "🇺🇸",
+            style = MaterialTheme.typography.bodyLarge,
+            alpha = if (isPt) 0.4f else 1f,
+        )
     }
 }

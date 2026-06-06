@@ -336,6 +336,7 @@ private fun DeviceRow(
     location: String,
     status: String,
     isCurrentDevice: Boolean,
+    onLogout: () -> Unit = {},
 ) {
     val s = LocalAppStrings.current
     Row(

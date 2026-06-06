@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
@@ -279,50 +280,39 @@ private fun AttendanceCallScreenContent(
                         containerColor = MaterialTheme.colorScheme.surface,
                     ),
                 ) {
-                    Column(
-                        modifier = Modifier.padding(12.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp),
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(12.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            OutlinedButton(
-                                onClick = onMarkAllPresent,
-                                colors = ButtonDefaults.outlinedButtonColors(
-                                    containerColor = MaterialTheme.colorScheme.onPrimary,
-                                    contentColor = MaterialTheme.colorScheme.onSurface,
-                                    disabledContainerColor = MaterialTheme.colorScheme.surface,
-                                    disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(
-                                        alpha = 0.38f,
-                                    ),
+                        OutlinedButton(
+                            onClick = onMarkAllPresent,
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                containerColor = MaterialTheme.colorScheme.onPrimary,
+                                contentColor = MaterialTheme.colorScheme.onSurface,
+                                disabledContainerColor = MaterialTheme.colorScheme.surface,
+                                disabledContentColor = MaterialTheme.colorScheme.onSurface.copy(
+                                    alpha = 0.38f,
                                 ),
-                                border = null,
-                                content = {
-                                    Text("Marcar Todos como Presentes")
-                                },
-                            )
-                        }
-
-                        val sortedStudents = summary.students.sortedBy { it.name.lowercase() }
-
-                        sortedStudents.forEachIndexed { index, student ->
-                            val isPresent = uiState.studentStatuses[student.id]
-
-                            AttendanceStudentCard(
-                                student = student,
-                                isPresent = isPresent,
-                                onPresent = { onSetStudentStatus(student.id, true) },
-                                onAbsent = { onSetStudentStatus(student.id, false) },
-                            )
-
-                            if (index < sortedStudents.lastIndex) {
-                                Spacer(Modifier.height(8.dp))
-                            }
-                        }
+                            ),
+                            border = null,
+                            content = {
+                                Text("Marcar Todos como Presentes")
+                            },
+                        )
                     }
                 }
+            }
+
+            val sortedStudents = summary.students.sortedBy { it.name.lowercase() }
+
+            items(sortedStudents, key = { it.id }) { student ->
+                AttendanceStudentCard(
+                    student = student,
+                    isPresent = uiState.studentStatuses[student.id],
+                    onPresent = { onSetStudentStatus(student.id, true) },
+                    onAbsent = { onSetStudentStatus(student.id, false) },
+                )
             }
 
             item { Spacer(Modifier.height(8.dp)) }

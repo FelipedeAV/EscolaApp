@@ -3,7 +3,6 @@ package com.escolaapp.features.teacher
 import com.escolaapp.features.teacher.data.repository.AttendanceSummaryRepository
 import com.escolaapp.features.teacher.data.repository.ClassRepository
 import com.escolaapp.features.teacher.data.repository.GradeBookRepository
-import com.escolaapp.core.domain.model.ClassListMode
 import com.escolaapp.features.teacher.presentation.addattendance.AddAttendanceViewModel
 import com.escolaapp.features.teacher.presentation.attendance.AttendanceCallViewModel
 import com.escolaapp.features.teacher.presentation.classlist.ClassListViewModel

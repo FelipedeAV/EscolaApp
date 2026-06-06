@@ -60,7 +60,6 @@ import com.escolaapp.shared.components.AppHeader
 import com.escolaapp.shared.components.AppLoadingIndicator
 import com.escolaapp.shared.theme.AppColors
 import com.escolaapp.core.utils.formatOneDecimal
-import io.ktor.http.parametersOf
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 

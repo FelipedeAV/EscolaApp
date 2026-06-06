@@ -25,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
-import com.escolaapp.shared.components.AppTopBar
 import org.koin.compose.koinInject
 
 class LoginScreen : Screen {

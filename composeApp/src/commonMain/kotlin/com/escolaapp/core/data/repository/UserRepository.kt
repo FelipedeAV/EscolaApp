@@ -1,9 +1,7 @@
 package com.escolaapp.core.data.repository
 
 import com.escolaapp.core.data.mapper.toDomain
-import com.escolaapp.features.auth.data.mapper.toDomain
 import com.escolaapp.core.data.remote.gateway.ApiClient
-import com.escolaapp.features.teacher.data.mapper.toDomain
 import com.escolaapp.core.data.models.UserRequest
 import com.escolaapp.core.domain.model.User
 

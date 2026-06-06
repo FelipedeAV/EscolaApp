@@ -52,7 +52,6 @@ import com.escolaapp.shared.components.AppLoadingIndicator
 import com.escolaapp.shared.components.AppNavigationBar
 import com.escolaapp.features.teacher.presentation.components.TeacherClassCard
 import com.escolaapp.shared.components.AppNavigationTab
-import io.ktor.http.parametersOf
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 

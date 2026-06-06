@@ -6,7 +6,6 @@ import com.escolaapp.core.data.models.StudentGradeSummaryResponse
 import com.escolaapp.features.teacher.domain.model.ClassGradeSummary
 import com.escolaapp.features.teacher.domain.model.GradeItem
 import com.escolaapp.core.domain.model.StudentGradeSummary
-import com.escolaapp.features.teacher.data.mapper.toDomain
 
 fun GradeItemResponse.toDomain() = GradeItem(
     gradeId = gradeId,

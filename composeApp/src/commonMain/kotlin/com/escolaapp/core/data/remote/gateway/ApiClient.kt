@@ -43,7 +43,7 @@ import kotlinx.serialization.json.jsonPrimitive
 class ApiException(val statusCode: Int, override val message: String) : Exception(message)
 
 class ApiClient(
-    private val baseUrl: String = "http://10.0.2.2:5239/api",
+    private val baseUrl: String,
 ) {
 
     @OptIn(ExperimentalSerializationApi::class)

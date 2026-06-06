@@ -7,3 +7,4 @@ class AndroidPlatform : Platform {
 }
 
 actual fun getPlatform(): Platform = AndroidPlatform()
+actual fun apiBaseUrl(): String = "http://10.0.2.2:5239/api"

@@ -1,5 +1,6 @@
 package com.escolaapp.core
 
+import com.escolaapp.apiBaseUrl
 import com.escolaapp.core.data.remote.gateway.ApiClient
 import com.escolaapp.core.data.repository.NoticeRepository
 import com.escolaapp.core.data.repository.StudentRepository
@@ -11,7 +12,7 @@ import org.koin.dsl.module
 
 val coreModule = module {
     // ApiClient
-    single { ApiClient() }
+    single { ApiClient(baseUrl = apiBaseUrl()) }
 
     // Core Repositories
     single { StudentRepository(get()) }

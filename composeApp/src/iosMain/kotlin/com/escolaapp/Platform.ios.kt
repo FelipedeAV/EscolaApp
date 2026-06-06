@@ -7,3 +7,4 @@ class IOSPlatform: Platform {
 }
 
 actual fun getPlatform(): Platform = IOSPlatform()
+actual fun apiBaseUrl(): String = "http://localhost:5239/api"

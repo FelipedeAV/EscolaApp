@@ -7,6 +7,7 @@ import com.escolaapp.core.data.repository.StudentRepository
 import com.escolaapp.core.data.repository.UserRepository
 import com.escolaapp.core.navigation.AppEventNavigator
 import com.escolaapp.core.navigation.NavigationViewModel
+import com.escolaapp.core.session.SessionManager
 import com.escolaapp.shared.presentation.profile.ProfileSettingsViewModel
 import com.escolaapp.shared.presentation.profile.ProfileViewModel
 import org.koin.dsl.module
@@ -14,6 +15,9 @@ import org.koin.dsl.module
 val coreModule = module {
     // ApiClient
     single { ApiClient(baseUrl = apiBaseUrl()) }
+
+    // Session
+    single { SessionManager() }
 
     // Core Repositories
     single { StudentRepository(get()) }
@@ -24,20 +28,6 @@ val coreModule = module {
     single<AppEventNavigator> { NavigationViewModel() }
 
     // Shared ViewModels
-    factory { (token: String, userId: Int) ->
-        ProfileViewModel(
-            userRepository = get(),
-            appEventNavigator = get(),
-            token = token,
-            userId = userId,
-        )
-    }
-    factory { (token: String, userId: Int) ->
-        ProfileSettingsViewModel(
-            userRepository = get(),
-            appEventNavigator = get(),
-            token = token,
-            userId = userId,
-        )
-    }
+    factory { ProfileViewModel(userRepository = get(), appEventNavigator = get(), sessionManager = get()) }
+    factory { ProfileSettingsViewModel(userRepository = get(), appEventNavigator = get(), sessionManager = get()) }
 }

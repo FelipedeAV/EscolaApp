@@ -26,7 +26,6 @@ import com.escolaapp.shared.components.AppTopBar
 import org.koin.compose.koinInject
 
 data class GradesScreen(
-    val token: String,
     val studentId: Int,
 ) : Screen {
 
@@ -36,7 +35,7 @@ data class GradesScreen(
         val uiState by viewModel.uiState.collectAsState()
 
         LaunchedEffect(Unit) {
-            viewModel.loadGrades(token, studentId)
+            viewModel.loadGrades(studentId)
         }
 
         Scaffold(

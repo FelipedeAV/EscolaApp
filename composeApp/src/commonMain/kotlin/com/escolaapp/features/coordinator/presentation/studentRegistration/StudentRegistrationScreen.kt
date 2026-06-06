@@ -34,6 +34,7 @@ import androidx.compose.material3.ExposedDropdownMenuDefaults
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.OutlinedButton
@@ -61,11 +62,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.core.session.SessionManager
 import com.escolaapp.features.coordinator.domain.model.StudentRegistrationForm
 import com.escolaapp.shared.theme.AppColors
 import com.escolaapp.shared.theme.AppColors.OutlineVariant
 import org.koin.compose.koinInject
-import org.koin.core.parameter.parametersOf
 
 // ─── Actions ──────────────────────────────────────────────────────────────────
 
@@ -84,11 +85,12 @@ data class StudentRegistrationActions(
 
 // ─── Screen ───────────────────────────────────────────────────────────────────
 
-class StudentRegistrationScreen(private val token: String) : Screen {
+class StudentRegistrationScreen : Screen {
 
     @Composable
     override fun Content() {
-        val viewModel: StudentRegistrationViewModel = koinInject { parametersOf(token) }
+        val viewModel: StudentRegistrationViewModel = koinInject()
+        val sessionManager: SessionManager = koinInject()
         val uiState by viewModel.uiState.collectAsState()
 
         LaunchedEffect(uiState.isSuccess) {

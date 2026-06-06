@@ -64,19 +64,12 @@ import com.escolaapp.features.coordinator.domain.model.RecentActivity
 import com.escolaapp.features.coordinator.domain.model.SemesterStats
 import com.escolaapp.shared.theme.AppColors
 import org.koin.compose.koinInject
-import org.koin.core.parameter.parametersOf
 
-data class CoordinatorDashboardScreen(
-    val token: String,
-    val userId: Int,
-    val name: String,
-    val email: String,
-    val role: String,
-) : Screen {
+class CoordinatorDashboardScreen() : Screen {
 
     @Composable
     override fun Content() {
-        val viewModel: CoordinatorDashboardViewModel = koinInject { parametersOf(token) }
+        val viewModel: CoordinatorDashboardViewModel = koinInject()
         val uiState by viewModel.uiState.collectAsState()
 
         CoordinatorDashboardContent(

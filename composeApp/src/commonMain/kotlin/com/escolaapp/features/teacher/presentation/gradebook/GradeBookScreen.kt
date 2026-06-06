@@ -17,7 +17,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
@@ -27,7 +27,6 @@ import androidx.compose.material.icons.outlined.KeyboardArrowDown
 import androidx.compose.material.icons.outlined.KeyboardArrowUp
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -64,14 +63,13 @@ import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 
 data class GradeBookScreen(
-    val token: String,
     val classId: Int,
     val bimester: Int = 1,
 ) : Screen {
 
     @Composable
     override fun Content() {
-        val viewModel: GradeBookViewModel = koinInject { parametersOf(token, classId, bimester) }
+        val viewModel: GradeBookViewModel = koinInject { parametersOf(classId, bimester) }
         val uiState by viewModel.uiState.collectAsState()
 
         GradeBookScreenContent(

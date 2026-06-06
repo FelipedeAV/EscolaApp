@@ -2,6 +2,7 @@ package com.escolaapp.features.guardian.presentation.attendance
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.guardian.data.repository.AttendanceRepository
 import com.escolaapp.features.teacher.domain.model.Attendance
@@ -22,16 +23,17 @@ data class AttendanceUiState(
 class AttendanceViewModel(
     private val attendanceRepository: AttendanceRepository,
     private val appEventNavigator: AppEventNavigator,
+    private val sessionManager: SessionManager,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(AttendanceUiState())
     val uiState: StateFlow<AttendanceUiState> = _uiState.asStateFlow()
 
-    fun loadAttendance(token: String, studentId: Int) {
+    fun loadAttendance(studentId: Int) {
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
-                val attendances = attendanceRepository.getAttendanceByStudent(token, studentId)
+                val attendances = attendanceRepository.getAttendanceByStudent(sessionManager.token, studentId)
                 _uiState.update {
                     it.copy(
                         isLoading = false,

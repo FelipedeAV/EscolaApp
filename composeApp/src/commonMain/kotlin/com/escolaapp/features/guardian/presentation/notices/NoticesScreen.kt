@@ -24,9 +24,7 @@ import com.escolaapp.shared.components.AppLoadingIndicator
 import com.escolaapp.shared.components.AppTopBar
 import org.koin.compose.koinInject
 
-data class NoticesScreen(
-    val token: String,
-) : Screen {
+class NoticesScreen() : Screen {
 
     @Composable
     override fun Content() {
@@ -34,7 +32,7 @@ data class NoticesScreen(
         val uiState by viewModel.uiState.collectAsState()
 
         LaunchedEffect(Unit) {
-            viewModel.loadNotices(token)
+            viewModel.loadNotices()
         }
 
         Scaffold(

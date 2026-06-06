@@ -7,5 +7,5 @@ import org.koin.dsl.module
 val authModule = module {
     single { AuthRepository(get()) }
 
-    factory { LoginViewModel(authRepository = get(), appEventNavigator = get()) }
+    factory { LoginViewModel(authRepository = get(), appEventNavigator = get(), sessionManager = get()) }
 }

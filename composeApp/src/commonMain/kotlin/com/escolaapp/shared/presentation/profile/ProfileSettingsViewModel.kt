@@ -4,6 +4,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.data.repository.UserRepository
 import com.escolaapp.core.navigation.NavigationEvent
+import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.core.navigation.AppEventNavigator
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,8 +22,7 @@ data class ProfileSettingsUiState(
 class ProfileSettingsViewModel(
     private val userRepository: UserRepository,
     private val appEventNavigator: AppEventNavigator,
-    private val token: String,
-    private val userId: Int,
+    private val sessionManager: SessionManager,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(ProfileSettingsUiState())
@@ -46,7 +46,7 @@ class ProfileSettingsViewModel(
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null, success = null) }
             try {
-                userRepository.changePassword(token, userId, currentPassword, newPassword)
+                userRepository.changePassword(sessionManager.token, sessionManager.userId, currentPassword, newPassword)
                 _uiState.update {
                     it.copy(
                         isLoading = false,

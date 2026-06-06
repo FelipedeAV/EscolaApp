@@ -4,6 +4,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.navigation.AppEventNavigator
 import com.escolaapp.core.navigation.NavigationEvent
+import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.coordinator.data.repository.CoordinatorRepository
 import com.escolaapp.features.coordinator.domain.model.CoordinatorDashboard
@@ -26,7 +27,7 @@ data class CoordinatorDashboardUiState(
 class CoordinatorDashboardViewModel(
     private val repository: CoordinatorRepository,
     private val appEventNavigator: AppEventNavigator,
-    private val token: String,
+    private val sessionManager: SessionManager,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(CoordinatorDashboardUiState())
@@ -41,7 +42,7 @@ class CoordinatorDashboardViewModel(
     fun loadDashboard() {
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
-            runCatching { repository.getDashboard(token) }
+            runCatching { repository.getDashboard(sessionManager.token) }
                 .onSuccess { dashboard ->
                     _uiState.update { it.copy(isLoading = false, dashboard = dashboard) }
                 }
@@ -60,7 +61,7 @@ class CoordinatorDashboardViewModel(
 
     fun onQuickActionTap(key: String) {
         val event = when (key) {
-            "register_student" -> NavigationEvent.GoToStudentRegistration(token = token)
+            "register_student" -> NavigationEvent.GoToStudentRegistration
             "add_teacher"      -> NavigationEvent.GoToAddTeacher
             else               -> return
         }

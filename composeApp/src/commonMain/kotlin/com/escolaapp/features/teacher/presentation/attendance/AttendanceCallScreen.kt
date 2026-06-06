@@ -48,13 +48,12 @@ import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 
 data class AttendanceCallScreen(
-    val token: String,
     val classId: Int,
 ) : Screen {
 
     @Composable
     override fun Content() {
-        val viewModel: AttendanceCallViewModel = koinInject { parametersOf(token, classId) }
+        val viewModel: AttendanceCallViewModel = koinInject { parametersOf(classId) }
         val uiState by viewModel.uiState.collectAsState()
 
         AttendanceCallScreenContent(

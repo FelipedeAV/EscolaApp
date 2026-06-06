@@ -14,8 +14,8 @@ val guardianModule = module {
     single { GradeRepository(get()) }
 
     // ViewModels
-    factory { DashboardViewModel(studentRepository = get(), appEventNavigator = get()) }
-    factory { GradesViewModel(gradeRepository = get(), appEventNavigator = get()) }
-    factory { AttendanceViewModel(attendanceRepository = get(), appEventNavigator = get()) }
-    factory { NoticesViewModel(noticeRepository = get(), appEventNavigator = get()) }
+    factory { DashboardViewModel(studentRepository = get(), appEventNavigator = get(), sessionManager = get()) }
+    factory { GradesViewModel(gradeRepository = get(), appEventNavigator = get(), sessionManager = get()) }
+    factory { AttendanceViewModel(attendanceRepository = get(), appEventNavigator = get(), sessionManager = get()) }
+    factory { NoticesViewModel(noticeRepository = get(), appEventNavigator = get(), sessionManager = get()) }
 }

@@ -2,6 +2,7 @@ package com.escolaapp.features.guardian.presentation.grades
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.guardian.data.repository.GradeRepository
 import com.escolaapp.features.teacher.domain.model.Grade
@@ -22,16 +23,17 @@ data class GradesUiState(
 class GradesViewModel(
     private val gradeRepository: GradeRepository,
     private val appEventNavigator: AppEventNavigator,
+    private val sessionManager: SessionManager,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(GradesUiState())
     val uiState: StateFlow<GradesUiState> = _uiState.asStateFlow()
 
-    fun loadGrades(token: String, studentId: Int) {
+    fun loadGrades(studentId: Int) {
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
-                val grades = gradeRepository.getGradesByStudent(token, studentId)
+                val grades = gradeRepository.getGradesByStudent(sessionManager.token, studentId)
                 _uiState.update {
                     it.copy(
                         isLoading = false,

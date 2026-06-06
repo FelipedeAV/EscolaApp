@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
@@ -23,30 +24,26 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.core.session.SessionManager
 import com.escolaapp.shared.components.AppErrorState
 import com.escolaapp.shared.components.AppLoadingIndicator
 import com.escolaapp.shared.components.AppTopBar
 import org.koin.compose.koinInject
 
-data class DashboardScreen(
-    val token: String,
-    val userId: Int,
-    val name: String,
-    val email: String,
-    val role: String,
-) : Screen {
+class DashboardScreen() : Screen {
 
     @Composable
     override fun Content() {
         val viewModel: DashboardViewModel = koinInject()
+        val sessionManager: SessionManager = koinInject()
         val uiState by viewModel.uiState.collectAsState()
 
-        val isTeacher = role == "Teacher"
+        val isTeacher = sessionManager.role == "Teacher"
         val linkedStudentId = uiState.student?.id
 
         LaunchedEffect(isTeacher) {
             if (!isTeacher) {
-                viewModel.loadStudent(token, userId)
+                viewModel.loadStudent()
             }
         }
 
@@ -56,7 +53,7 @@ data class DashboardScreen(
                     title = "Dashboard",
                     showBackButton = false,
                     actions = {
-                        IconButton(onClick = { viewModel.navigateToProfile(token, userId, name, email, role) }) {
+                        IconButton(onClick = { viewModel.navigateToProfile() }) {
                             Text(text = "P")
                         }
                     },
@@ -81,7 +78,7 @@ data class DashboardScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp),
             ) {
                 Text(
-                    text = "Olá, $name",
+                    text = "Olá, ${sessionManager.name}",
                     style = MaterialTheme.typography.headlineSmall,
                 )
 
@@ -116,19 +113,19 @@ data class DashboardScreen(
 
                 // Botões visíveis para todos
                 Button(
-                    onClick = { linkedStudentId?.let { viewModel.navigateToGrades(token, it) } },
+                    onClick = { linkedStudentId?.let { viewModel.navigateToGrades(it) } },
                     enabled = linkedStudentId != null,
                     modifier = Modifier.fillMaxWidth(),
                 ) { Text("Ver Notas") }
 
                 Button(
-                    onClick = { linkedStudentId?.let { viewModel.navigateToAttendance(token, it) } },
+                    onClick = { linkedStudentId?.let { viewModel.navigateToAttendance(it) } },
                     enabled = linkedStudentId != null,
                     modifier = Modifier.fillMaxWidth(),
                 ) { Text("Ver Frequência") }
 
                 Button(
-                    onClick = { viewModel.navigateToNotices(token) },
+                    onClick = { viewModel.navigateToNotices() },
                     modifier = Modifier.fillMaxWidth(),
                 ) { Text("Ver Avisos") }
 
@@ -143,17 +140,17 @@ data class DashboardScreen(
                     )
 
                     OutlinedButton(
-                        onClick = { viewModel.navigateToAddGrade(token) },
+                        onClick = { viewModel.navigateToAddGrade() },
                         modifier = Modifier.fillMaxWidth(),
                     ) { Text("Lançar Nota") }
 
                     OutlinedButton(
-                        onClick = { viewModel.navigateToAddAttendance(token) },
+                        onClick = { viewModel.navigateToAddAttendance() },
                         modifier = Modifier.fillMaxWidth(),
                     ) { Text("Lançar Frequência") }
 
                     OutlinedButton(
-                        onClick = { viewModel.navigateToAddNotice(token) },
+                        onClick = { viewModel.navigateToAddNotice() },
                         modifier = Modifier.fillMaxWidth(),
                     ) { Text("Criar Aviso") }
                 }

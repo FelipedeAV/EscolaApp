@@ -8,9 +8,9 @@ import kotlinx.coroutines.flow.asSharedFlow
 class NavigationViewModel : ScreenModel, AppEventNavigator {
 
     private val _events = MutableSharedFlow<NavigationEvent>()
-    val events: SharedFlow<NavigationEvent> = _events.asSharedFlow()
+    override val events: SharedFlow<NavigationEvent> = _events.asSharedFlow()
 
-    suspend fun emit(event: NavigationEvent) {
+    override suspend fun emit(event: NavigationEvent) {
         _events.emit(event)
     }
 }

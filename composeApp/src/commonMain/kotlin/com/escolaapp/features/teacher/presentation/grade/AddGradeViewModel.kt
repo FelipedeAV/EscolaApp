@@ -5,6 +5,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.data.remote.gateway.ApiClient
 import com.escolaapp.core.data.models.GradeRequest
 import com.escolaapp.core.navigation.NavigationEvent
+import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.core.navigation.AppEventNavigator
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +23,7 @@ data class AddGradeUiState(
 class AddGradeViewModel(
     private val apiClient: ApiClient,
     private val appEventNavigator: AppEventNavigator,
-    private val token: String,
+    private val sessionManager: SessionManager,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(AddGradeUiState())
@@ -33,7 +34,7 @@ class AddGradeViewModel(
             _uiState.update { it.copy(isLoading = true, error = null, success = null) }
             try {
                 apiClient.addGrade(
-                    token = token,
+                    token = sessionManager.token,
                     request = GradeRequest(
                         studentId = studentId,
                         subject = subject,

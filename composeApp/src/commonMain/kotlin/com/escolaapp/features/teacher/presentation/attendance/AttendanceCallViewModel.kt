@@ -2,6 +2,7 @@ package com.escolaapp.features.teacher.presentation.attendance
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.teacher.data.repository.AttendanceSummaryRepository
 import com.escolaapp.features.teacher.domain.model.AttendanceSummary
@@ -28,7 +29,7 @@ data class AttendanceCallUiState(
 class AttendanceCallViewModel(
     private val repository: AttendanceSummaryRepository,
     private val appEventNavigator: AppEventNavigator,
-    private val token: String,
+    private val sessionManager: SessionManager,
     private val classId: Int,
 ) : ScreenModel {
 
@@ -45,7 +46,7 @@ class AttendanceCallViewModel(
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null, currentDate = date) }
             try {
-                val summary = repository.getSummary(token, classId, date)
+                val summary = repository.getSummary(sessionManager.token, classId, date)
 
                 val initialStatuses = summary.students.associate { student ->
                     student.id to when (student.status) {
@@ -108,7 +109,7 @@ class AttendanceCallViewModel(
                 repository.sendBatchAttendance(
                     classId = summary.classId,
                     date = state.currentDate,
-                    token = token,
+                    token = sessionManager.token,
                     attendances = state.studentStatuses.filterValues { it != null }
                         .mapValues { it.value!! },
                     notes = state.studentNotes,

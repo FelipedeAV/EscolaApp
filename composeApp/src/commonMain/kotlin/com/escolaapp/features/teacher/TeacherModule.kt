@@ -18,59 +18,12 @@ val teacherModule = module {
     single { AttendanceSummaryRepository(get()) }
     single { GradeBookRepository(get()) }
 
-    // ViewModels with parameters
-    factory { (token: String) ->
-        AddGradeViewModel(
-            apiClient = get(),
-            appEventNavigator = get(),
-            token = token,
-        )
-    }
-    factory { (token: String) ->
-        AddAttendanceViewModel(
-            apiClient = get(),
-            appEventNavigator = get(),
-            token = token,
-        )
-    }
-    factory { (token: String) ->
-        AddNoticeViewModel(
-            apiClient = get(),
-            appEventNavigator = get(),
-            token = token,
-        )
-    }
-    factory { (token: String, teacherId: Int) ->
-        TeacherDashboardViewModel(
-            classRepository = get(),
-            appEventNavigator = get(),
-            token = token,
-            teacherId = teacherId,
-        )
-    }
-    factory { (token: String, classId: Int) ->
-        AttendanceCallViewModel(
-            repository = get(),
-            appEventNavigator = get(),
-            token = token,
-            classId = classId,
-        )
-    }
-    factory { (token: String, classId: Int, bimester: Int) ->
-        GradeBookViewModel(
-            repository = get(),
-            appEventNavigator = get(),
-            token = token,
-            classId = classId,
-            initialBimester = bimester,
-        )
-    }
-    factory { (token: String, teacherId: Int) ->
-        ClassListViewModel(
-            classRepository = get(),
-            appEventNavigator = get(),
-            token = token,
-            teacherId = teacherId,
-        )
-    }
+    // ViewModels
+    factory { AddGradeViewModel(apiClient = get(), appEventNavigator = get(), sessionManager = get()) }
+    factory { AddAttendanceViewModel(apiClient = get(), appEventNavigator = get(), sessionManager = get()) }
+    factory { AddNoticeViewModel(apiClient = get(), appEventNavigator = get(), sessionManager = get()) }
+    factory { TeacherDashboardViewModel(classRepository = get(), appEventNavigator = get(), sessionManager = get()) }
+    factory { (classId: Int) -> AttendanceCallViewModel(repository = get(), appEventNavigator = get(), sessionManager = get(), classId = classId) }
+    factory { (classId: Int, bimester: Int) -> GradeBookViewModel(repository = get(), appEventNavigator = get(), sessionManager = get(), classId = classId, initialBimester = bimester) }
+    factory { (teacherId: Int) -> ClassListViewModel(classRepository = get(), appEventNavigator = get(), sessionManager = get(), teacherId = teacherId) }
 }

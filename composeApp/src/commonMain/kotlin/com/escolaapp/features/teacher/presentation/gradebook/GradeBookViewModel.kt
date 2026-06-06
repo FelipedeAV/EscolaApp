@@ -2,6 +2,7 @@ package com.escolaapp.features.teacher.presentation.gradebook
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.teacher.data.repository.GradeBookRepository
 import com.escolaapp.features.teacher.domain.model.ClassGradeSummary
@@ -29,7 +30,7 @@ data class GradeBookUiState(
 class GradeBookViewModel(
     private val repository: GradeBookRepository,
     private val appEventNavigator: AppEventNavigator,
-    private val token: String,
+    private val sessionManager: SessionManager,
     private val classId: Int,
     private val initialBimester: Int = 1,
 ) : ScreenModel {
@@ -45,7 +46,7 @@ class GradeBookViewModel(
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
-                val summary = repository.getClassGradeSummary(token, classId, bimester)
+                val summary = repository.getClassGradeSummary(sessionManager.token, classId, bimester)
                 val initialGrades = mutableMapOf<Pair<Int, String>, Double>()
                 summary.students.forEach { student ->
                     student.grades.forEach { grade ->
@@ -96,7 +97,7 @@ class GradeBookViewModel(
             _uiState.update { it.copy(isSaving = true, error = null) }
             try {
                 repository.sendBatchGrades(
-                    token = token,
+                    token = sessionManager.token,
                     classId = classId,
                     bimester = bimester,
                     grades = grades,
@@ -129,7 +130,7 @@ class GradeBookViewModel(
             _uiState.update { it.copy(isSaving = true, error = null) }
             try {
                 repository.sendBatchGrades(
-                    token = token,
+                    token = sessionManager.token,
                     classId = classId,
                     bimester = state.selectedBimester,
                     grades = grades,

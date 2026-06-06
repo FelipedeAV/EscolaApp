@@ -30,132 +30,51 @@ fun NavigationHandler(
             when (event) {
                 is NavigationEvent.ToDashboard -> {
                     when (event.role) {
-                        "Teacher" -> {
-                            navigator.replace(
-                                TeacherDashboardScreen(
-                                    token = event.token,
-                                    userId = event.userId,
-                                    name = event.name,
-                                    email = event.email,
-                                    role = event.role,
-                                )
-                            )
-                        }
-                        "Coordinator" -> {
-                            navigator.replace(
-                                CoordinatorDashboardScreen(
-                                    token = event.token,
-                                    userId = event.userId,
-                                    name = event.name,
-                                    email = event.email,
-                                    role = event.role,
-                                )
-                            )
-                        }
-                        else -> {
-                            navigator.replace(
-                                DashboardScreen(
-                                    token = event.token,
-                                    userId = event.userId,
-                                    name = event.name,
-                                    email = event.email,
-                                    role = event.role,
-                                )
-                            )
-                        }
+                        "Teacher" -> navigator.replace(TeacherDashboardScreen())
+                        "Coordinator" -> navigator.replace(CoordinatorDashboardScreen())
+                        else -> navigator.replace(DashboardScreen())
                     }
                 }
 
                 is NavigationEvent.ToGrades -> navigator.push(
-                    GradesScreen(
-                        token = event.token,
-                        studentId = event.studentId,
-                    )
+                    GradesScreen(studentId = event.studentId)
                 )
 
                 is NavigationEvent.ToAttendance -> navigator.push(
-                    AttendanceScreen(
-                        token = event.token,
-                        studentId = event.studentId,
-                    )
+                    AttendanceScreen(studentId = event.studentId)
                 )
 
-                is NavigationEvent.ToNotices -> navigator.push(
-                    NoticesScreen(token = event.token)
-                )
+                is NavigationEvent.ToNotices -> navigator.push(NoticesScreen())
 
-                is NavigationEvent.ToAddGrade -> navigator.push(
-                    AddGradeScreen(token = event.token)
-                )
+                is NavigationEvent.ToAddGrade -> navigator.push(AddGradeScreen())
 
-                is NavigationEvent.ToAddAttendance -> navigator.push(
-                    AddAttendanceScreen(token = event.token)
-                )
+                is NavigationEvent.ToAddAttendance -> navigator.push(AddAttendanceScreen())
 
-                is NavigationEvent.ToAddNotice -> navigator.push(
-                    AddNoticeScreen(token = event.token)
-                )
+                is NavigationEvent.ToAddNotice -> navigator.push(AddNoticeScreen())
 
-                is NavigationEvent.ToProfile -> navigator.push(
-                    ProfileScreen(
-                        token  = event.token,
-                        userId = event.userId,
-                        name   = event.name,
-                        email  = event.email,
-                        role   = event.role,
-                    )
-                )
+                is NavigationEvent.ToProfile -> navigator.push(ProfileScreen())
 
-                is NavigationEvent.ToProfileSettings -> navigator.push(
-                    ProfileSettingsScreen(
-                        token = event.token,
-                        userId = event.userId,
-                    )
-                )
+                is NavigationEvent.ToProfileSettings -> navigator.push(ProfileSettingsScreen())
 
                 is NavigationEvent.ToAttendanceCall -> navigator.push(
-                    AttendanceCallScreen(
-                        token = event.token,
-                        classId = event.classId,
-                    )
+                    AttendanceCallScreen(classId = event.classId)
                 )
 
                 is NavigationEvent.ToGradeBook -> navigator.push(
-                    GradeBookScreen(
-                        token = event.token,
-                        classId = event.classId,
-                        bimester = event.bimester,
-                    )
+                    GradeBookScreen(classId = event.classId, bimester = event.bimester)
                 )
 
                 is NavigationEvent.ToClassList -> navigator.push(
-                    ClassListScreen(
-                        token = event.token,
-                        teacherId = event.teacherId,
-                        mode = event.mode,
-                        name = event.name,
-                        email = event.email,
-                        role = event.role,
-                    )
+                    ClassListScreen(teacherId = event.teacherId, mode = event.mode)
                 )
 
                 is NavigationEvent.ToLogin -> navigator.replace(LoginScreen())
 
                 is NavigationEvent.GoBack -> navigator.pop()
 
-                is NavigationEvent.ToTeacherDashboard -> navigator.replace(
-                    TeacherDashboardScreen(
-                        token = event.token,
-                        userId = event.userId,
-                        name = event.name,
-                        email = event.email,
-                        role = event.role,
-                    )
-                )
+                is NavigationEvent.ToTeacherDashboard -> navigator.replace(TeacherDashboardScreen())
 
-                is NavigationEvent.GoToStudentRegistration -> navigator.push(
-                    StudentRegistrationScreen(token = event.token)
-                )
+                is NavigationEvent.GoToStudentRegistration -> navigator.push(StudentRegistrationScreen())
 
                 NavigationEvent.GoToAddTeacher -> TODO()
                 NavigationEvent.GoToClassManagement -> TODO()

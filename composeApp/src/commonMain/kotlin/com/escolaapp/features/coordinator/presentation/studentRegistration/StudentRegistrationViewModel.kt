@@ -4,6 +4,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.navigation.AppEventNavigator
 import com.escolaapp.core.navigation.NavigationEvent
+import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.coordinator.data.repository.StudentRegistrationRepository
 import com.escolaapp.features.coordinator.domain.model.StudentRegistrationForm
@@ -29,7 +30,7 @@ data class StudentRegistrationUiState(
 class StudentRegistrationViewModel(
     private val repository: StudentRegistrationRepository,
     private val appEventNavigator: AppEventNavigator,
-    private val token: String,
+    private val sessionManager: SessionManager,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(StudentRegistrationUiState())
@@ -75,7 +76,7 @@ class StudentRegistrationViewModel(
 
         screenModelScope.launch {
             _uiState.update { it.copy(isSubmitting = true, errorMessage = null) }
-            runCatching { repository.register(token, _uiState.value.form) }
+            runCatching { repository.register(sessionManager.token, _uiState.value.form) }
                 .onSuccess {
                     _uiState.update { it.copy(isSubmitting = false, isSuccess = true) }
                 }

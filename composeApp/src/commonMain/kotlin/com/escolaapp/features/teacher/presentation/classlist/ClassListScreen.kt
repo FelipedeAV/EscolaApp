@@ -45,6 +45,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.core.session.SessionManager
 import com.escolaapp.features.teacher.domain.model.Class
 import com.escolaapp.core.domain.model.ClassListMode
 import com.escolaapp.shared.components.AppHeader
@@ -56,34 +57,23 @@ import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 
 data class ClassListScreen(
-    val token: String,
     val teacherId: Int,
     val mode: ClassListMode,
-    val name: String,
-    val email: String,
-    val role: String,
 ) : Screen {
 
     @OptIn(ExperimentalMaterial3Api::class)
     @Composable
     override fun Content() {
-        val viewModel: ClassListViewModel = koinInject { parametersOf(token, teacherId) }
+        val viewModel: ClassListViewModel = koinInject { parametersOf(teacherId) }
+        val sessionManager: SessionManager = koinInject()
         val uiState by viewModel.uiState.collectAsState()
 
         ClassListScreenContent(
             uiState = uiState,
-            name = name,
+            name = sessionManager.name,
             mode = mode,
             onSearchQueryChanged = viewModel::onSearchQueryChanged,
-            onTabSelected = { tab ->
-                viewModel.onTabSelected(
-                    tab,
-                    teacherId,
-                    name,
-                    email,
-                    role,
-                )
-            },
+            onTabSelected = { tab -> viewModel.onTabSelected(tab) },
             onClassSelected = { classId, classMode ->
                 viewModel.navigateToClass(
                     classId,

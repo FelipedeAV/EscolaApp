@@ -12,19 +12,6 @@ val coordinatorModule = module {
     single { StudentRegistrationRepository(get()) }
 
     // ViewModels
-    factory { (token: String) ->
-        CoordinatorDashboardViewModel(
-            repository = get(),
-            appEventNavigator = get(),
-            token = token,
-        )
-    }
-
-    factory { (token: String) ->
-        StudentRegistrationViewModel(
-            repository = get(),
-            appEventNavigator = get(),
-            token = token,
-        )
-    }
+    factory { CoordinatorDashboardViewModel(repository = get(), appEventNavigator = get(), sessionManager = get()) }
+    factory { StudentRegistrationViewModel(repository = get(), appEventNavigator = get(), sessionManager = get()) }
 }

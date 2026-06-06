@@ -3,6 +3,7 @@ package com.escolaapp.features.auth.presentation.login
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.data.remote.gateway.ApiException
+import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.auth.data.repository.AuthRepository
 import com.escolaapp.core.navigation.NavigationEvent
@@ -21,6 +22,7 @@ data class LoginUiState(
 class LoginViewModel(
     private val authRepository: AuthRepository,
     private val appEventNavigator: AppEventNavigator,
+    private val sessionManager: SessionManager,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -31,14 +33,15 @@ class LoginViewModel(
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
                 val result = authRepository.login(email, password)
+                sessionManager.save(
+                    token = result.token,
+                    userId = result.userId,
+                    name = result.name,
+                    email = email,
+                    role = result.role,
+                )
                 appEventNavigator.emit(
-                    NavigationEvent.ToDashboard(
-                        token = result.token,
-                        userId = result.userId,
-                        name = result.name,
-                        email = email,
-                        role = result.role,
-                    )
+                    NavigationEvent.ToDashboard(role = result.role)
                 )
             } catch (e: ApiException) {
                 _uiState.update {

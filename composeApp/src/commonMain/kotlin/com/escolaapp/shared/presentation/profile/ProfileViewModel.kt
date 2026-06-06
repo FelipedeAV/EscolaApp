@@ -6,6 +6,7 @@ import com.escolaapp.core.data.repository.UserRepository
 import com.escolaapp.core.domain.model.User
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.navigation.AppEventNavigator
+import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.core.domain.model.ClassListMode
 import com.escolaapp.shared.components.AppNavigationTab
@@ -24,8 +25,7 @@ data class ProfileUiState(
 class ProfileViewModel(
     private val userRepository: UserRepository,
     private val appEventNavigator: AppEventNavigator,
-    private val token: String,
-    private val userId: Int,
+    private val sessionManager: SessionManager,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
@@ -39,7 +39,7 @@ class ProfileViewModel(
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
-                val user = userRepository.getUserById(token, userId)
+                val user = userRepository.getUserById(sessionManager.token, sessionManager.userId)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -57,68 +57,30 @@ class ProfileViewModel(
         }
     }
 
-    fun onTabSelected(tab: AppNavigationTab, name: String, email: String, role: String) {
+    fun onTabSelected(tab: AppNavigationTab) {
         when (tab) {
-            AppNavigationTab.CLASSES -> {
-                navigateToClassList(
-                    mode = ClassListMode.SELECT_ACTION,
-                    name = name,
-                    email = email,
-                    role = role,
-                )
-            }
-
+            AppNavigationTab.CLASSES -> navigateToClassList(mode = ClassListMode.SELECT_ACTION)
             AppNavigationTab.SETTINGS -> Unit
-
-            AppNavigationTab.HOME -> {
-                navigateToHome(
-                    name = name,
-                    email = email,
-                    role = role,
-                )
-            }
+            AppNavigationTab.HOME -> navigateToHome()
         }
     }
 
-    fun navigateToClassList(
-        mode: ClassListMode,
-        name: String,
-        email: String,
-        role: String,
-    ) {
+    fun navigateToClassList(mode: ClassListMode) {
         screenModelScope.launch {
             appEventNavigator.emit(
                 NavigationEvent.ToClassList(
-                    token     = token,
-                    teacherId = userId,
-                    name      = name,
-                    email     = email,
-                    role      = role,
-                    mode      = mode,
+                    teacherId = sessionManager.userId,
+                    mode = mode,
                 )
             )
         }
     }
 
-    fun navigateToHome(name: String, email: String, role: String) {
+    fun navigateToHome() {
         screenModelScope.launch {
-            appEventNavigator.emit(
-                NavigationEvent.ToDashboard(
-                    token = token,
-                    userId = userId,
-                    name = name,
-                    email = email,
-                    role = role,
-                )
-            )
+            appEventNavigator.emit(NavigationEvent.ToDashboard(role = sessionManager.role))
         }
     }
-
-//    fun navigateBack() {
-//        screenModelScope.launch {
-//            appEventNavigator.emit(NavigationEvent.Back)
-//        }
-//    }
 
     fun logout() {
         screenModelScope.launch {

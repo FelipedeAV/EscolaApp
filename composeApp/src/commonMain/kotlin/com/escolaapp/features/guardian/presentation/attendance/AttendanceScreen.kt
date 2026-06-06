@@ -26,7 +26,6 @@ import com.escolaapp.shared.components.AppTopBar
 import org.koin.compose.koinInject
 
 data class AttendanceScreen(
-    val token: String,
     val studentId: Int,
 ) : Screen {
 
@@ -36,7 +35,7 @@ data class AttendanceScreen(
         val uiState by viewModel.uiState.collectAsState()
 
         LaunchedEffect(Unit) {
-            viewModel.loadAttendance(token, studentId)
+            viewModel.loadAttendance(studentId)
         }
 
         Scaffold(

@@ -4,6 +4,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.data.repository.NoticeRepository
 import com.escolaapp.core.domain.model.Notice
+import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.navigation.AppEventNavigator
@@ -22,16 +23,17 @@ data class NoticesUiState(
 class NoticesViewModel(
     private val noticeRepository: NoticeRepository,
     private val appEventNavigator: AppEventNavigator,
+    private val sessionManager: SessionManager,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(NoticesUiState())
     val uiState: StateFlow<NoticesUiState> = _uiState.asStateFlow()
 
-    fun loadNotices(token: String) {
+    fun loadNotices() {
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
-                val notices = noticeRepository.getNotices(token)
+                val notices = noticeRepository.getNotices(sessionManager.token)
                 _uiState.update {
                     it.copy(
                         isLoading = false,

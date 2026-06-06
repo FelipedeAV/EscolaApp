@@ -4,6 +4,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.data.repository.StudentRepository
 import com.escolaapp.core.domain.model.Student
+import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.navigation.AppEventNavigator
@@ -22,18 +23,19 @@ data class DashboardUiState(
 class DashboardViewModel(
     private val studentRepository: StudentRepository,
     private val appEventNavigator: AppEventNavigator,
+    private val sessionManager: SessionManager,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(DashboardUiState())
     val uiState: StateFlow<DashboardUiState> = _uiState.asStateFlow()
 
-    fun loadStudent(token: String, userId: Int) {
+    fun loadStudent() {
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
                 val student = studentRepository
-                    .getStudents(token)
-                    .firstOrNull { it.userId == userId }
+                    .getStudents(sessionManager.token)
+                    .firstOrNull { it.userId == sessionManager.userId }
                     ?: throw IllegalStateException("Aluno não encontrado para este responsável")
 
                 _uiState.update {
@@ -53,65 +55,35 @@ class DashboardViewModel(
         }
     }
 
-    fun navigateToGrades(token: String, studentId: Int) {
+    fun navigateToGrades(studentId: Int) {
         screenModelScope.launch {
-            appEventNavigator.emit(
-                NavigationEvent.ToGrades(
-                    token = token,
-                    studentId = studentId,
-                )
-            )
+            appEventNavigator.emit(NavigationEvent.ToGrades(studentId = studentId))
         }
     }
 
-    fun navigateToAttendance(token: String, studentId: Int) {
+    fun navigateToAttendance(studentId: Int) {
         screenModelScope.launch {
-            appEventNavigator.emit(
-                NavigationEvent.ToAttendance(
-                    token = token,
-                    studentId = studentId,
-                )
-            )
+            appEventNavigator.emit(NavigationEvent.ToAttendance(studentId = studentId))
         }
     }
 
-    fun navigateToNotices(token: String) {
-        screenModelScope.launch {
-            appEventNavigator.emit(
-                NavigationEvent.ToNotices(token = token)
-            )
-        }
+    fun navigateToNotices() {
+        screenModelScope.launch { appEventNavigator.emit(NavigationEvent.ToNotices) }
     }
 
-    fun navigateToAddGrade(token: String) {
-        screenModelScope.launch {
-            appEventNavigator.emit(NavigationEvent.ToAddGrade(token = token))
-        }
+    fun navigateToAddGrade() {
+        screenModelScope.launch { appEventNavigator.emit(NavigationEvent.ToAddGrade) }
     }
 
-    fun navigateToAddAttendance(token: String) {
-        screenModelScope.launch {
-            appEventNavigator.emit(NavigationEvent.ToAddAttendance(token = token))
-        }
+    fun navigateToAddAttendance() {
+        screenModelScope.launch { appEventNavigator.emit(NavigationEvent.ToAddAttendance) }
     }
 
-    fun navigateToAddNotice(token: String) {
-        screenModelScope.launch {
-            appEventNavigator.emit(NavigationEvent.ToAddNotice(token = token))
-        }
+    fun navigateToAddNotice() {
+        screenModelScope.launch { appEventNavigator.emit(NavigationEvent.ToAddNotice) }
     }
 
-    fun navigateToProfile(token: String, userId: Int, name: String, email: String, role: String) {
-        screenModelScope.launch {
-            appEventNavigator.emit(
-                NavigationEvent.ToProfile(
-                    token = token,
-                    userId = userId,
-                    name = name,
-                    email = email,
-                    role = role,
-                )
-            )
-        }
+    fun navigateToProfile() {
+        screenModelScope.launch { appEventNavigator.emit(NavigationEvent.ToProfile) }
     }
 }

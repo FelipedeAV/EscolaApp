@@ -37,32 +37,25 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
+import com.escolaapp.core.session.SessionManager
 import com.escolaapp.shared.components.AppHeader
 import com.escolaapp.shared.components.AppNavigationBar
 import com.escolaapp.shared.components.AppNavigationTab
 import com.escolaapp.shared.theme.AppColors
 import org.koin.compose.koinInject
-import org.koin.core.parameter.parametersOf
 
-data class ProfileScreen(
-    val token: String,
-    val userId: Int,
-    val name: String,
-    val email: String,
-    val role: String,
-) : Screen {
+class ProfileScreen() : Screen {
 
     @Composable
     override fun Content() {
-        val viewModel: ProfileViewModel = koinInject { parametersOf(token, userId) }
+        val viewModel: ProfileViewModel = koinInject()
+        val sessionManager: SessionManager = koinInject()
 
         ProfileScreenContent(
-            name = name,
-            email = email,
-            role = role,
-            onTabSelected = { tab ->
-                viewModel.onTabSelected(tab = tab, name = name, email = email, role = role)
-            },
+            name = sessionManager.name,
+            email = sessionManager.email,
+            role = sessionManager.role,
+            onTabSelected = { tab -> viewModel.onTabSelected(tab) },
         )
     }
 }

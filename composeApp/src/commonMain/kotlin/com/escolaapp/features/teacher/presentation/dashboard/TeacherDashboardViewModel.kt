@@ -4,6 +4,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.navigation.AppEventNavigator
+import com.escolaapp.core.session.SessionManager
 import com.escolaapp.features.teacher.data.repository.ClassRepository
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.teacher.domain.model.Class
@@ -25,8 +26,7 @@ data class TeacherDashboardUiState(
 class TeacherDashboardViewModel(
     private val classRepository: ClassRepository,
     private val appEventNavigator: AppEventNavigator,
-    private val token: String,
-    private val teacherId: Int,
+    private val sessionManager: SessionManager,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(TeacherDashboardUiState())
@@ -40,8 +40,8 @@ class TeacherDashboardViewModel(
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
-                val classes = classRepository.getClassesByTeacher(token, teacherId)
-                val currentClass = classRepository.getCurrentClass(token, teacherId)
+                val classes = classRepository.getClassesByTeacher(sessionManager.token, sessionManager.userId)
+                val currentClass = classRepository.getCurrentClass(sessionManager.token, sessionManager.userId)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -60,95 +60,45 @@ class TeacherDashboardViewModel(
         }
     }
 
-    fun navigateToClassList(
-        mode: ClassListMode,
-        name: String,
-        email: String,
-        role: String,
-    ) {
+    fun navigateToClassList(mode: ClassListMode) {
         screenModelScope.launch {
             appEventNavigator.emit(
                 NavigationEvent.ToClassList(
-                    token = token,
-                    teacherId = teacherId,
-                    name = name,
-                    email = email,
-                    role = role,
+                    teacherId = sessionManager.userId,
                     mode = mode,
                 )
             )
         }
     }
 
-    fun navigateToSettings(
-        name: String,
-        email: String,
-        role: String,
-    ) {
+    fun navigateToSettings() {
         screenModelScope.launch {
-            appEventNavigator.emit(
-                NavigationEvent.ToProfile(
-                    token = token,
-                    userId = teacherId,
-                    name = name,
-                    email = email,
-                    role = role,
-                )
-            )
+            appEventNavigator.emit(NavigationEvent.ToProfile)
         }
     }
 
-    fun onTabSelected(
-        tab: AppNavigationTab,
-        name: String,
-        email: String,
-        role: String,
-    ) {
+    fun onTabSelected(tab: AppNavigationTab) {
         when (tab) {
-            AppNavigationTab.CLASSES -> {
-                navigateToClassList(
-                    mode = ClassListMode.SELECT_ACTION,
-                    name = name,
-                    email = email,
-                    role = role,
-                )
-            }
-
-            AppNavigationTab.SETTINGS -> {
-                navigateToSettings(name, email, role)
-            }
-
+            AppNavigationTab.CLASSES -> navigateToClassList(mode = ClassListMode.SELECT_ACTION)
+            AppNavigationTab.SETTINGS -> navigateToSettings()
             AppNavigationTab.HOME -> Unit
         }
     }
 
     fun navigateToAddNotice() {
-        screenModelScope.launch {
-            appEventNavigator.emit(NavigationEvent.ToAddNotice(token = token))
-        }
+        screenModelScope.launch { appEventNavigator.emit(NavigationEvent.ToAddNotice) }
     }
 
     fun navigateToAttendanceCall() {
         val currentClass = _uiState.value.currentClass ?: return
         screenModelScope.launch {
-            appEventNavigator.emit(
-                NavigationEvent.ToAttendanceCall(
-                    token = token,
-                    classId = currentClass.id,
-                )
-            )
+            appEventNavigator.emit(NavigationEvent.ToAttendanceCall(classId = currentClass.id))
         }
     }
 
     fun navigateToGradeBook(classId: Int, bimester: Int = 1) {
         screenModelScope.launch {
-            appEventNavigator.emit(
-                NavigationEvent.ToGradeBook(
-                    token = token,
-                    classId = classId,
-                    bimester = bimester,
-                )
-            )
+            appEventNavigator.emit(NavigationEvent.ToGradeBook(classId = classId, bimester = bimester))
         }
     }
 }

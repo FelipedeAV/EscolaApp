@@ -4,6 +4,7 @@ import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.navigation.AppEventNavigator
+import com.escolaapp.core.session.SessionManager
 import com.escolaapp.features.teacher.data.repository.ClassRepository
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.teacher.domain.model.Class
@@ -26,7 +27,7 @@ data class ClassListUiState(
 class ClassListViewModel(
     private val classRepository: ClassRepository,
     private val appEventNavigator: AppEventNavigator,
-    private val token: String,
+    private val sessionManager: SessionManager,
     private val teacherId: Int,
 ) : ScreenModel {
 
@@ -41,7 +42,7 @@ class ClassListViewModel(
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
-                val classes = classRepository.getClassesByTeacher(token, teacherId)
+                val classes = classRepository.getClassesByTeacher(sessionManager.token, teacherId)
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -81,68 +82,31 @@ class ClassListViewModel(
             when (mode) {
                 ClassListMode.SELECT_ACTION -> Unit
                 ClassListMode.ATTENDANCE -> appEventNavigator.emit(
-                    NavigationEvent.ToAttendanceCall(
-                        token = token,
-                        classId = classId,
-                    )
+                    NavigationEvent.ToAttendanceCall(classId = classId)
                 )
 
                 ClassListMode.GRADEBOOK -> appEventNavigator.emit(
-                    NavigationEvent.ToGradeBook(
-                        token = token,
-                        classId = classId,
-                        bimester = bimester,
-                    )
+                    NavigationEvent.ToGradeBook(classId = classId, bimester = bimester)
                 )
             }
         }
     }
 
-    fun navigateToHome(userId: Int, name: String, email: String, role: String) {
+    fun navigateToHome() {
         screenModelScope.launch {
-            appEventNavigator.emit(
-                NavigationEvent.ToDashboard(
-                    token = token,
-                    userId = userId,
-                    name = name,
-                    email = email,
-                    role = role,
-                )
-            )
+            appEventNavigator.emit(NavigationEvent.ToDashboard(role = sessionManager.role))
         }
     }
 
-    fun navigateToSettings(userId: Int, name: String, email: String, role: String) {
-        screenModelScope.launch {
-            appEventNavigator.emit(
-                NavigationEvent.ToProfile(
-                    token = token,
-                    userId = userId,
-                    name = name,
-                    email = email,
-                    role = role,
-                )
-            )
-        }
+    fun navigateToSettings() {
+        screenModelScope.launch { appEventNavigator.emit(NavigationEvent.ToProfile) }
     }
 
-    fun onTabSelected(
-        tab: AppNavigationTab,
-        userId: Int,
-        name: String,
-        email: String,
-        role: String,
-    ) {
+    fun onTabSelected(tab: AppNavigationTab) {
         when (tab) {
             AppNavigationTab.CLASSES -> Unit
-
-            AppNavigationTab.SETTINGS -> {
-                navigateToSettings(userId, name, email, role)
-            }
-
-            AppNavigationTab.HOME -> {
-                navigateToHome(userId, name, email, role)
-            }
+            AppNavigationTab.SETTINGS -> navigateToSettings()
+            AppNavigationTab.HOME -> navigateToHome()
         }
     }
     // end navigation functions

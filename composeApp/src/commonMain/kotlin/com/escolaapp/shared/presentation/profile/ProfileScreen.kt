@@ -279,7 +279,6 @@ private fun ProfileScreenContent(
                             location = s.profile.deviceLocation,
                             status = s.profile.activeNow,
                             isCurrentDevice = true,
-                            onLogout = {},
                         )
                     }
                 }

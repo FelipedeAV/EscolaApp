@@ -61,7 +61,7 @@ data class ProfileScreen(
             email = email,
             role = role,
             onTabSelected = { tab ->
-                viewModel.onTabSelected(tab = tab, name = token, email = email, role = role)
+                viewModel.onTabSelected(tab = tab, name = name, email = email, role = role)
             },
         )
     }

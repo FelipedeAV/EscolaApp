@@ -40,7 +40,7 @@ import com.escolaapp.features.teacher.domain.model.AttendanceSummary
 import com.escolaapp.core.domain.model.StudentAttendanceStatus
 import com.escolaapp.shared.components.AppActionButton
 import com.escolaapp.shared.components.AppTopBar
-import io.ktor.http.parametersOf
+import com.escolaapp.shared.theme.AppColors
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 
@@ -210,20 +210,20 @@ private fun AttendanceCallScreenContent(
                         modifier = Modifier
                             .weight(1f)
                             .clip(RoundedCornerShape(12.dp))
-                            .background(Color(0xFFDCEEFD))
+                            .background(AppColors.SuccessContainer)
                             .padding(16.dp),
                     ) {
                         Column {
                             Text(
                                 text = "Presentes",
                                 style = MaterialTheme.typography.bodySmall,
-                                color = Color(0xFF1565C0),
+                                color = AppColors.Success,
                             )
                             Text(
                                 text = "${summary.presentCount}",
                                 fontSize = 32.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = Color(0xFF1565C0),
+                                color = AppColors.Success,
                             )
                         }
                     }
@@ -236,20 +236,20 @@ private fun AttendanceCallScreenContent(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clip(RoundedCornerShape(12.dp))
-                                .background(Color(0xFFFDE8CC))
+                                .background(AppColors.WarningContainer)
                                 .padding(16.dp),
                         ) {
                             Column {
                                 Text(
                                     text = "Ausentes",
                                     style = MaterialTheme.typography.bodySmall,
-                                    color = Color(0xFFE65100),
+                                    color = AppColors.Warning,
                                 )
                                 Text(
                                     text = "${summary.absentCount}",
                                     fontSize = 28.sp,
                                     fontWeight = FontWeight.Bold,
-                                    color = Color(0xFFE65100),
+                                    color = AppColors.Warning,
                                 )
                             }
                         }
@@ -427,7 +427,7 @@ private fun AttendanceStudentCard(
                 modifier = Modifier
                     .clip(RoundedCornerShape(50.dp))
                     .background(
-                        if (isPresent == false) Color(0xFFE65100) else MaterialTheme.colorScheme.surfaceVariant
+                        if (isPresent == false) AppColors.Warning else MaterialTheme.colorScheme.surfaceVariant
                     )
                     .clickable { onAbsent() }
                     .padding(horizontal = 12.dp, vertical = 6.dp),

@@ -40,6 +40,7 @@ import com.escolaapp.features.teacher.presentation.components.TeacherActionCard
 import com.escolaapp.core.domain.model.ClassListMode
 import com.escolaapp.shared.components.AppNavigationBar
 import com.escolaapp.shared.components.AppNavigationTab
+import com.escolaapp.shared.theme.AppColors
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 
@@ -153,7 +154,7 @@ private fun TeacherDashboardContent(
                         text = buildAnnotatedString {
                             withStyle(
                                 SpanStyle(
-                                    color = Color(0xFFE67E22),
+                                    color = AppColors.AccentOrange,
                                     fontWeight = FontWeight.Bold,
                                 )
                             ) {
@@ -173,7 +174,7 @@ private fun TeacherDashboardContent(
 
                 TeacherActionCard(
                     icon = Icons.Outlined.HowToReg,
-                    iconBackgroundColor = Color(0xFFFFF3E0),
+                    iconBackgroundColor = AppColors.WarningContainer,
                     title = "Fazer Chamada",
                     description = uiState.currentClass?.let {
                         "Sessão Atual: ${it.subject} (${it.room})"
@@ -189,7 +190,7 @@ private fun TeacherDashboardContent(
             item {
                 TeacherActionCard(
                     icon = Icons.Outlined.AutoStories,
-                    iconBackgroundColor = Color(0xFFE8F4FD),
+                    iconBackgroundColor = AppColors.SuccessContainer,
                     title = "Lançar Notas",
                     description = uiState.currentClass?.let {
                         "Atualizar notas finais do semestre para ${it.subject}."

@@ -57,6 +57,7 @@ import com.escolaapp.features.teacher.domain.model.GradeItem
 import com.escolaapp.core.domain.model.StudentGradeSummary
 import com.escolaapp.shared.components.AppActionButton
 import com.escolaapp.shared.components.AppHeader
+import com.escolaapp.shared.theme.AppColors
 import com.escolaapp.core.utils.formatOneDecimal
 import io.ktor.http.parametersOf
 import org.koin.compose.koinInject
@@ -125,7 +126,7 @@ private fun GradeBookScreenContent(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(8.dp))
-                            .background(Color(0xFFFFF3E0))
+                            .background(AppColors.WarningContainer)
                             .padding(12.dp),
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
@@ -134,7 +135,7 @@ private fun GradeBookScreenContent(
                         Text(
                             text = "Voce tem ${uiState.unsavedStudents.size} nota(s) nao salva(s).",
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color(0xFFE65100),
+                            color = AppColors.Warning,
                         )
                     }
                 }
@@ -216,13 +217,13 @@ private fun GradeBookScreenContent(
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     Badge(
                         text = "${summary.bimester}o Bimestre",
-                        color = Color(0xFFE8F4FD),
-                        textColor = Color(0xFF1565C0),
+                        color = AppColors.SuccessContainer,
+                        textColor = AppColors.Success,
                     )
                     Badge(
                         text = "SESSÃO ATIVA",
-                        color = Color(0xFFFFF3E0),
-                        textColor = Color(0xFFE65100),
+                        color = AppColors.WarningContainer,
+                        textColor = AppColors.Warning,
                     )
                 }
 
@@ -338,8 +339,8 @@ private fun StudentGradeCard(
                             text = "Media: ${formatOneDecimal(average)}",
                             style = MaterialTheme.typography.bodySmall,
                             color = when {
-                                average >= 7.0 -> Color(0xFF1565C0)
-                                average >= 5.0 -> Color(0xFFE65100)
+                                average >= 7.0 -> AppColors.Success
+                                average >= 5.0 -> AppColors.Warning
                                 else -> MaterialTheme.colorScheme.error
                             },
                             fontWeight = FontWeight.SemiBold,
@@ -348,7 +349,7 @@ private fun StudentGradeCard(
                         Text(
                             text = "Media: N/D",
                             style = MaterialTheme.typography.bodySmall,
-                            color = Color(0xFFE65100),
+                            color = AppColors.Warning,
                             fontStyle = FontStyle.Italic,
                         )
                     }

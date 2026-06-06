@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.escolaapp.shared.theme.AppColors
 
 @Composable
 fun TeacherActionCard(
@@ -126,12 +127,12 @@ private fun TeacherActionCardWithLabelPreview() {
     MaterialTheme {
         TeacherActionCard(
             icon = Icons.Outlined.Class,
-            iconBackgroundColor = Color(0xFFFFF3E0),
+            iconBackgroundColor = AppColors.WarningContainer,
             title = "Fazer Chamada",
             description = "Sessão Atual: Matemática (Sala 08)",
             buttonText = "Marcar Presença ✓",
             onButtonClick = {},
-            buttonBackgroundColor = Color(0xFF1565C0),
+            buttonBackgroundColor = AppColors.Success,
             buttonTextColor = Color.White,
             topLabel = "ACESSO RÁPIDO",
         )
@@ -144,12 +145,12 @@ private fun TeacherActionCardWithoutLabelPreview() {
     MaterialTheme {
         TeacherActionCard(
             icon = Icons.Outlined.School,
-            iconBackgroundColor = Color(0xFFE8F4FD),
+            iconBackgroundColor = AppColors.SuccessContainer,
             title = "Lançar Notas",
             description = "Selecione uma turma para lançar notas.",
             buttonText = "Abrir Diário de Classe ->",
             onButtonClick = {},
-            buttonBackgroundColor = Color(0xFF1565C0),
+            buttonBackgroundColor = AppColors.Success,
             buttonTextColor = Color.White,
         )
     }

@@ -66,6 +66,7 @@ import com.escolaapp.features.coordinator.domain.model.CoordinatorDashboard
 import com.escolaapp.features.coordinator.domain.model.QuickAction
 import com.escolaapp.features.coordinator.domain.model.RecentActivity
 import com.escolaapp.features.coordinator.domain.model.SemesterStats
+import com.escolaapp.shared.theme.AppColors
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
 
@@ -110,7 +111,7 @@ private fun CoordinatorDashboardContent(
     Scaffold(
         topBar = { DashboardTopBar(onNotification) },
         bottomBar = { DashboardBottomBar() },
-        containerColor = Color(0xFFF4F5FB)
+        containerColor = AppColors.Background,
     ) { padding ->
         when {
             uiState.isLoading -> LoadingState(padding)
@@ -138,7 +139,7 @@ private fun DashboardTopBar(onNotification: () -> Unit) {
                     modifier = Modifier
                         .size(32.dp)
                         .clip(CircleShape)
-                        .background(Color(0xFF185FA5)),
+                        .background(AppColors.PrimaryVariant),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
@@ -239,14 +240,14 @@ private fun QuickActionsSection(
             if (pendingCount > 0) {
                 Surface(
                     shape = RoundedCornerShape(20.dp),
-                    color = Color(0xFFFAEEDA)
+                    color = AppColors.WarningContainer
                 ) {
                     Text(
                         "$pendingCount Novas Solicitações",
                         modifier = Modifier.padding(horizontal = 10.dp, vertical = 3.dp),
                         fontSize = 11.sp,
-                        color = Color(0xFF854F0B),
-                        fontWeight = FontWeight.Medium
+                        color = AppColors.Secondary,
+                        fontWeight = FontWeight.Medium,
                     )
                 }
             }
@@ -264,9 +265,9 @@ private fun QuickActionsSection(
 @Composable
 private fun QuickActionCard(action: QuickAction, onClick: () -> Unit) {
     val (iconBg, icon) = when (action.key) {
-        "register_student" -> Color(0xFFE6F1FB) to Icons.Outlined.PersonAdd
-        "add_teacher" -> Color(0xFFFAEEDA) to Icons.Outlined.School
-        else -> Color(0xFFEAF3DE) to Icons.Default.Add
+        "register_student" -> AppColors.SuccessContainer to Icons.Outlined.PersonAdd
+        "add_teacher" -> AppColors.WarningContainer to Icons.Outlined.School
+        else -> AppColors.AccentGreenContainer to Icons.Default.Add
     }
 
     Card(
@@ -331,28 +332,28 @@ private fun ManagementGrid(onTap: (CoordinatorDestination) -> Unit) {
             "Gestão de Turmas",
             "Organize turmas, períodos e horários.",
             Icons.Outlined.Groups,
-            Color(0xFFE6F1FB)
+            AppColors.SuccessContainer
         ),
         ManagementItem(
             CoordinatorDestination.SUBJECTS,
             "Gestão de Disciplinas",
             "Curadoria de conteúdos e grade curricular.",
             Icons.AutoMirrored.Outlined.MenuBook,
-            Color(0xFFFAEEDA)
+            AppColors.WarningContainer
         ),
         ManagementItem(
             CoordinatorDestination.TEACHERS,
             "Gestão de Professores",
             "Acompanhe o corpo docente e atribuições.",
             Icons.Outlined.School,
-            Color(0xFFEEEDFE)
+            AppColors.AccentPurpleContainer
         ),
         ManagementItem(
             CoordinatorDestination.STUDENTS,
             "Gestão de Alunos",
             "Base de dados, desempenho e frequência.",
             Icons.Outlined.AssignmentInd,
-            Color(0xFFEAF3DE)
+            AppColors.AccentGreenContainer
         )
     )
 
@@ -426,7 +427,7 @@ private fun ManagementCard(
                 overflow = TextOverflow.Ellipsis
             )
             Spacer(Modifier.height(6.dp))
-            Text("Acessar →", fontSize = 11.sp, color = Color(0xFF185FA5))
+            Text("Acessar →", fontSize = 11.sp, color = AppColors.PrimaryVariant,)
         }
     }
 }
@@ -443,7 +444,7 @@ private fun SemesterOverviewCard(
             .padding(16.dp)
             .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
-            .background(Color(0xFF185FA5))
+            .background(AppColors.PrimaryVariant)
             .padding(16.dp)
     ) {
         Column {
@@ -512,10 +513,10 @@ private fun StatChip(label: String, value: String) {
 @Composable
 private fun ActivityRow(activity: RecentActivity) {
     val dotColor = when (activity.type) {
-        ActivityType.NEW_SUBJECT -> Color(0xFFFAC775)
-        ActivityType.ATTENDANCE_DONE -> Color(0xFF9FE1CB)
-        ActivityType.NEW_STUDENT -> Color(0xFFAFA9EC)
-        ActivityType.GRADE_BATCH -> Color(0xFF85B7EB)
+        ActivityType.NEW_SUBJECT -> AppColors.Warning
+        ActivityType.ATTENDANCE_DONE -> AppColors.AccentGreen
+        ActivityType.NEW_STUDENT -> AppColors.AccentIndigo
+        ActivityType.GRADE_BATCH -> AppColors.Success
     }
     Row(
         verticalAlignment = Alignment.CenterVertically,
@@ -571,7 +572,7 @@ private fun LoadingState(padding: PaddingValues) {
         modifier = Modifier.fillMaxSize().padding(padding),
         contentAlignment = Alignment.Center
     ) {
-        CircularProgressIndicator(color = Color(0xFF185FA5))
+        CircularProgressIndicator(color = AppColors.PrimaryVariant,)
     }
 }
 
@@ -593,7 +594,7 @@ private fun ErrorState(message: String, onRetry: () -> Unit, padding: PaddingVal
         Spacer(Modifier.height(16.dp))
         Button(
             onClick = onRetry,
-            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF185FA5))
+            colors = ButtonDefaults.buttonColors(containerColor = AppColors.PrimaryVariant)
         ) {
             Text("Tentar novamente")
         }
@@ -660,7 +661,7 @@ private fun CoordinatorDashboardErrorPreview() {
 @Composable
 private fun QuickActionsSectionPreview() {
     MaterialTheme {
-        Surface(color = Color(0xFFF4F5FB)) {
+        Surface(color = AppColors.Background) {
             QuickActionsSection(
                 actions = previewQuickActions,
                 pendingCount = 3,
@@ -674,7 +675,7 @@ private fun QuickActionsSectionPreview() {
 @Composable
 private fun ManagementGridPreview() {
     MaterialTheme {
-        Surface(color = Color(0xFFF4F5FB)) {
+        Surface(color = AppColors.Background) {
             ManagementGrid(onTap = {})
         }
     }
@@ -684,7 +685,7 @@ private fun ManagementGridPreview() {
 @Composable
 private fun SemesterOverviewCardPreview() {
     MaterialTheme {
-        Surface(color = Color(0xFFF4F5FB)) {
+        Surface(color = AppColors.Background) {
             SemesterOverviewCard(
                 stats = previewSemesterStats,
                 activities = previewRecentActivities

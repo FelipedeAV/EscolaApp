@@ -64,19 +64,10 @@ import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import com.escolaapp.core.navigation.NavigationViewModel
 import com.escolaapp.features.coordinator.domain.model.StudentRegistrationForm
+import com.escolaapp.shared.theme.AppColors
+import com.escolaapp.shared.theme.AppColors.OutlineVariant
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf
-
-// ─── Paleta (alinhada ao design system do HTML de referência) ─────────────────
-
-private val PrimaryBlue = Color(0xFF0040A1)
-private val SurfaceContainer = Color(0xFFEDEDF8)
-private val SurfaceContainerLow = Color(0xFFF2F3FE)
-private val SurfaceLowest = Color(0xFFFFFFFF)
-private val OnSurfaceVariant = Color(0xFF424654)
-private val OutlineVariant = Color(0xFFC3C6D6)
-private val SecondaryColor = Color(0xFF8B5000)
-private val ErrorColor = Color(0xFFBA1A1A)
 
 // ─── Actions ──────────────────────────────────────────────────────────────────
 
@@ -146,7 +137,7 @@ private fun StudentRegistrationContent(
 
     Scaffold(
         topBar = { RegistrationTopBar(onBack = actions.onCancel) },
-        containerColor = Color(0xFFFAF8FF),
+        containerColor = AppColors.Background,
     ) { padding ->
 
         Column(
@@ -256,7 +247,7 @@ private fun StudentRegistrationContent(
             if (uiState.errorMessage != null) {
                 Surface(
                     shape = RoundedCornerShape(12.dp),
-                    color = Color(0xFFFFDAD6),
+                    color = AppColors.ErrorContainer,
                 ) {
                     Row(
                         modifier = Modifier.padding(12.dp),
@@ -266,13 +257,13 @@ private fun StudentRegistrationContent(
                         Icon(
                             Icons.Outlined.ErrorOutline,
                             contentDescription = null,
-                            tint = ErrorColor,
+                            tint = AppColors.Error,
                             modifier = Modifier.size(18.dp),
                         )
                         Text(
                             uiState.errorMessage,
                             fontSize = 13.sp,
-                            color = ErrorColor,
+                            color = AppColors.Error,
                         )
                     }
                 }
@@ -301,7 +292,7 @@ private fun RegistrationTopBar(onBack: () -> Unit) {
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = Color(0xFFFAF8FF)
+            containerColor = AppColors.Background
         )
     )
 }
@@ -315,13 +306,13 @@ private fun HeroHeader() {
             text = "Novo Registro de Estudante",
             fontSize = 26.sp,
             fontWeight = FontWeight.Bold,
-            color = PrimaryBlue,
+            color = AppColors.Primary,
             lineHeight = 32.sp
         )
         Text(
             text = "Preencha os dados abaixo para integrar um novo membro à nossa academia.",
             fontSize = 13.sp,
-            color = OnSurfaceVariant,
+            color = AppColors.OnSurfaceVariant,
             lineHeight = 18.sp
         )
     }
@@ -343,7 +334,7 @@ private fun FormSection(
             Icon(
                 icon,
                 contentDescription = null,
-                tint = SecondaryColor,
+                tint = AppColors.Secondary,
                 modifier = Modifier.size(20.dp)
             )
             Text(title, fontSize = 16.sp, fontWeight = FontWeight.Bold)
@@ -366,11 +357,11 @@ private fun FormField(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(SurfaceLowest, RoundedCornerShape(12.dp))
+            .background(AppColors.SurfaceContainerLowest, RoundedCornerShape(12.dp))
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        Text(label, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = OnSurfaceVariant)
+        Text(label, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = AppColors.OnSurfaceVariant)
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
@@ -379,7 +370,7 @@ private fun FormField(
                 Text(
                     placeholder,
                     fontSize = 13.sp,
-                    color = OnSurfaceVariant.copy(alpha = 0.5f)
+                    color = AppColors.OnSurfaceVariant.copy(alpha = 0.5f)
                 )
             },
             keyboardOptions = KeyboardOptions(keyboardType = keyboardType),
@@ -387,15 +378,15 @@ private fun FormField(
             singleLine = true,
             shape = RoundedCornerShape(10.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedContainerColor = SurfaceContainerLow,
-                focusedContainerColor = SurfaceContainerLow,
+                unfocusedContainerColor = AppColors.SurfaceContainerLow,
+                focusedContainerColor = AppColors.SurfaceContainerLow,
                 unfocusedBorderColor = Color.Transparent,
-                focusedBorderColor = PrimaryBlue.copy(alpha = 0.5f),
-                errorBorderColor = ErrorColor
+                focusedBorderColor = AppColors.Primary.copy(alpha = 0.5f),
+                errorBorderColor = AppColors.Error
             )
         )
         if (errorMessage != null) {
-            Text(errorMessage, fontSize = 11.sp, color = ErrorColor)
+            Text(errorMessage, fontSize = 11.sp, color = AppColors.Error)
         }
     }
 }
@@ -411,11 +402,11 @@ private fun GenderDropdown(selected: String, onSelect: (String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(SurfaceLowest, RoundedCornerShape(12.dp))
+            .background(AppColors.SurfaceContainerLowest, RoundedCornerShape(12.dp))
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        Text("Gênero", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = OnSurfaceVariant)
+        Text("Gênero", fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = AppColors.OnSurfaceVariant)
         ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
             OutlinedTextField(
                 value = selected.ifBlank { "Selecione" },
@@ -426,10 +417,10 @@ private fun GenderDropdown(selected: String, onSelect: (String) -> Unit) {
                 singleLine = true,
                 shape = RoundedCornerShape(10.dp),
                 colors = OutlinedTextFieldDefaults.colors(
-                    unfocusedContainerColor = SurfaceContainerLow,
-                    focusedContainerColor = SurfaceContainerLow,
+                    unfocusedContainerColor = AppColors.SurfaceContainerLow,
+                    focusedContainerColor = AppColors.SurfaceContainerLow,
                     unfocusedBorderColor = Color.Transparent,
-                    focusedBorderColor = PrimaryBlue.copy(alpha = 0.5f)
+                    focusedBorderColor = AppColors.Primary.copy(alpha = 0.5f)
                 )
             )
             ExposedDropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
@@ -451,7 +442,7 @@ private fun NotesField(value: String, onValueChange: (String) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .background(SurfaceLowest, RoundedCornerShape(12.dp))
+            .background(AppColors.SurfaceContainerLowest, RoundedCornerShape(12.dp))
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
@@ -459,7 +450,7 @@ private fun NotesField(value: String, onValueChange: (String) -> Unit) {
             "Anotações e Observações",
             fontSize = 12.sp,
             fontWeight = FontWeight.SemiBold,
-            color = OnSurfaceVariant
+            color = AppColors.OnSurfaceVariant
         )
         OutlinedTextField(
             value = value,
@@ -469,17 +460,17 @@ private fun NotesField(value: String, onValueChange: (String) -> Unit) {
                 Text(
                     "Descreva aqui informações médicas, comportamentais ou pedagógicas relevantes...",
                     fontSize = 12.sp,
-                    color = OnSurfaceVariant.copy(alpha = 0.5f),
+                    color = AppColors.OnSurfaceVariant.copy(alpha = 0.5f),
                     lineHeight = 18.sp
                 )
             },
             maxLines = 6,
             shape = RoundedCornerShape(10.dp),
             colors = OutlinedTextFieldDefaults.colors(
-                unfocusedContainerColor = SurfaceContainerLow,
-                focusedContainerColor = SurfaceContainerLow,
+                unfocusedContainerColor = AppColors.SurfaceContainerLow,
+                focusedContainerColor = AppColors.SurfaceContainerLow,
                 unfocusedBorderColor = Color.Transparent,
-                focusedBorderColor = PrimaryBlue.copy(alpha = 0.5f)
+                focusedBorderColor = AppColors.Primary.copy(alpha = 0.5f)
             )
         )
     }
@@ -504,12 +495,12 @@ private fun ActionArea(
                 Icons.Outlined.Info,
                 contentDescription = null,
                 modifier = Modifier.size(14.dp),
-                tint = OnSurfaceVariant.copy(alpha = 0.7f)
+                tint = AppColors.OnSurfaceVariant.copy(alpha = 0.7f)
             )
             Text(
                 "Os dados serão armazenados conforme a LGPD.",
                 fontSize = 11.sp,
-                color = OnSurfaceVariant.copy(alpha = 0.7f)
+                color = AppColors.OnSurfaceVariant.copy(alpha = 0.7f)
             )
         }
 
@@ -522,7 +513,7 @@ private fun ActionArea(
                 modifier = Modifier.weight(1f),
                 shape = RoundedCornerShape(50.dp),
                 colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = OnSurfaceVariant
+                    contentColor = AppColors.OnSurfaceVariant
                 )
             ) {
                 Text("Cancelar", fontWeight = FontWeight.Bold)
@@ -534,7 +525,7 @@ private fun ActionArea(
                 modifier = Modifier.weight(2f),
                 shape = RoundedCornerShape(50.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = PrimaryBlue,
+                    containerColor = AppColors.Primary,
                     contentColor = Color.White
                 )
             ) {

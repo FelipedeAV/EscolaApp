@@ -3,7 +3,7 @@ package com.escolaapp
 import androidx.compose.runtime.Composable
 import cafe.adriel.voyager.navigator.Navigator
 import com.escolaapp.core.navigation.NavigationHandler
-import com.escolaapp.core.navigation.NavigationViewModel
+import com.escolaapp.core.navigation.AppEventNavigator
 import com.escolaapp.features.auth.presentation.login.LoginScreen
 import com.escolaapp.shared.theme.AppTheme
 import org.koin.compose.KoinApplication
@@ -14,7 +14,7 @@ fun App() {
     KoinApplication(application = {
         modules(appModule)
     }) {
-        val navigationViewModel: NavigationViewModel = koinInject()
+        val navigationViewModel: AppEventNavigator = koinInject()
 
         AppTheme {
             Navigator(LoginScreen()) { navigator ->

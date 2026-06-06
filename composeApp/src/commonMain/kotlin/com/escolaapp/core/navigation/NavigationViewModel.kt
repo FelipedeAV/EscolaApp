@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
-class NavigationViewModel : ScreenModel {
+class NavigationViewModel : ScreenModel, AppEventNavigator {
 
     private val _events = MutableSharedFlow<NavigationEvent>()
     val events: SharedFlow<NavigationEvent> = _events.asSharedFlow()

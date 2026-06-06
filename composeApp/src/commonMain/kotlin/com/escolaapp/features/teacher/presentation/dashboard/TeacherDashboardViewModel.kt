@@ -3,7 +3,7 @@ package com.escolaapp.features.teacher.presentation.dashboard
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.navigation.NavigationEvent
-import com.escolaapp.core.navigation.NavigationViewModel
+import com.escolaapp.core.navigation.AppEventNavigator
 import com.escolaapp.features.teacher.data.repository.ClassRepository
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.teacher.domain.model.Class
@@ -24,7 +24,7 @@ data class TeacherDashboardUiState(
 
 class TeacherDashboardViewModel(
     private val classRepository: ClassRepository,
-    private val navigationViewModel: NavigationViewModel,
+    private val appEventNavigator: AppEventNavigator,
     private val token: String,
     private val teacherId: Int,
 ) : ScreenModel {
@@ -67,7 +67,7 @@ class TeacherDashboardViewModel(
         role: String,
     ) {
         screenModelScope.launch {
-            navigationViewModel.emit(
+            appEventNavigator.emit(
                 NavigationEvent.ToClassList(
                     token = token,
                     teacherId = teacherId,
@@ -86,7 +86,7 @@ class TeacherDashboardViewModel(
         role: String,
     ) {
         screenModelScope.launch {
-            navigationViewModel.emit(
+            appEventNavigator.emit(
                 NavigationEvent.ToProfile(
                     token = token,
                     userId = teacherId,
@@ -124,14 +124,14 @@ class TeacherDashboardViewModel(
 
     fun navigateToAddNotice() {
         screenModelScope.launch {
-            navigationViewModel.emit(NavigationEvent.ToAddNotice(token = token))
+            appEventNavigator.emit(NavigationEvent.ToAddNotice(token = token))
         }
     }
 
     fun navigateToAttendanceCall() {
         val currentClass = _uiState.value.currentClass ?: return
         screenModelScope.launch {
-            navigationViewModel.emit(
+            appEventNavigator.emit(
                 NavigationEvent.ToAttendanceCall(
                     token = token,
                     classId = currentClass.id,
@@ -142,7 +142,7 @@ class TeacherDashboardViewModel(
 
     fun navigateToGradeBook(classId: Int, bimester: Int = 1) {
         screenModelScope.launch {
-            navigationViewModel.emit(
+            appEventNavigator.emit(
                 NavigationEvent.ToGradeBook(
                     token = token,
                     classId = classId,

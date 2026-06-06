@@ -6,7 +6,7 @@ import com.escolaapp.core.data.remote.gateway.ApiException
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.auth.data.repository.AuthRepository
 import com.escolaapp.core.navigation.NavigationEvent
-import com.escolaapp.core.navigation.NavigationViewModel
+import com.escolaapp.core.navigation.AppEventNavigator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,7 +20,7 @@ data class LoginUiState(
 
 class LoginViewModel(
     private val authRepository: AuthRepository,
-    private val navigationViewModel: NavigationViewModel,
+    private val appEventNavigator: AppEventNavigator,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(LoginUiState())
@@ -31,7 +31,7 @@ class LoginViewModel(
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
                 val result = authRepository.login(email, password)
-                navigationViewModel.emit(
+                appEventNavigator.emit(
                     NavigationEvent.ToDashboard(
                         token = result.token,
                         userId = result.userId,
@@ -60,7 +60,7 @@ class LoginViewModel(
 
     fun navigateBack() {
         screenModelScope.launch {
-            navigationViewModel.emit(NavigationEvent.GoBack)
+            appEventNavigator.emit(NavigationEvent.GoBack)
         }
     }
 }

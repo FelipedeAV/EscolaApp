@@ -2,11 +2,11 @@ package com.escolaapp.features.coordinator.presentation.studentRegistration
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.escolaapp.core.navigation.AppEventNavigator
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.coordinator.data.repository.StudentRegistrationRepository
 import com.escolaapp.features.coordinator.domain.model.StudentRegistrationForm
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,13 +28,12 @@ data class StudentRegistrationUiState(
 
 class StudentRegistrationViewModel(
     private val repository: StudentRegistrationRepository,
+    private val appEventNavigator: AppEventNavigator,
     private val token: String,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(StudentRegistrationUiState())
     val uiState: StateFlow<StudentRegistrationUiState> = _uiState.asStateFlow()
-
-    val navigationEvents = MutableSharedFlow<NavigationEvent>(extraBufferCapacity = 1)
 
     // ─── Atualização de campos ────────────────────────────────────────────────
 
@@ -92,9 +91,13 @@ class StudentRegistrationViewModel(
     }
 
     // ─── Navigations ─────────────────────────────────────────────────────────────
-    fun onCancel() = navigationEvents.tryEmit(NavigationEvent.GoBack)
+    fun onCancel() {
+        screenModelScope.launch { appEventNavigator.emit(NavigationEvent.GoBack) }
+    }
 
-    fun onSuccessDismiss() = navigationEvents.tryEmit(NavigationEvent.GoBack)
+    fun onSuccessDismiss() {
+        screenModelScope.launch { appEventNavigator.emit(NavigationEvent.GoBack) }
+    }
 
     // ─── Helpers ──────────────────────────────────────────────────────────────
 

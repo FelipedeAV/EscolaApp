@@ -7,7 +7,7 @@ import com.escolaapp.features.teacher.data.repository.AttendanceSummaryRepositor
 import com.escolaapp.features.teacher.domain.model.AttendanceSummary
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.utils.getCurrentDate
-import com.escolaapp.core.navigation.NavigationViewModel
+import com.escolaapp.core.navigation.AppEventNavigator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,7 +27,7 @@ data class AttendanceCallUiState(
 
 class AttendanceCallViewModel(
     private val repository: AttendanceSummaryRepository,
-    private val navigationViewModel: NavigationViewModel,
+    private val appEventNavigator: AppEventNavigator,
     private val token: String,
     private val classId: Int,
 ) : ScreenModel {
@@ -132,7 +132,7 @@ class AttendanceCallViewModel(
 
     fun navigateBack() {
         screenModelScope.launch {
-            navigationViewModel.emit(NavigationEvent.GoBack)
+            appEventNavigator.emit(NavigationEvent.GoBack)
         }
     }
 

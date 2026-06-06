@@ -6,7 +6,7 @@ import com.escolaapp.core.data.remote.gateway.ApiClient
 import com.escolaapp.core.data.models.AttendanceRequest
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.utils.toUserMessage
-import com.escolaapp.core.navigation.NavigationViewModel
+import com.escolaapp.core.navigation.AppEventNavigator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,7 +21,7 @@ data class AddAttendanceUiState(
 
 class AddAttendanceViewModel(
     private val apiClient: ApiClient,
-    private val navigationViewModel: NavigationViewModel,
+    private val appEventNavigator: AppEventNavigator,
     private val token: String,
 ) : ScreenModel {
 
@@ -59,7 +59,7 @@ class AddAttendanceViewModel(
 
     fun navigateBack() {
         screenModelScope.launch {
-            navigationViewModel.emit(NavigationEvent.GoBack)
+            appEventNavigator.emit(NavigationEvent.GoBack)
         }
     }
 }

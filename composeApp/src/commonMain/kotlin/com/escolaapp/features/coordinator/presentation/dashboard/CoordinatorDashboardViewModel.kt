@@ -2,11 +2,11 @@ package com.escolaapp.features.coordinator.presentation.dashboard
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
+import com.escolaapp.core.navigation.AppEventNavigator
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.coordinator.data.repository.CoordinatorRepository
 import com.escolaapp.features.coordinator.domain.model.CoordinatorDashboard
-import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -25,13 +25,12 @@ data class CoordinatorDashboardUiState(
 
 class CoordinatorDashboardViewModel(
     private val repository: CoordinatorRepository,
+    private val appEventNavigator: AppEventNavigator,
     private val token: String,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(CoordinatorDashboardUiState())
     val uiState: StateFlow<CoordinatorDashboardUiState> = _uiState.asStateFlow()
-
-    val navigationEvents = MutableSharedFlow<NavigationEvent>(extraBufferCapacity = 1)
 
     init {
         loadDashboard()
@@ -65,7 +64,7 @@ class CoordinatorDashboardViewModel(
             "add_teacher"      -> NavigationEvent.GoToAddTeacher
             else               -> return
         }
-        navigationEvents.tryEmit(event)
+        screenModelScope.launch { appEventNavigator.emit(event) }
     }
 
     fun onManagementCardTap(destination: CoordinatorDestination) {
@@ -75,12 +74,12 @@ class CoordinatorDashboardViewModel(
             CoordinatorDestination.TEACHERS  -> NavigationEvent.GoToTeacherManagement
             CoordinatorDestination.STUDENTS  -> NavigationEvent.GoToStudentManagement
         }
-        navigationEvents.tryEmit(event)
+        screenModelScope.launch { appEventNavigator.emit(event) }
     }
 
-    fun onNotificationTap() = navigationEvents.tryEmit(NavigationEvent.GoToNotifications)
-//    fun onSettingsTap()     = navigationEvents.tryEmit(NavigationEvent.GoToSettings)
-//    fun onProfileTap()      = navigationEvents.tryEmit(NavigationEvent.GoToProfile)
+    fun onNotificationTap() {
+        screenModelScope.launch { appEventNavigator.emit(NavigationEvent.GoToNotifications) }
+    }
 }
 
 // ─── Enum de destinos internos (presentation-scoped) ─────────────────────────

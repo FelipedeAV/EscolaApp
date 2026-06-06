@@ -5,7 +5,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.data.repository.UserRepository
 import com.escolaapp.core.domain.model.User
 import com.escolaapp.core.navigation.NavigationEvent
-import com.escolaapp.core.navigation.NavigationViewModel
+import com.escolaapp.core.navigation.AppEventNavigator
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.core.domain.model.ClassListMode
 import com.escolaapp.shared.components.AppNavigationTab
@@ -23,7 +23,7 @@ data class ProfileUiState(
 
 class ProfileViewModel(
     private val userRepository: UserRepository,
-    private val navigationViewModel: NavigationViewModel,
+    private val appEventNavigator: AppEventNavigator,
     private val token: String,
     private val userId: Int,
 ) : ScreenModel {
@@ -87,7 +87,7 @@ class ProfileViewModel(
         role: String,
     ) {
         screenModelScope.launch {
-            navigationViewModel.emit(
+            appEventNavigator.emit(
                 NavigationEvent.ToClassList(
                     token     = token,
                     teacherId = userId,
@@ -102,7 +102,7 @@ class ProfileViewModel(
 
     fun navigateToHome(name: String, email: String, role: String) {
         screenModelScope.launch {
-            navigationViewModel.emit(
+            appEventNavigator.emit(
                 NavigationEvent.ToDashboard(
                     token = token,
                     userId = userId,
@@ -116,13 +116,13 @@ class ProfileViewModel(
 
 //    fun navigateBack() {
 //        screenModelScope.launch {
-//            navigationViewModel.emit(NavigationEvent.Back)
+//            appEventNavigator.emit(NavigationEvent.Back)
 //        }
 //    }
 
     fun logout() {
         screenModelScope.launch {
-            navigationViewModel.emit(NavigationEvent.ToLogin)
+            appEventNavigator.emit(NavigationEvent.ToLogin)
         }
     }
 }

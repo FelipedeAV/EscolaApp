@@ -3,7 +3,7 @@ package com.escolaapp.features.teacher.presentation.classlist
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.navigation.NavigationEvent
-import com.escolaapp.core.navigation.NavigationViewModel
+import com.escolaapp.core.navigation.AppEventNavigator
 import com.escolaapp.features.teacher.data.repository.ClassRepository
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.teacher.domain.model.Class
@@ -25,7 +25,7 @@ data class ClassListUiState(
 
 class ClassListViewModel(
     private val classRepository: ClassRepository,
-    private val navigationViewModel: NavigationViewModel,
+    private val appEventNavigator: AppEventNavigator,
     private val token: String,
     private val teacherId: Int,
 ) : ScreenModel {
@@ -80,14 +80,14 @@ class ClassListViewModel(
         screenModelScope.launch {
             when (mode) {
                 ClassListMode.SELECT_ACTION -> Unit
-                ClassListMode.ATTENDANCE -> navigationViewModel.emit(
+                ClassListMode.ATTENDANCE -> appEventNavigator.emit(
                     NavigationEvent.ToAttendanceCall(
                         token = token,
                         classId = classId,
                     )
                 )
 
-                ClassListMode.GRADEBOOK -> navigationViewModel.emit(
+                ClassListMode.GRADEBOOK -> appEventNavigator.emit(
                     NavigationEvent.ToGradeBook(
                         token = token,
                         classId = classId,
@@ -100,7 +100,7 @@ class ClassListViewModel(
 
     fun navigateToHome(userId: Int, name: String, email: String, role: String) {
         screenModelScope.launch {
-            navigationViewModel.emit(
+            appEventNavigator.emit(
                 NavigationEvent.ToDashboard(
                     token = token,
                     userId = userId,
@@ -114,7 +114,7 @@ class ClassListViewModel(
 
     fun navigateToSettings(userId: Int, name: String, email: String, role: String) {
         screenModelScope.launch {
-            navigationViewModel.emit(
+            appEventNavigator.emit(
                 NavigationEvent.ToProfile(
                     token = token,
                     userId = userId,

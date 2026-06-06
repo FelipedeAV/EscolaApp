@@ -22,28 +22,28 @@ val teacherModule = module {
     factory { (token: String) ->
         AddGradeViewModel(
             apiClient = get(),
-            navigationViewModel = get(),
+            appEventNavigator = get(),
             token = token,
         )
     }
     factory { (token: String) ->
         AddAttendanceViewModel(
             apiClient = get(),
-            navigationViewModel = get(),
+            appEventNavigator = get(),
             token = token,
         )
     }
     factory { (token: String) ->
         AddNoticeViewModel(
             apiClient = get(),
-            navigationViewModel = get(),
+            appEventNavigator = get(),
             token = token,
         )
     }
     factory { (token: String, teacherId: Int) ->
         TeacherDashboardViewModel(
             classRepository = get(),
-            navigationViewModel = get(),
+            appEventNavigator = get(),
             token = token,
             teacherId = teacherId,
         )
@@ -51,7 +51,7 @@ val teacherModule = module {
     factory { (token: String, classId: Int) ->
         AttendanceCallViewModel(
             repository = get(),
-            navigationViewModel = get(),
+            appEventNavigator = get(),
             token = token,
             classId = classId,
         )
@@ -59,7 +59,7 @@ val teacherModule = module {
     factory { (token: String, classId: Int, bimester: Int) ->
         GradeBookViewModel(
             repository = get(),
-            navigationViewModel = get(),
+            appEventNavigator = get(),
             token = token,
             classId = classId,
             initialBimester = bimester,
@@ -68,7 +68,7 @@ val teacherModule = module {
     factory { (token: String, teacherId: Int) ->
         ClassListViewModel(
             classRepository = get(),
-            navigationViewModel = get(),
+            appEventNavigator = get(),
             token = token,
             teacherId = teacherId,
         )

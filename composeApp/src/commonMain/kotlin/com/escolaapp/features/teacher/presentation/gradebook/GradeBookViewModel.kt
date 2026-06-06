@@ -6,7 +6,7 @@ import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.teacher.data.repository.GradeBookRepository
 import com.escolaapp.features.teacher.domain.model.ClassGradeSummary
 import com.escolaapp.core.navigation.NavigationEvent
-import com.escolaapp.core.navigation.NavigationViewModel
+import com.escolaapp.core.navigation.AppEventNavigator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -28,7 +28,7 @@ data class GradeBookUiState(
 
 class GradeBookViewModel(
     private val repository: GradeBookRepository,
-    private val navigationViewModel: NavigationViewModel,
+    private val appEventNavigator: AppEventNavigator,
     private val token: String,
     private val classId: Int,
     private val initialBimester: Int = 1,
@@ -174,7 +174,7 @@ class GradeBookViewModel(
 
     fun navigateBack() {
         screenModelScope.launch {
-            navigationViewModel.emit(NavigationEvent.GoBack)
+            appEventNavigator.emit(NavigationEvent.GoBack)
         }
     }
 

@@ -15,6 +15,7 @@ val coordinatorModule = module {
     factory { (token: String) ->
         CoordinatorDashboardViewModel(
             repository = get(),
+            appEventNavigator = get(),
             token = token,
         )
     }
@@ -22,6 +23,7 @@ val coordinatorModule = module {
     factory { (token: String) ->
         StudentRegistrationViewModel(
             repository = get(),
+            appEventNavigator = get(),
             token = token,
         )
     }

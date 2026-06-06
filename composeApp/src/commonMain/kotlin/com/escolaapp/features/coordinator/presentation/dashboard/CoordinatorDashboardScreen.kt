@@ -42,7 +42,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -56,7 +55,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
-import com.escolaapp.core.navigation.NavigationViewModel
 import com.escolaapp.features.coordinator.domain.model.ActivityType
 import com.escolaapp.features.coordinator.domain.model.CoordinatorDashboard
 import com.escolaapp.shared.components.AppErrorState
@@ -78,15 +76,8 @@ data class CoordinatorDashboardScreen(
 
     @Composable
     override fun Content() {
-        val navigationViewModel: NavigationViewModel = koinInject()
         val viewModel: CoordinatorDashboardViewModel = koinInject { parametersOf(token) }
         val uiState by viewModel.uiState.collectAsState()
-
-        LaunchedEffect(viewModel) {
-            viewModel.navigationEvents.collect { event ->
-                navigationViewModel.emit(event)
-            }
-        }
 
         CoordinatorDashboardContent(
             uiState = uiState,

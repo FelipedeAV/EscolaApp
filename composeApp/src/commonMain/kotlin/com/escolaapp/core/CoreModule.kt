@@ -5,6 +5,7 @@ import com.escolaapp.core.data.remote.gateway.ApiClient
 import com.escolaapp.core.data.repository.NoticeRepository
 import com.escolaapp.core.data.repository.StudentRepository
 import com.escolaapp.core.data.repository.UserRepository
+import com.escolaapp.core.navigation.AppEventNavigator
 import com.escolaapp.core.navigation.NavigationViewModel
 import com.escolaapp.shared.presentation.profile.ProfileSettingsViewModel
 import com.escolaapp.shared.presentation.profile.ProfileViewModel
@@ -20,13 +21,13 @@ val coreModule = module {
     single { NoticeRepository(get()) }
 
     // Navigation
-    single { NavigationViewModel() }
+    single<AppEventNavigator> { NavigationViewModel() }
 
     // Shared ViewModels
     factory { (token: String, userId: Int) ->
         ProfileViewModel(
             userRepository = get(),
-            navigationViewModel = get(),
+            appEventNavigator = get(),
             token = token,
             userId = userId,
         )
@@ -34,7 +35,7 @@ val coreModule = module {
     factory { (token: String, userId: Int) ->
         ProfileSettingsViewModel(
             userRepository = get(),
-            navigationViewModel = get(),
+            appEventNavigator = get(),
             token = token,
             userId = userId,
         )

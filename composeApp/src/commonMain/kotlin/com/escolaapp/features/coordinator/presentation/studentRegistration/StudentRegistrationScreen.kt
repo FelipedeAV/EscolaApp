@@ -61,7 +61,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
-import com.escolaapp.core.navigation.NavigationViewModel
 import com.escolaapp.features.coordinator.domain.model.StudentRegistrationForm
 import com.escolaapp.shared.theme.AppColors
 import com.escolaapp.shared.theme.AppColors.OutlineVariant
@@ -90,14 +89,7 @@ class StudentRegistrationScreen(private val token: String) : Screen {
     @Composable
     override fun Content() {
         val viewModel: StudentRegistrationViewModel = koinInject { parametersOf(token) }
-        val navigationViewModel: NavigationViewModel = koinInject()
         val uiState by viewModel.uiState.collectAsState()
-
-        LaunchedEffect(viewModel) {
-            viewModel.navigationEvents.collect { event ->
-                navigationViewModel.emit(event)
-            }
-        }
 
         LaunchedEffect(uiState.isSuccess) {
             if (uiState.isSuccess) viewModel.onSuccessDismiss()

@@ -6,7 +6,7 @@ import com.escolaapp.core.data.repository.StudentRepository
 import com.escolaapp.core.domain.model.Student
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.core.navigation.NavigationEvent
-import com.escolaapp.core.navigation.NavigationViewModel
+import com.escolaapp.core.navigation.AppEventNavigator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -21,7 +21,7 @@ data class DashboardUiState(
 
 class DashboardViewModel(
     private val studentRepository: StudentRepository,
-    private val navigationViewModel: NavigationViewModel
+    private val appEventNavigator: AppEventNavigator,
 ) : ScreenModel {
 
     private val _uiState = MutableStateFlow(DashboardUiState())
@@ -55,7 +55,7 @@ class DashboardViewModel(
 
     fun navigateToGrades(token: String, studentId: Int) {
         screenModelScope.launch {
-            navigationViewModel.emit(
+            appEventNavigator.emit(
                 NavigationEvent.ToGrades(
                     token = token,
                     studentId = studentId,
@@ -66,7 +66,7 @@ class DashboardViewModel(
 
     fun navigateToAttendance(token: String, studentId: Int) {
         screenModelScope.launch {
-            navigationViewModel.emit(
+            appEventNavigator.emit(
                 NavigationEvent.ToAttendance(
                     token = token,
                     studentId = studentId,
@@ -77,7 +77,7 @@ class DashboardViewModel(
 
     fun navigateToNotices(token: String) {
         screenModelScope.launch {
-            navigationViewModel.emit(
+            appEventNavigator.emit(
                 NavigationEvent.ToNotices(token = token)
             )
         }
@@ -85,25 +85,25 @@ class DashboardViewModel(
 
     fun navigateToAddGrade(token: String) {
         screenModelScope.launch {
-            navigationViewModel.emit(NavigationEvent.ToAddGrade(token = token))
+            appEventNavigator.emit(NavigationEvent.ToAddGrade(token = token))
         }
     }
 
     fun navigateToAddAttendance(token: String) {
         screenModelScope.launch {
-            navigationViewModel.emit(NavigationEvent.ToAddAttendance(token = token))
+            appEventNavigator.emit(NavigationEvent.ToAddAttendance(token = token))
         }
     }
 
     fun navigateToAddNotice(token: String) {
         screenModelScope.launch {
-            navigationViewModel.emit(NavigationEvent.ToAddNotice(token = token))
+            appEventNavigator.emit(NavigationEvent.ToAddNotice(token = token))
         }
     }
 
     fun navigateToProfile(token: String, userId: Int, name: String, email: String, role: String) {
         screenModelScope.launch {
-            navigationViewModel.emit(
+            appEventNavigator.emit(
                 NavigationEvent.ToProfile(
                     token = token,
                     userId = userId,

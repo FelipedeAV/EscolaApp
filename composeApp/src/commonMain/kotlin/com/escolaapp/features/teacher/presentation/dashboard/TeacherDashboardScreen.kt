@@ -39,6 +39,8 @@ import com.escolaapp.shared.components.AppHeader
 import com.escolaapp.shared.components.AppLoadingIndicator
 import com.escolaapp.shared.components.AppNavigationBar
 import com.escolaapp.shared.components.AppNavigationTab
+import com.escolaapp.features.teacher.presentation.components.TeacherActionCard
+import com.escolaapp.core.domain.model.ClassListMode
 import com.escolaapp.shared.theme.AppColors
 import org.koin.compose.koinInject
 import org.koin.core.parameter.parametersOf

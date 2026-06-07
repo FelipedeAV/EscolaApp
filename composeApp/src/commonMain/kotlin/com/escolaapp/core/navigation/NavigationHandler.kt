@@ -19,6 +19,7 @@ import com.escolaapp.features.teacher.presentation.attendance.AttendanceCallScre
 import com.escolaapp.features.teacher.presentation.classlist.ClassListScreen
 import com.escolaapp.features.teacher.presentation.gradebook.GradeBookScreen
 import com.escolaapp.core.domain.model.Role
+import com.escolaapp.shared.components.PlaceholderScreen
 import kotlinx.coroutines.flow.SharedFlow
 
 @Composable
@@ -77,14 +78,21 @@ fun NavigationHandler(
 
                 is NavigationEvent.GoToStudentRegistration -> navigator.push(StudentRegistrationScreen())
 
-                NavigationEvent.GoToAddTeacher -> TODO()
-                NavigationEvent.GoToClassManagement -> TODO()
-                NavigationEvent.GoToCoordinatorDashboard -> TODO()
-                NavigationEvent.GoToNotifications -> TODO()
-                NavigationEvent.GoToSettings -> TODO()
-                NavigationEvent.GoToStudentManagement -> TODO()
-                NavigationEvent.GoToSubjectManagement -> TODO()
-                NavigationEvent.GoToTeacherManagement -> TODO()
+                is NavigationEvent.GoToAddTeacher -> navigator.push(PlaceholderScreen("Adicionar Professor"))
+
+                is NavigationEvent.GoToClassManagement -> navigator.push(PlaceholderScreen("Gestão de Turmas"))
+
+                is NavigationEvent.GoToCoordinatorDashboard -> navigator.replace(CoordinatorDashboardScreen())
+
+                is NavigationEvent.GoToNotifications -> navigator.push(PlaceholderScreen("Notificações"))
+
+                is NavigationEvent.GoToSettings -> navigator.push(PlaceholderScreen("Configurações"))
+
+                is NavigationEvent.GoToStudentManagement -> navigator.push(PlaceholderScreen("Gestão de Alunos"))
+
+                is NavigationEvent.GoToSubjectManagement -> navigator.push(PlaceholderScreen("Gestão de Disciplinas"))
+
+                is NavigationEvent.GoToTeacherManagement -> navigator.push(PlaceholderScreen("Gestão de Professores"))
             }
         }
     }

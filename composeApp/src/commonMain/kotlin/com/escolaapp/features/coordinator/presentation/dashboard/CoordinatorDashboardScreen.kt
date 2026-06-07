@@ -65,6 +65,7 @@ import com.escolaapp.features.coordinator.domain.model.RecentActivity
 import com.escolaapp.features.coordinator.domain.model.SemesterStats
 import com.escolaapp.shared.theme.AppColors
 import org.koin.compose.koinInject
+import kotlin.time.Instant.Companion.fromEpochMilliseconds
 
 class CoordinatorDashboardScreen() : Screen {
 
@@ -683,25 +684,25 @@ private val previewRecentActivities = listOf(
         type = ActivityType.NEW_SUBJECT,
         description = "Nova disciplina 'Física Avançada' criada",
         relatedEntity = "Física Avançada",
-        occurredAt = kotlin.time.Instant.fromEpochMilliseconds(1713024000000L)
+        occurredAt = fromEpochMilliseconds(1713024000000L)
     ),
     RecentActivity(
         type = ActivityType.ATTENDANCE_DONE,
         description = "Frequência concluída em 'Matemática A'",
         relatedEntity = "Matemática A",
-        occurredAt = kotlin.time.Instant.fromEpochMilliseconds(1713024000000L)
+        occurredAt = fromEpochMilliseconds(1713024000000L)
     ),
     RecentActivity(
         type = ActivityType.NEW_STUDENT,
         description = "3 novos alunos integrados hoje",
         relatedEntity = "Alunos",
-        occurredAt = kotlin.time.Instant.fromEpochMilliseconds(1713024000000L)
+        occurredAt = fromEpochMilliseconds(1713024000000L)
     ),
     RecentActivity(
         type = ActivityType.GRADE_BATCH,
         description = "Notas do 1º bimestre finalizadas",
         relatedEntity = "1º Bimestre",
-        occurredAt = kotlin.time.Instant.fromEpochMilliseconds(1713024000000L)
+        occurredAt = fromEpochMilliseconds(1713024000000L)
     )
 )
 

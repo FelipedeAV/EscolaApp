@@ -9,7 +9,7 @@ import com.escolaapp.features.coordinator.domain.model.CoordinatorDashboard
 import com.escolaapp.features.coordinator.domain.model.QuickAction
 import com.escolaapp.features.coordinator.domain.model.RecentActivity
 import com.escolaapp.features.coordinator.domain.model.SemesterStats
-import kotlin.time.Instant
+import kotlin.time.Instant.Companion.parse
 
 fun CoordinatorDashboardResponse.toDomain() = CoordinatorDashboard(
     semesterStats = semesterStats.toDomain(),
@@ -31,7 +31,7 @@ fun RecentActivityResponse.toDomain() = RecentActivity(
     type = ActivityType.from(type),
     description = description,
     relatedEntity = relatedEntity,
-    occurredAt = Instant.parse(occurredAt),
+    occurredAt = parse(occurredAt),
 )
 
 fun QuickActionResponse.toDomain() = QuickAction(

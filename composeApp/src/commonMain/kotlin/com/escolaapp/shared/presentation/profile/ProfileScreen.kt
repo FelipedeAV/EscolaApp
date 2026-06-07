@@ -58,6 +58,7 @@ class ProfileScreen() : Screen {
             email = sessionManager.email,
             role = sessionManager.role,
             onTabSelected = { tab -> viewModel.onTabSelected(tab) },
+            onLogout = viewModel::logout,
         )
     }
 }
@@ -68,6 +69,7 @@ private fun ProfileScreenContent(
     email: String,
     role: Role,
     onTabSelected: (AppNavigationTab) -> Unit,
+    onLogout: () -> Unit,
 ) {
     val s = LocalAppStrings.current
     var selectedTab by remember { mutableStateOf(AppNavigationTab.SETTINGS) }
@@ -291,7 +293,7 @@ private fun ProfileScreenContent(
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(12.dp))
                         .background(AppColors.ErrorContainer)
-                        .clickable { }
+                        .clickable { onLogout() }
                         .padding(vertical = 16.dp),
                     contentAlignment = Alignment.Center,
                 ) {
@@ -401,6 +403,7 @@ private fun ProfileScreenContentPreview() {
             email = "carlos@email.com",
             role = Role.TEACHER,
             onTabSelected = {},
+            onLogout = {},
         )
     }
 }

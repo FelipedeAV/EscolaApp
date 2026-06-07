@@ -83,6 +83,7 @@ class ProfileViewModel(
     }
 
     fun logout() {
+        sessionManager.clear()
         screenModelScope.launch {
             appEventNavigator.emit(NavigationEvent.ToLogin)
         }

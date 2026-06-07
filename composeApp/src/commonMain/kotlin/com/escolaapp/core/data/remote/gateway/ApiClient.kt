@@ -23,6 +23,7 @@ import com.escolaapp.features.coordinator.data.model.CoordinatorClassSummaryResp
 import com.escolaapp.features.coordinator.data.model.CoordinatorDashboardResponse
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
+import io.ktor.client.plugins.HttpTimeout
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logging
@@ -54,6 +55,11 @@ class ApiClient(
     }
 
     private val client = HttpClient {
+        install(HttpTimeout) {
+            connectTimeoutMillis = 10_000
+            requestTimeoutMillis = 30_000
+            socketTimeoutMillis = 30_000
+        }
         install(ContentNegotiation) {
             json(jsonConfig)
         }

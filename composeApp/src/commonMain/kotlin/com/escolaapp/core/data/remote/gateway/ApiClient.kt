@@ -31,6 +31,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
+import io.ktor.client.statement.HttpResponse
 import io.ktor.client.statement.bodyAsText
 import io.ktor.http.ContentType
 import io.ktor.http.contentType
@@ -75,6 +76,20 @@ class ApiClient(
 
     private val json = jsonConfig
 
+    private suspend fun HttpResponse.validate(): HttpResponse {
+        if (status.value !in 200..299) {
+            val rawBody = bodyAsText()
+            val message = runCatching {
+                json.parseToJsonElement(rawBody)
+                    .jsonObject["message"]
+                    ?.jsonPrimitive
+                    ?.content
+            }.getOrNull() ?: "Erro na requisição"
+            throw ApiException(status.value, message)
+        }
+        return this
+    }
+
     suspend fun login(email: String, password: String): LoginResponse {
         val response = client.post("$baseUrl/auth/login") {
             contentType(ContentType.Application.Json)
@@ -99,12 +114,12 @@ class ApiClient(
     suspend fun getUsers(token: String): List<UserResponse> =
         client.get("$baseUrl/users") {
             header("Authorization", "Bearer $token")
-        }.body()
+        }.validate().body()
 
     suspend fun getUserById(token: String, id: Int): UserResponse =
         client.get("$baseUrl/users/$id") {
             header("Authorization", "Bearer $token")
-        }.body()
+        }.validate().body()
 
     suspend fun createUser(user: UserRequest): UserResponse =
         client.post("$baseUrl/users") {
@@ -127,64 +142,64 @@ class ApiClient(
                     newPassword = newPassword,
                 )
             )
-        }
+        }.validate()
     }
 
     suspend fun getStudents(token: String): List<StudentResponse> =
         client.get("$baseUrl/students") {
             header("Authorization", "Bearer $token")
-        }.body()
+        }.validate().body()
 
     suspend fun getStudentById(token: String, id: Int): StudentResponse =
         client.get("$baseUrl/students/$id") {
             header("Authorization", "Bearer $token")
-        }.body()
+        }.validate().body()
 
     suspend fun getGradesByStudent(token: String, studentId: Int): List<GradeResponse> =
         client.get("$baseUrl/grades/student/$studentId") {
             header("Authorization", "Bearer $token")
-        }.body()
+        }.validate().body()
 
     suspend fun getAttendanceByStudent(token: String, studentId: Int): List<AttendanceResponse> =
         client.get("$baseUrl/attendances/student/$studentId") {
             header("Authorization", "Bearer $token")
-        }.body()
+        }.validate().body()
 
     suspend fun getNotices(token: String): List<NoticeResponse> =
         client.get("$baseUrl/notices") {
             header("Authorization", "Bearer $token")
-        }.body()
+        }.validate().body()
 
     suspend fun addGrade(token: String, request: GradeRequest): GradeResponse =
         client.post("$baseUrl/grades") {
             header("Authorization", "Bearer $token")
             contentType(ContentType.Application.Json)
             setBody(request)
-        }.body()
+        }.validate().body()
 
     suspend fun addAttendance(token: String, request: AttendanceRequest): AttendanceResponse =
         client.post("$baseUrl/attendances") {
             header("Authorization", "Bearer $token")
             contentType(ContentType.Application.Json)
             setBody(request)
-        }.body()
+        }.validate().body()
 
     suspend fun addNotice(token: String, request: NoticeRequest): NoticeResponse =
         client.post("$baseUrl/notices") {
             header("Authorization", "Bearer $token")
             contentType(ContentType.Application.Json)
             setBody(request)
-        }.body()
+        }.validate().body()
 
     suspend fun getClassesByTeacher(token: String, teacherId: Int): List<ClassResponse> =
         client.get("$baseUrl/classes/teacher/$teacherId") {
             header("Authorization", "Bearer $token")
-        }.body()
+        }.validate().body()
 
     suspend fun getCurrentClass(token: String, teacherId: Int): ClassResponse =
         client.get("$baseUrl/classes/current/$teacherId") {
             header("Authorization", "Bearer $token")
-        }.body()
+        }.validate().body()
 
     suspend fun getAttendanceSummary(
         token: String,
@@ -193,14 +208,14 @@ class ApiClient(
     ): AttendanceSummaryResponse =
         client.get("$baseUrl/attendances/summary/$classId?date=$date") {
             header("Authorization", "Bearer $token")
-        }.body()
+        }.validate().body()
 
     suspend fun sendBatchAttendance(token: String, request: BatchAttendanceRequest): String =
         client.post("$baseUrl/attendances/batch") {
             header("Authorization", "Bearer $token")
             contentType(ContentType.Application.Json)
             setBody(request)
-        }.body()
+        }.validate().body()
 
     suspend fun getClassGradeSummary(
         token: String,
@@ -209,30 +224,24 @@ class ApiClient(
     ): ClassGradeSummaryResponse =
         client.get("$baseUrl/grades/class/$classId/bimester/$bimester") {
             header("Authorization", "Bearer $token")
-        }.body()
+        }.validate().body()
 
     suspend fun sendBatchGrades(token: String, request: BatchGradeRequest): String =
         client.post("$baseUrl/grades/batch") {
             header("Authorization", "Bearer $token")
             contentType(ContentType.Application.Json)
             setBody(request)
-        }.body()
+        }.validate().body()
 
-    suspend fun getCoordinatorDashboard(token: String): CoordinatorDashboardResponse {
-        val response = client.get("$baseUrl/coordinator/dashboard") {
+    suspend fun getCoordinatorDashboard(token: String): CoordinatorDashboardResponse =
+        client.get("$baseUrl/coordinator/dashboard") {
             header("Authorization", "Bearer $token")
-        }
-
-        val rawJson = response.bodyAsText()
-        println("DEBUG COORDINATOR RAW: $rawJson")
-
-        return json.decodeFromString(rawJson)
-    }
+        }.validate().body()
 
     suspend fun getCoordinatorClasses(token: String): List<CoordinatorClassSummaryResponse> =
         client.get("$baseUrl/coordinator/classes") {
             header("Authorization", "Bearer $token")
-        }.body()
+        }.validate().body()
 
     suspend fun registerStudent(
         token: String,
@@ -242,5 +251,5 @@ class ApiClient(
             header("Authorization", "Bearer $token")
             contentType(ContentType.Application.Json)
             setBody(request)
-        }.body()
+        }.validate().body()
 }

@@ -30,10 +30,10 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -374,8 +374,8 @@ private fun StudentGradeCard(
                 ) {
                     student.grades.forEach { gradeItem ->
                         val currentValue = editedGrades[Pair(student.id, gradeItem.evaluation)]
-                        var textValue by remember(currentValue) {
-                            mutableStateOf(currentValue?.toString() ?: "")
+                        var textFieldValue by remember(gradeItem.evaluation) {
+                            mutableStateOf(TextFieldValue(currentValue?.toString() ?: ""))
                         }
 
                         Row(
@@ -390,11 +390,11 @@ private fun StudentGradeCard(
                             )
 
                             OutlinedTextField(
-                                value = textValue,
-                                onValueChange = { input ->
-                                    textValue = input
-                                    input.toDoubleOrNull()?.let { value ->
-                                        if (value in 0.0..10.0) {
+                                value = textFieldValue,
+                                onValueChange = { newValue ->
+                                    textFieldValue = newValue
+                                    newValue.text.toDoubleOrNull()?.let { value ->
+                                        if (value in 0.0..100.0) {
                                             onGradeChange(gradeItem.evaluation, value)
                                         }
                                     }

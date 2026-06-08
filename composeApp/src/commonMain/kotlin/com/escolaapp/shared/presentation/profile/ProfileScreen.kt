@@ -168,7 +168,11 @@ private fun ProfileScreenContent(
                                 .padding(horizontal = 16.dp, vertical = 6.dp),
                         ) {
                             Text(
-                                text = if (role == Role.TEACHER) "PROFESSOR" else "RESPONSÁVEL",
+                                text = when (role) {
+                                    Role.TEACHER -> s.guardian.roleTeacher.uppercase()
+                                    Role.COORDINATOR -> s.guardian.roleCoordinator.uppercase()
+                                    Role.GUARDIAN -> s.guardian.roleGuardian.uppercase()
+                                },
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Bold,
@@ -402,6 +406,34 @@ private fun ProfileScreenContentPreview() {
             name = "Carlos Silva",
             email = "carlos@email.com",
             role = Role.TEACHER,
+            onTabSelected = {},
+            onLogout = {},
+        )
+    }
+}
+
+@Preview(name = "Profile - Coordinator")
+@Composable
+private fun ProfileCoordinatorPreview() {
+    MaterialTheme {
+        ProfileScreenContent(
+            name = "Mariana Souza",
+            email = "mariana@escola.com",
+            role = Role.COORDINATOR,
+            onTabSelected = {},
+            onLogout = {},
+        )
+    }
+}
+
+@Preview(name = "Profile - Guardian")
+@Composable
+private fun ProfileGuardianPreview() {
+    MaterialTheme {
+        ProfileScreenContent(
+            name = "Ana Beatriz",
+            email = "ana@email.com",
+            role = Role.GUARDIAN,
             onTabSelected = {},
             onLogout = {},
         )

@@ -21,6 +21,7 @@ val EnStrings = AppStrings(
         greeting = { name -> "Hello, $name" },
         roleTeacher = "Teacher",
         roleGuardian = "Guardian",
+        roleCoordinator = "Coordinator",
         studentLabel = "Student",
         viewGrades = "View Grades",
         viewAttendance = "View Attendance",

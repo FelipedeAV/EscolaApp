@@ -32,6 +32,7 @@ data class GuardianStrings(
     val greeting: (name: String) -> String,
     val roleTeacher: String,
     val roleGuardian: String,
+    val roleCoordinator: String,
     val studentLabel: String,
     val viewGrades: String,
     val viewAttendance: String,

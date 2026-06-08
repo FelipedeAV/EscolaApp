@@ -21,6 +21,7 @@ val PtStrings = AppStrings(
         greeting = { name -> "Olá, $name" },
         roleTeacher = "Professor",
         roleGuardian = "Responsável",
+        roleCoordinator = "Coordenador",
         studentLabel = "Aluno",
         viewGrades = "Ver Notas",
         viewAttendance = "Ver Frequência",

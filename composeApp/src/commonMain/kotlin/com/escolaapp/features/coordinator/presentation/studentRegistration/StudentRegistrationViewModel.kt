@@ -43,8 +43,18 @@ class StudentRegistrationViewModel(
     fun onFullNameChange(value: String) =
         updateForm { copy(fullName = value) }
 
-    fun onBirthDateChange(value: LocalDate?) =
-        updateForm { copy(birthDate = value) }
+    fun onBirthDateChange(value: String) {
+        val parsed = runCatching {
+            val iso = if (value.length == 10 && value[2] == '/' && value[5] == '/') {
+                val parts = value.split("/")
+                "${parts[2]}-${parts[1]}-${parts[0]}"
+            } else {
+                value
+            }
+            LocalDate.parse(iso)
+        }.getOrNull()
+        updateForm { copy(birthDate = parsed) }
+    }
 
     fun onAcademicEmailChange(value: String) =
         updateForm { copy(academicEmail = value) }

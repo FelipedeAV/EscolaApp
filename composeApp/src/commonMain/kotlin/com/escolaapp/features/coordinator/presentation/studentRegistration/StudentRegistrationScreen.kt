@@ -1,6 +1,7 @@
 package com.escolaapp.features.coordinator.presentation.studentRegistration
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,6 +29,8 @@ import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
@@ -43,8 +46,10 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -67,6 +72,8 @@ import com.escolaapp.core.session.SessionManager
 import com.escolaapp.features.coordinator.domain.model.StudentRegistrationForm
 import com.escolaapp.shared.theme.AppColors
 import com.escolaapp.shared.theme.AppColors.OutlineVariant
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.number
 import org.koin.compose.koinInject
 
 // ─── Actions ──────────────────────────────────────────────────────────────────
@@ -77,6 +84,7 @@ data class StudentRegistrationActions(
     val onFullNameChange: (String) -> Unit,
     val onAcademicEmailChange: (String) -> Unit,
     val onGenderChange: (String) -> Unit,
+    val onBirthDateChange: (String) -> Unit,
     val onAddressChange: (String) -> Unit,
     val onGuardianNameChange: (String) -> Unit,
     val onGuardianPhoneChange: (String) -> Unit,
@@ -104,6 +112,7 @@ class StudentRegistrationScreen : Screen {
             onFullNameChange = viewModel::onFullNameChange,
             onAcademicEmailChange = viewModel::onAcademicEmailChange,
             onGenderChange = viewModel::onGenderChange,
+            onBirthDateChange = viewModel::onBirthDateChange,
             onAddressChange = viewModel::onAddressChange,
             onGuardianNameChange = viewModel::onGuardianNameChange,
             onGuardianPhoneChange = viewModel::onGuardianPhoneChange,
@@ -168,12 +177,11 @@ private fun StudentRegistrationContent(
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     Box(Modifier.weight(1f)) {
-                        FormField(
+                        BirthDateField(
+                            value = form.birthDate,
+                            onValueChange = actions.onBirthDateChange,
                             label = s.coordinator.birthDate,
-                            value = form.birthDate?.toString() ?: "",
-                            onValueChange = { /* date picker — ver nota abaixo */ },
                             placeholder = s.coordinator.birthDatePlaceholder,
-                            keyboardType = KeyboardType.Number,
                         )
                     }
                     Box(Modifier.weight(1f)) {
@@ -359,7 +367,12 @@ private fun FormField(
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        Text(label, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = AppColors.OnSurfaceVariant)
+        Text(
+            label,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = AppColors.OnSurfaceVariant
+        )
         OutlinedTextField(
             value = value,
             onValueChange = onValueChange,
@@ -389,13 +402,98 @@ private fun FormField(
     }
 }
 
+// ─── Birth date picker ────────────────────────────────────────────────────────
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun BirthDateField(
+    value: LocalDate?,
+    onValueChange: (String) -> Unit,
+    label: String,
+    placeholder: String,
+) {
+    val s = LocalAppStrings.current
+    var showDatePicker by remember { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = value?.toEpochDays()?.toLong()?.times(86_400_000L)
+    )
+
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(AppColors.SurfaceContainerLowest, RoundedCornerShape(12.dp))
+            .padding(16.dp)
+            .clickable { showDatePicker = true },
+        verticalArrangement = Arrangement.spacedBy(6.dp)
+    ) {
+        Text(label, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = AppColors.OnSurfaceVariant)
+        OutlinedTextField(
+            value = value?.let {
+                "${it.dayOfMonth.toString().padStart(2, '0')}/" +
+                        "${it.month.number.toString().padStart(2, '0')}/" +
+                        "${it.year}"
+            } ?: "",
+            onValueChange = {},
+            readOnly = true,
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = {
+                Text(placeholder, fontSize = 13.sp, color = AppColors.OnSurfaceVariant.copy(alpha = 0.5f))
+            },
+            singleLine = true,
+            shape = RoundedCornerShape(10.dp),
+            colors = OutlinedTextFieldDefaults.colors(
+                unfocusedContainerColor = AppColors.SurfaceContainerLow,
+                focusedContainerColor = AppColors.SurfaceContainerLow,
+                unfocusedBorderColor = Color.Transparent,
+                focusedBorderColor = AppColors.Primary.copy(alpha = 0.5f),
+            ),
+            enabled = false,
+        )
+    }
+
+    if (showDatePicker) {
+        DatePickerDialog(
+            onDismissRequest = { showDatePicker = false },
+            confirmButton = {
+                TextButton(onClick = {
+                    datePickerState.selectedDateMillis?.let { millis ->
+                        val epochDay = (millis / 86_400_000L).toInt()
+                        val date = LocalDate.fromEpochDays(epochDay)
+                        onValueChange(
+                            "${date.year}-${date.month.number.toString().padStart(2, '0')}-" +
+                                    "${date.dayOfMonth.toString().padStart(2, '0')}"
+                        )
+                    }
+                    showDatePicker = false
+                }) {
+                    Text("OK")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDatePicker = false }) {
+                    Text(s.coordinator.cancel)
+                }
+            },
+        ) {
+            DatePicker(state = datePickerState)
+        }
+    }
+}
+
 // ─── Gender dropdown ──────────────────────────────────────────────────────────
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun GenderDropdown(s: com.escolaapp.core.i18n.AppStrings, selected: String, onSelect: (String) -> Unit) {
+private fun GenderDropdown(
+    s: com.escolaapp.core.i18n.AppStrings,
+    selected: String,
+    onSelect: (String) -> Unit,
+) {
     var expanded by remember { mutableStateOf(false) }
-    val options = listOf(s.coordinator.male, s.coordinator.female, s.coordinator.other, s.coordinator.preferNotToSay)
+    val options = listOf(
+        s.coordinator.male,
+        s.coordinator.female,
+    )
 
     Column(
         modifier = Modifier
@@ -404,7 +502,12 @@ private fun GenderDropdown(s: com.escolaapp.core.i18n.AppStrings, selected: Stri
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
-        Text(s.coordinator.gender, fontSize = 12.sp, fontWeight = FontWeight.SemiBold, color = AppColors.OnSurfaceVariant)
+        Text(
+            s.coordinator.gender,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = AppColors.OnSurfaceVariant,
+        )
         ExposedDropdownMenuBox(expanded = expanded, onExpandedChange = { expanded = it }) {
             OutlinedTextField(
                 value = selected.ifBlank { s.coordinator.genderSelect },
@@ -436,7 +539,11 @@ private fun GenderDropdown(s: com.escolaapp.core.i18n.AppStrings, selected: Stri
 // ─── Notes textarea ───────────────────────────────────────────────────────────
 
 @Composable
-private fun NotesField(s: com.escolaapp.core.i18n.AppStrings, value: String, onValueChange: (String) -> Unit) {
+private fun NotesField(
+    s: com.escolaapp.core.i18n.AppStrings,
+    value: String,
+    onValueChange: (String) -> Unit,
+) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -583,6 +690,7 @@ private fun StudentRegistrationPreview() {
                 onFullNameChange = {},
                 onAcademicEmailChange = {},
                 onGenderChange = {},
+                onBirthDateChange = {},
                 onGuardianNameChange = {},
                 onAddressChange = {},
                 onGuardianPhoneChange = {},

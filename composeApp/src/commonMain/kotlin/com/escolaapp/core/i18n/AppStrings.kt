@@ -170,8 +170,6 @@ data class CoordinatorStrings(
     val genderSelect: String,
     val male: String,
     val female: String,
-    val other: String,
-    val preferNotToSay: String,
     val notes: String,
     val notesPlaceholder: String,
     val lgpdInfo: String,

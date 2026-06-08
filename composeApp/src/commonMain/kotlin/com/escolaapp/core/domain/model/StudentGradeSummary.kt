@@ -1,6 +1,6 @@
 package com.escolaapp.core.domain.model
 
-import com.escolaapp.features.teacher.domain.model.GradeItem
+import com.escolaapp.core.domain.model.GradeItem
 
 data class StudentGradeSummary(
     val id: Int,

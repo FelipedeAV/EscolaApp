@@ -52,8 +52,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import cafe.adriel.voyager.core.screen.Screen
 import com.escolaapp.core.i18n.LocalAppStrings
-import com.escolaapp.features.teacher.domain.model.ClassGradeSummary
-import com.escolaapp.features.teacher.domain.model.GradeItem
+import com.escolaapp.core.domain.model.ClassGradeSummary
+import com.escolaapp.core.domain.model.GradeItem
 import com.escolaapp.core.domain.model.StudentGradeSummary
 import com.escolaapp.shared.components.AppActionButton
 import com.escolaapp.shared.components.AppHeader

@@ -6,7 +6,7 @@ import com.escolaapp.core.i18n.AppStrings
 import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.teacher.data.repository.GradeBookRepository
-import com.escolaapp.features.teacher.domain.model.ClassGradeSummary
+import com.escolaapp.core.domain.model.ClassGradeSummary
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.navigation.AppEventNavigator
 import kotlinx.coroutines.flow.MutableStateFlow

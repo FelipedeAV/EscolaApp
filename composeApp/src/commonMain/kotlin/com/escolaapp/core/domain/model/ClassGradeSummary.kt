@@ -1,6 +1,4 @@
-package com.escolaapp.features.teacher.domain.model
-
-import com.escolaapp.core.domain.model.StudentGradeSummary
+package com.escolaapp.core.domain.model
 
 data class ClassGradeSummary(
     val classId: Int,

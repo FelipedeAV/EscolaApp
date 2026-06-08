@@ -108,7 +108,7 @@ class GradeBookViewModel(
                     s.copy(
                         isSaving = false,
                         unsavedStudents = s.unsavedStudents - studentId,
-                        hasPendingGrades = s.unsavedStudents.size > 1,
+                        hasPendingGrades = s.unsavedStudents.size > 0,
                         success = strings.teacher.gradesSaved,
                     )
                 }

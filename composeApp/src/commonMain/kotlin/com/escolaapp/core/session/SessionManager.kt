@@ -9,6 +9,7 @@ class SessionManager {
     var email: String = ""
     var role: Role = Role.GUARDIAN
     var languageTag: String = "pt"
+    var studentId: Int = 0
 
     fun save(token: String, userId: Int, name: String, email: String, role: Role) {
         this.token = token
@@ -24,6 +25,7 @@ class SessionManager {
         name = ""
         email = ""
         role = Role.GUARDIAN
+        studentId = 0
     }
 
     val isLoggedIn: Boolean get() = token.isNotBlank()

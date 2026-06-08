@@ -35,10 +35,16 @@ class DashboardViewModel(
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
-                val student = studentRepository
-                    .getStudents(sessionManager.token)
-                    .firstOrNull { it.userId == sessionManager.userId }
-                    ?: throw IllegalStateException(strings.guardian.studentNotFound)
+                val student = if (sessionManager.studentId != 0) {
+                    studentRepository.getStudentById(sessionManager.token, sessionManager.studentId)
+                } else {
+                    val found = studentRepository
+                        .getStudents(sessionManager.token)
+                        .firstOrNull { it.userId == sessionManager.userId }
+                        ?: throw IllegalStateException(strings.guardian.studentNotFound)
+                    sessionManager.studentId = found.id
+                    found
+                }
 
                 _uiState.update {
                     it.copy(

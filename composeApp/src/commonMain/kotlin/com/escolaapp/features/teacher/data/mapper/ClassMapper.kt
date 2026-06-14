@@ -8,6 +8,7 @@ fun ClassResponse.toDomain() = Class(
     id = id,
     subject = subject,
     room = room,
+    period = period,
     schedule = schedule,
     dayOfWeek = dayOfWeek,
     teacherId = teacherId,

@@ -6,6 +6,7 @@ data class Class(
     val id: Int,
     val subject: String,
     val room: String,
+    val period: String = "",
     val schedule: String,
     val dayOfWeek: String,
     val teacherId: Int,

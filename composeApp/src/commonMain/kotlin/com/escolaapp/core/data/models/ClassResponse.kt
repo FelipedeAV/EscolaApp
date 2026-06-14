@@ -8,6 +8,7 @@ data class ClassResponse(
     val id: Int,
     val subject: String,
     val room: String,
+    val period: String = "",
     val schedule: String,
     @SerialName("day_of_week") val dayOfWeek: String,
     @SerialName("teacher_id") val teacherId: Int,

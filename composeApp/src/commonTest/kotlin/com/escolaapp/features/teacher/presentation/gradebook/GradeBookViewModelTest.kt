@@ -2,14 +2,16 @@ package com.escolaapp.features.teacher.presentation.gradebook
 
 import com.escolaapp.core.domain.model.ClassGradeSummary
 import com.escolaapp.core.domain.model.GradeItem
+import com.escolaapp.core.domain.model.Role.TEACHER
 import com.escolaapp.core.domain.model.StudentGradeSummary
+import com.escolaapp.core.i18n.PtStrings
 import com.escolaapp.core.navigation.AppEventNavigator
+import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.session.SessionManager
-import com.escolaapp.features.teacher.data.repository.GradeBookRepository
-import io.mockk.coEvery
-import io.mockk.coVerify
-import io.mockk.mockk
-import kotlinx.coroutines.Dispatchers
+import com.escolaapp.features.teacher.data.repository.IGradeBookRepository
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
@@ -19,32 +21,56 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class GradeBookViewModelTest {
 
-    private val testScope = TestScope()
-    private val mockRepo = mockk<GradeBookRepository>(relaxed = true)
-    private val mockNavigator = mockk<AppEventNavigator>(relaxed = true)
-    private val sessionManager = SessionManager().apply {
-        save("test-token", 1, "Teacher", "teacher@email.com", com.escolaapp.core.domain.model.Role.TEACHER)
+    private val savedBatchCalls = mutableListOf<Map<Pair<Int, String>, Double>>()
+    private var summaryResult: ClassGradeSummary = ClassGradeSummary(
+        classId = 1, subject = "Math", bimester = 1,
+        evaluations = listOf("Prova 1"),
+        students = emptyList(),
+    )
+    private var shouldThrow = false
+
+    private val fakeRepo = object : IGradeBookRepository {
+        override suspend fun getClassGradeSummary(
+            token: String, classId: Int, bimester: Int,
+        ): ClassGradeSummary {
+            if (shouldThrow) throw Exception("Simulated error")
+            return summaryResult
+        }
+
+        override suspend fun sendBatchGrades(
+            token: String, classId: Int, bimester: Int,
+            grades: Map<Pair<Int, String>, Double>,
+        ) {
+            if (shouldThrow) throw Exception("Simulated error")
+            savedBatchCalls.add(grades)
+        }
     }
 
-    private fun createViewModel(classId: Int = 1, bimester: Int = 1): GradeBookViewModel =
-        GradeBookViewModel(
-            strings = mockk(relaxed = true),
-            repository = mockRepo,
-            appEventNavigator = mockNavigator,
-            sessionManager = sessionManager,
-            classId = classId,
-            initialBimester = bimester,
-            coroutineScope = testScope,
-        )
+    private val fakeNavigator = object : AppEventNavigator {
+        override val events: SharedFlow<NavigationEvent> = MutableSharedFlow()
+        override suspend fun emit(event: NavigationEvent) {}
+    }
+
+    private val sessionManager = SessionManager().apply {
+        save("test-token", 1, "Teacher", "teacher@email.com", TEACHER)
+    }
+
+    private fun createViewModel(scope: TestScope) = GradeBookViewModel(
+        strings = PtStrings,
+        repository = fakeRepo,
+        appEventNavigator = fakeNavigator,
+        sessionManager = sessionManager,
+        classId = 1,
+        coroutineScope = scope,
+    )
 
     @Test
     fun `init should load grades for initial bimester`() = runTest {
-        val summary = ClassGradeSummary(
-            classId = 1,
-            subject = "Math",
-            bimester = 1,
+        summaryResult = ClassGradeSummary(
+            classId = 1, subject = "Math", bimester = 1,
             evaluations = listOf("Prova 1", "Prova 2"),
             students = listOf(
                 StudentGradeSummary(
@@ -53,25 +79,21 @@ class GradeBookViewModelTest {
                 ),
             ),
         )
-        coEvery { mockRepo.getClassGradeSummary(any(), 1, 1) } returns summary
 
-        val vm = createViewModel()
-
+        val vm = createViewModel(this)
         advanceUntilIdle()
 
         val state = vm.uiState.value
         assertEquals(false, state.isLoading)
         assertNotNull(state.summary)
-        assertEquals("Math", state.summary!!.subject)
+        assertEquals("Math", state.summary.subject)
         assertEquals(1, state.editedGrades.size)
     }
 
     @Test
     fun `loadGrades should handle error gracefully`() = runTest {
-        coEvery { mockRepo.getClassGradeSummary(any(), 1, any()) } throws Exception("Network error")
-
-        val vm = createViewModel()
-
+        shouldThrow = true
+        val vm = createViewModel(this)
         advanceUntilIdle()
 
         val state = vm.uiState.value
@@ -81,15 +103,8 @@ class GradeBookViewModelTest {
 
     @Test
     fun `setGrade should update edited grades and mark hasPendingGrades`() = runTest {
-        val summary = ClassGradeSummary(
-            classId = 1, subject = "Math", bimester = 1,
-            evaluations = listOf("Prova 1"), students = emptyList(),
-        )
-        coEvery { mockRepo.getClassGradeSummary(any(), 1, 1) } returns summary
-
-        val vm = createViewModel()
+        val vm = createViewModel(this)
         advanceUntilIdle()
-
         vm.setGrade(1, "Prova 1", 9.0)
 
         val state = vm.uiState.value
@@ -100,20 +115,14 @@ class GradeBookViewModelTest {
 
     @Test
     fun `saveStudentGrades should call repository and clear unsaved`() = runTest {
-        coEvery { mockRepo.getClassGradeSummary(any(), 1, 1) } returns ClassGradeSummary(
-            classId = 1, subject = "Math", bimester = 1,
-            evaluations = listOf("Prova 1"), students = emptyList(),
-        )
-        coEvery { mockRepo.sendBatchGrades(any(), any(), any(), any()) } returns Unit
-
-        val vm = createViewModel()
+        val vm = createViewModel(this)
         advanceUntilIdle()
         vm.setGrade(1, "Prova 1", 9.0)
 
         vm.saveStudentGrades(1)
         advanceUntilIdle()
 
-        coVerify { mockRepo.sendBatchGrades("test-token", 1, 1, any()) }
+        assertEquals(1, savedBatchCalls.size)
         val state = vm.uiState.value
         assertEquals(false, state.isSaving)
         assertEquals(false, state.unsavedStudents.contains(1))
@@ -121,32 +130,21 @@ class GradeBookViewModelTest {
 
     @Test
     fun `finalizeAllGrades should call repository with all grades`() = runTest {
-        coEvery { mockRepo.getClassGradeSummary(any(), 1, 1) } returns ClassGradeSummary(
-            classId = 1, subject = "Math", bimester = 1,
-            evaluations = listOf("Prova 1"), students = emptyList(),
-        )
-        coEvery { mockRepo.sendBatchGrades(any(), any(), any(), any()) } returns Unit
-
-        val vm = createViewModel()
+        val vm = createViewModel(this)
         advanceUntilIdle()
         vm.setGrade(1, "Prova 1", 9.0)
 
         vm.finalizeAllGrades()
         advanceUntilIdle()
 
-        coVerify { mockRepo.sendBatchGrades("test-token", 1, 1, any()) }
+        assertEquals(1, savedBatchCalls.size)
         val state = vm.uiState.value
         assertEquals(false, state.hasPendingGrades)
     }
 
     @Test
     fun `cancelChanges should clear unsaved and reload`() = runTest {
-        coEvery { mockRepo.getClassGradeSummary(any(), 1, 1) } returns ClassGradeSummary(
-            classId = 1, subject = "Math", bimester = 1,
-            evaluations = listOf("Prova 1"), students = emptyList(),
-        )
-
-        val vm = createViewModel()
+        val vm = createViewModel(this)
         advanceUntilIdle()
         vm.setGrade(1, "Prova 1", 9.0)
 
@@ -159,15 +157,9 @@ class GradeBookViewModelTest {
     }
 
     @Test
-    fun `toggleStudentExpanded should toggle student id`() {
-        val summary = ClassGradeSummary(
-            classId = 1, subject = "Math", bimester = 1,
-            evaluations = listOf("Prova 1"),
-            students = listOf(StudentGradeSummary(id = 1, name = "João", grades = emptyList())),
-        )
-        coEvery { mockRepo.getClassGradeSummary(any(), 1, 1) } returns summary
+    fun `toggleStudentExpanded should toggle student id`() = runTest {
+        val vm = createViewModel(this)
 
-        val vm = createViewModel()
         vm.toggleStudentExpanded(1)
         assertEquals(1, vm.uiState.value.expandedStudentId)
 

@@ -5,12 +5,15 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 enum class ClassStatus {
-    @SerialName("Active")
-    ACTIVE,
+    @SerialName("active") ACTIVE,
+    @SerialName("planning") PLANNING,
+    @SerialName("inactive") INACTIVE;
 
-    @SerialName("Planning")
-    PLANNING,
-
-    @SerialName("Inactive")
-    INACTIVE
+    companion object {
+        fun from(raw: String): ClassStatus = when (raw) {
+            "active" -> ACTIVE
+            "planning" -> PLANNING
+            else -> INACTIVE
+        }
+    }
 }

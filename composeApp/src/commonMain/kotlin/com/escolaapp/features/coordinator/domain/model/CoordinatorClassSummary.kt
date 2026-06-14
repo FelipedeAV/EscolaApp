@@ -1,5 +1,7 @@
 package com.escolaapp.features.coordinator.domain.model
 
+import com.escolaapp.core.domain.model.ClassStatus
+
 data class CoordinatorClassSummary(
     val id: Int,
     val name: String,

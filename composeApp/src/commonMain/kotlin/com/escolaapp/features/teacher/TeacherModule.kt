@@ -1,9 +1,10 @@
 package com.escolaapp.features.teacher
 
-import com.escolaapp.core.i18n.AppStrings
+import com.escolaapp.features.teacher.data.repository.AttendanceRepository
 import com.escolaapp.features.teacher.data.repository.AttendanceSummaryRepository
 import com.escolaapp.features.teacher.data.repository.ClassRepository
 import com.escolaapp.features.teacher.data.repository.GradeBookRepository
+import com.escolaapp.features.teacher.data.repository.GradeRepository
 import com.escolaapp.features.teacher.presentation.addattendance.AddAttendanceViewModel
 import com.escolaapp.features.teacher.presentation.attendance.AttendanceCallViewModel
 import com.escolaapp.features.teacher.presentation.classlist.ClassListViewModel
@@ -18,11 +19,13 @@ val teacherModule = module {
     single { ClassRepository(get()) }
     single { AttendanceSummaryRepository(get()) }
     single { GradeBookRepository(get()) }
+    single { GradeRepository(get()) }
+    single { AttendanceRepository(get()) }
 
     // ViewModels
-    factory { AddGradeViewModel(strings = get(), apiClient = get(), appEventNavigator = get(), sessionManager = get()) }
-    factory { AddAttendanceViewModel(strings = get(), apiClient = get(), appEventNavigator = get(), sessionManager = get()) }
-    factory { AddNoticeViewModel(strings = get(), apiClient = get(), appEventNavigator = get(), sessionManager = get()) }
+    factory { AddGradeViewModel(strings = get(), gradeRepository = get(), appEventNavigator = get(), sessionManager = get()) }
+    factory { AddAttendanceViewModel(strings = get(), attendanceRepository = get(), appEventNavigator = get(), sessionManager = get()) }
+    factory { AddNoticeViewModel(strings = get(), noticeRepository = get(), appEventNavigator = get(), sessionManager = get()) }
     factory { TeacherDashboardViewModel(classRepository = get(), appEventNavigator = get(), sessionManager = get()) }
     factory { (classId: Int) -> AttendanceCallViewModel(strings = get(), repository = get(), appEventNavigator = get(), sessionManager = get(), classId = classId) }
     factory { (classId: Int, bimester: Int) -> GradeBookViewModel(strings = get(), repository = get(), appEventNavigator = get(), sessionManager = get(), classId = classId, initialBimester = bimester) }

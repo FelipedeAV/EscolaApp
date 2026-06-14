@@ -9,6 +9,7 @@ import com.escolaapp.core.navigation.AppEventNavigator
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,13 +27,15 @@ class AddNoticeViewModel(
     private val noticeRepository: NoticeRepository,
     private val appEventNavigator: AppEventNavigator,
     private val sessionManager: SessionManager,
+    private val coroutineScope: CoroutineScope? = null,
 ) : ScreenModel {
 
+    private val scope = coroutineScope ?: screenModelScope
     private val _uiState = MutableStateFlow(AddNoticeUiState())
     val uiState: StateFlow<AddNoticeUiState> = _uiState.asStateFlow()
 
     fun addNotice(title: String, description: String) {
-        screenModelScope.launch {
+        scope.launch {
             _uiState.update { it.copy(isLoading = true, error = null, success = null) }
             try {
                 noticeRepository.addNotice(
@@ -60,7 +63,7 @@ class AddNoticeViewModel(
     }
 
     fun navigateBack() {
-        screenModelScope.launch {
+        scope.launch {
             appEventNavigator.emit(NavigationEvent.GoBack)
         }
     }

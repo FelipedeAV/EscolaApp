@@ -8,7 +8,8 @@ import com.escolaapp.core.navigation.AppEventNavigator
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
-import com.escolaapp.features.teacher.data.repository.AttendanceRepository
+import com.escolaapp.features.teacher.data.repository.IAttendanceRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,16 +24,18 @@ data class AddAttendanceUiState(
 
 class AddAttendanceViewModel(
     private val strings: AppStrings,
-    private val attendanceRepository: AttendanceRepository,
+    private val attendanceRepository: IAttendanceRepository,
     private val appEventNavigator: AppEventNavigator,
     private val sessionManager: SessionManager,
+    private val coroutineScope: CoroutineScope? = null,
 ) : ScreenModel {
 
+    private val scope = coroutineScope ?: screenModelScope
     private val _uiState = MutableStateFlow(AddAttendanceUiState())
     val uiState: StateFlow<AddAttendanceUiState> = _uiState.asStateFlow()
 
     fun addAttendance(studentId: Int, date: String, isPresent: Boolean) {
-        screenModelScope.launch {
+        scope.launch {
             _uiState.update { it.copy(isLoading = true, error = null, success = null) }
             try {
                 attendanceRepository.addAttendance(
@@ -61,7 +64,7 @@ class AddAttendanceViewModel(
     }
 
     fun navigateBack() {
-        screenModelScope.launch {
+        scope.launch {
             appEventNavigator.emit(NavigationEvent.GoBack)
         }
     }

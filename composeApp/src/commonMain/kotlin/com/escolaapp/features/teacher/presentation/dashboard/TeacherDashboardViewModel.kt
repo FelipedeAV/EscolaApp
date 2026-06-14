@@ -10,6 +10,7 @@ import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.teacher.domain.model.Class
 import com.escolaapp.core.domain.model.ClassListMode
 import com.escolaapp.shared.components.AppNavigationTab
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,8 +28,10 @@ class TeacherDashboardViewModel(
     private val classRepository: ClassRepository,
     private val appEventNavigator: AppEventNavigator,
     private val sessionManager: SessionManager,
+    private val coroutineScope: CoroutineScope? = null,
 ) : ScreenModel {
 
+    private val scope = coroutineScope ?: screenModelScope
     private val _uiState = MutableStateFlow(TeacherDashboardUiState())
     val uiState: StateFlow<TeacherDashboardUiState> = _uiState.asStateFlow()
 
@@ -37,7 +40,7 @@ class TeacherDashboardViewModel(
     }
 
     private fun loadDashboard() {
-        screenModelScope.launch {
+        scope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
                 val classes = classRepository.getClassesByTeacher(sessionManager.token, sessionManager.userId)
@@ -61,7 +64,7 @@ class TeacherDashboardViewModel(
     }
 
     fun navigateToClassList(mode: ClassListMode) {
-        screenModelScope.launch {
+        scope.launch {
             appEventNavigator.emit(
                 NavigationEvent.ToClassList(
                     teacherId = sessionManager.userId,
@@ -72,7 +75,7 @@ class TeacherDashboardViewModel(
     }
 
     fun navigateToSettings() {
-        screenModelScope.launch {
+        scope.launch {
             appEventNavigator.emit(NavigationEvent.ToProfile)
         }
     }
@@ -86,18 +89,18 @@ class TeacherDashboardViewModel(
     }
 
     fun navigateToAddNotice() {
-        screenModelScope.launch { appEventNavigator.emit(NavigationEvent.ToAddNotice) }
+        scope.launch { appEventNavigator.emit(NavigationEvent.ToAddNotice) }
     }
 
     fun navigateToAttendanceCall() {
         val currentClass = _uiState.value.currentClass ?: return
-        screenModelScope.launch {
+        scope.launch {
             appEventNavigator.emit(NavigationEvent.ToAttendanceCall(classId = currentClass.id))
         }
     }
 
     fun navigateToGradeBook(classId: Int, bimester: Int = 1) {
-        screenModelScope.launch {
+        scope.launch {
             appEventNavigator.emit(NavigationEvent.ToGradeBook(classId = classId, bimester = bimester))
         }
     }

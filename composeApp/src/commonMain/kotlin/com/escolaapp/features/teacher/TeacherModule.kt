@@ -5,6 +5,10 @@ import com.escolaapp.features.teacher.data.repository.AttendanceSummaryRepositor
 import com.escolaapp.features.teacher.data.repository.ClassRepository
 import com.escolaapp.features.teacher.data.repository.GradeBookRepository
 import com.escolaapp.features.teacher.data.repository.GradeRepository
+import com.escolaapp.features.teacher.data.repository.IAttendanceRepository
+import com.escolaapp.features.teacher.data.repository.IAttendanceSummaryRepository
+import com.escolaapp.features.teacher.data.repository.IGradeBookRepository
+import com.escolaapp.features.teacher.data.repository.IGradeRepository
 import com.escolaapp.features.teacher.presentation.addattendance.AddAttendanceViewModel
 import com.escolaapp.features.teacher.presentation.attendance.AttendanceCallViewModel
 import com.escolaapp.features.teacher.presentation.classlist.ClassListViewModel
@@ -17,10 +21,10 @@ import org.koin.dsl.module
 val teacherModule = module {
     // Repositories
     single { ClassRepository(get()) }
-    single { AttendanceSummaryRepository(get()) }
-    single { GradeBookRepository(get()) }
-    single { GradeRepository(get()) }
-    single { AttendanceRepository(get()) }
+    single<IAttendanceSummaryRepository> { AttendanceSummaryRepository(get()) }
+    single<IGradeBookRepository> { GradeBookRepository(get()) }
+    single<IGradeRepository> { GradeRepository(get()) }
+    single<IAttendanceRepository> { AttendanceRepository(get()) }
 
     // ViewModels
     factory { AddGradeViewModel(strings = get(), gradeRepository = get(), appEventNavigator = get(), sessionManager = get()) }

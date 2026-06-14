@@ -8,7 +8,8 @@ import com.escolaapp.core.navigation.AppEventNavigator
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
-import com.escolaapp.features.teacher.data.repository.GradeRepository
+import com.escolaapp.features.teacher.data.repository.IGradeRepository
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,16 +24,18 @@ data class AddGradeUiState(
 
 class AddGradeViewModel(
     private val strings: AppStrings,
-    private val gradeRepository: GradeRepository,
+    private val gradeRepository: IGradeRepository,
     private val appEventNavigator: AppEventNavigator,
     private val sessionManager: SessionManager,
+    private val coroutineScope: CoroutineScope? = null,
 ) : ScreenModel {
 
+    private val scope = coroutineScope ?: screenModelScope
     private val _uiState = MutableStateFlow(AddGradeUiState())
     val uiState: StateFlow<AddGradeUiState> = _uiState.asStateFlow()
 
     fun addGrade(studentId: Int, subject: String, bimester: Int, value: Double) {
-        screenModelScope.launch {
+        scope.launch {
             _uiState.update { it.copy(isLoading = true, error = null, success = null) }
             try {
                 gradeRepository.addGrade(
@@ -62,7 +65,7 @@ class AddGradeViewModel(
     }
 
     fun navigateBack() {
-        screenModelScope.launch {
+        scope.launch {
             appEventNavigator.emit(NavigationEvent.GoBack)
         }
     }

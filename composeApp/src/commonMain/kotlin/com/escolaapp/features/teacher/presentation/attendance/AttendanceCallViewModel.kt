@@ -5,11 +5,12 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.i18n.AppStrings
 import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
-import com.escolaapp.features.teacher.data.repository.AttendanceSummaryRepository
+import com.escolaapp.features.teacher.data.repository.IAttendanceSummaryRepository
 import com.escolaapp.features.teacher.domain.model.AttendanceSummary
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.utils.getCurrentDate
 import com.escolaapp.core.navigation.AppEventNavigator
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,23 +30,25 @@ data class AttendanceCallUiState(
 
 class AttendanceCallViewModel(
     private val strings: AppStrings,
-    private val repository: AttendanceSummaryRepository,
+    private val repository: IAttendanceSummaryRepository,
     private val appEventNavigator: AppEventNavigator,
     private val sessionManager: SessionManager,
     private val classId: Int,
+    private val initialDate: String = getCurrentDate(),
+    private val coroutineScope: CoroutineScope? = null,
 ) : ScreenModel {
 
+    private val scope = coroutineScope ?: screenModelScope
     private val _uiState = MutableStateFlow(AttendanceCallUiState())
     val uiState: StateFlow<AttendanceCallUiState> = _uiState.asStateFlow()
 
     init {
-        val today = getCurrentDate()
-        loadSummary(today)
+        loadSummary(initialDate)
     }
 
 
     private fun loadSummary(date: String) {
-        screenModelScope.launch {
+        scope.launch {
             _uiState.update { it.copy(isLoading = true, error = null, currentDate = date) }
             try {
                 val summary = repository.getSummary(sessionManager.token, classId, date)
@@ -105,7 +108,7 @@ class AttendanceCallViewModel(
         val state = _uiState.value
         val summary = state.summary ?: return
 
-        screenModelScope.launch {
+        scope.launch {
             _uiState.update { it.copy(isSending = true, error = null) }
             try {
                 repository.sendBatchAttendance(
@@ -134,7 +137,7 @@ class AttendanceCallViewModel(
     }
 
     fun navigateBack() {
-        screenModelScope.launch {
+        scope.launch {
             appEventNavigator.emit(NavigationEvent.GoBack)
         }
     }

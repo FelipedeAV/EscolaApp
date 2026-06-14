@@ -10,6 +10,7 @@ import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.core.domain.model.ClassListMode
 import com.escolaapp.shared.components.AppNavigationTab
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,8 +27,10 @@ class ProfileViewModel(
     private val userRepository: UserRepository,
     private val appEventNavigator: AppEventNavigator,
     private val sessionManager: SessionManager,
+    private val coroutineScope: CoroutineScope? = null,
 ) : ScreenModel {
 
+    private val scope = coroutineScope ?: screenModelScope
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
@@ -36,7 +39,7 @@ class ProfileViewModel(
     }
 
     private fun loadProfile() {
-        screenModelScope.launch {
+        scope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
                 val user = userRepository.getUserById(sessionManager.token, sessionManager.userId)
@@ -66,7 +69,7 @@ class ProfileViewModel(
     }
 
     fun navigateToClassList(mode: ClassListMode) {
-        screenModelScope.launch {
+        scope.launch {
             appEventNavigator.emit(
                 NavigationEvent.ToClassList(
                     teacherId = sessionManager.userId,
@@ -77,14 +80,14 @@ class ProfileViewModel(
     }
 
     fun navigateToHome() {
-        screenModelScope.launch {
+        scope.launch {
             appEventNavigator.emit(NavigationEvent.ToDashboard(role = sessionManager.role))
         }
     }
 
     fun logout() {
         sessionManager.clear()
-        screenModelScope.launch {
+        scope.launch {
             appEventNavigator.emit(NavigationEvent.ToLogin)
         }
     }

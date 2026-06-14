@@ -10,6 +10,7 @@ import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.teacher.domain.model.Class
 import com.escolaapp.core.domain.model.ClassListMode
 import com.escolaapp.shared.components.AppNavigationTab
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -29,8 +30,10 @@ class ClassListViewModel(
     private val appEventNavigator: AppEventNavigator,
     private val sessionManager: SessionManager,
     private val teacherId: Int,
+    private val coroutineScope: CoroutineScope? = null,
 ) : ScreenModel {
 
+    private val scope = coroutineScope ?: screenModelScope
     private val _uiState = MutableStateFlow(ClassListUiState())
     val uiState: StateFlow<ClassListUiState> = _uiState.asStateFlow()
 
@@ -39,7 +42,7 @@ class ClassListViewModel(
     }
 
     fun loadClasses() {
-        screenModelScope.launch {
+        scope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
                 val classes = classRepository.getClassesByTeacher(sessionManager.token, teacherId)
@@ -78,7 +81,7 @@ class ClassListViewModel(
 
     // navigation functions
     fun navigateToClass(classId: Int, mode: ClassListMode, bimester: Int = 1) {
-        screenModelScope.launch {
+        scope.launch {
             when (mode) {
                 ClassListMode.SELECT_ACTION -> Unit
                 ClassListMode.ATTENDANCE -> appEventNavigator.emit(
@@ -93,13 +96,13 @@ class ClassListViewModel(
     }
 
     fun navigateToHome() {
-        screenModelScope.launch {
+        scope.launch {
             appEventNavigator.emit(NavigationEvent.ToDashboard(role = sessionManager.role))
         }
     }
 
     fun navigateToSettings() {
-        screenModelScope.launch { appEventNavigator.emit(NavigationEvent.ToProfile) }
+        scope.launch { appEventNavigator.emit(NavigationEvent.ToProfile) }
     }
 
     fun onTabSelected(tab: AppNavigationTab) {

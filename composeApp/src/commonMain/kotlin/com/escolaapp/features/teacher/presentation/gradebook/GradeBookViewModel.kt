@@ -5,10 +5,11 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.i18n.AppStrings
 import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
-import com.escolaapp.features.teacher.data.repository.GradeBookRepository
+import com.escolaapp.features.teacher.data.repository.IGradeBookRepository
 import com.escolaapp.core.domain.model.ClassGradeSummary
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.navigation.AppEventNavigator
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -30,13 +31,15 @@ data class GradeBookUiState(
 
 class GradeBookViewModel(
     private val strings: AppStrings,
-    private val repository: GradeBookRepository,
+    private val repository: IGradeBookRepository,
     private val appEventNavigator: AppEventNavigator,
     private val sessionManager: SessionManager,
     private val classId: Int,
     private val initialBimester: Int = 1,
+    private val coroutineScope: CoroutineScope? = null,
 ) : ScreenModel {
 
+    private val scope = coroutineScope ?: screenModelScope
     private val _uiState = MutableStateFlow(GradeBookUiState())
     val uiState: StateFlow<GradeBookUiState> = _uiState.asStateFlow()
 
@@ -45,7 +48,7 @@ class GradeBookViewModel(
     }
 
     fun loadGrades(bimester: Int) {
-        screenModelScope.launch {
+        scope.launch {
             _uiState.update { it.copy(isLoading = true, error = null) }
             try {
                 val summary = repository.getClassGradeSummary(sessionManager.token, classId, bimester)
@@ -95,7 +98,7 @@ class GradeBookViewModel(
         val bimester = state.selectedBimester
         val grades = state.editedGrades.filter { it.key.first == studentId }
 
-        screenModelScope.launch {
+        scope.launch {
             _uiState.update { it.copy(isSaving = true, error = null) }
             try {
                 repository.sendBatchGrades(
@@ -128,7 +131,7 @@ class GradeBookViewModel(
         val state = _uiState.value
         val grades = state.editedGrades
 
-        screenModelScope.launch {
+        scope.launch {
             _uiState.update { it.copy(isSaving = true, error = null) }
             try {
                 repository.sendBatchGrades(
@@ -176,7 +179,7 @@ class GradeBookViewModel(
     }
 
     fun navigateBack() {
-        screenModelScope.launch {
+        scope.launch {
             appEventNavigator.emit(NavigationEvent.GoBack)
         }
     }

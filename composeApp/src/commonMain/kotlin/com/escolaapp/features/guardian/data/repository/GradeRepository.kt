@@ -1,8 +1,8 @@
 package com.escolaapp.features.guardian.data.repository
 
+import com.escolaapp.core.data.mapper.toDomain
 import com.escolaapp.core.data.remote.gateway.ApiClient
-import com.escolaapp.features.teacher.data.mapper.toDomain
-import com.escolaapp.features.teacher.domain.model.Grade
+import com.escolaapp.core.domain.model.Grade
 
 class GradeRepository(private val apiClient: ApiClient) {
 

@@ -5,7 +5,7 @@ import cafe.adriel.voyager.core.model.screenModelScope
 import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
 import com.escolaapp.features.guardian.data.repository.AttendanceRepository
-import com.escolaapp.features.teacher.domain.model.Attendance
+import com.escolaapp.core.domain.model.Attendance
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.navigation.AppEventNavigator
 import kotlinx.coroutines.flow.MutableStateFlow

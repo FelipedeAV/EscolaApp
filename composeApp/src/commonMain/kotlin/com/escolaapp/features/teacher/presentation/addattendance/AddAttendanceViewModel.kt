@@ -2,13 +2,13 @@ package com.escolaapp.features.teacher.presentation.addattendance
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.escolaapp.core.data.remote.gateway.ApiClient
-import com.escolaapp.core.i18n.AppStrings
 import com.escolaapp.core.data.models.AttendanceRequest
+import com.escolaapp.core.i18n.AppStrings
+import com.escolaapp.core.navigation.AppEventNavigator
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
-import com.escolaapp.core.navigation.AppEventNavigator
+import com.escolaapp.features.teacher.data.repository.AttendanceRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,7 +23,7 @@ data class AddAttendanceUiState(
 
 class AddAttendanceViewModel(
     private val strings: AppStrings,
-    private val apiClient: ApiClient,
+    private val attendanceRepository: AttendanceRepository,
     private val appEventNavigator: AppEventNavigator,
     private val sessionManager: SessionManager,
 ) : ScreenModel {
@@ -35,7 +35,7 @@ class AddAttendanceViewModel(
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null, success = null) }
             try {
-                apiClient.addAttendance(
+                attendanceRepository.addAttendance(
                     token = sessionManager.token,
                     request = AttendanceRequest(
                         studentId = studentId,

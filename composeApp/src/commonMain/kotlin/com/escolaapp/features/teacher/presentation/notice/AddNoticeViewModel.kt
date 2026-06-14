@@ -2,13 +2,13 @@ package com.escolaapp.features.teacher.presentation.notice
 
 import cafe.adriel.voyager.core.model.ScreenModel
 import cafe.adriel.voyager.core.model.screenModelScope
-import com.escolaapp.core.data.remote.gateway.ApiClient
-import com.escolaapp.core.i18n.AppStrings
 import com.escolaapp.core.data.models.NoticeRequest
+import com.escolaapp.core.data.repository.NoticeRepository
+import com.escolaapp.core.i18n.AppStrings
+import com.escolaapp.core.navigation.AppEventNavigator
 import com.escolaapp.core.navigation.NavigationEvent
 import com.escolaapp.core.session.SessionManager
 import com.escolaapp.core.utils.toUserMessage
-import com.escolaapp.core.navigation.AppEventNavigator
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -23,7 +23,7 @@ data class AddNoticeUiState(
 
 class AddNoticeViewModel(
     private val strings: AppStrings,
-    private val apiClient: ApiClient,
+    private val noticeRepository: NoticeRepository,
     private val appEventNavigator: AppEventNavigator,
     private val sessionManager: SessionManager,
 ) : ScreenModel {
@@ -35,7 +35,7 @@ class AddNoticeViewModel(
         screenModelScope.launch {
             _uiState.update { it.copy(isLoading = true, error = null, success = null) }
             try {
-                apiClient.addNotice(
+                noticeRepository.addNotice(
                     token = sessionManager.token,
                     request = NoticeRequest(
                         title = title,

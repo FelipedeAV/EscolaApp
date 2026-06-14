@@ -5,12 +5,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 enum class Role {
-    @SerialName("Guardian")
+    @SerialName("guardian")
     GUARDIAN,
     
-    @SerialName("Teacher")
+    @SerialName("teacher")
     TEACHER,
     
-    @SerialName("Coordinator")
+    @SerialName("coordinator")
     COORDINATOR
 }

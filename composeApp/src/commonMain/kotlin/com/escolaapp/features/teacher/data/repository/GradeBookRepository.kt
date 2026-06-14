@@ -6,16 +6,16 @@ import com.escolaapp.core.data.models.BatchGradeRequest
 import com.escolaapp.core.data.remote.gateway.ApiClient
 import com.escolaapp.core.domain.model.ClassGradeSummary
 
-class GradeBookRepository(private val apiClient: ApiClient) {
+class GradeBookRepository(private val apiClient: ApiClient) : IGradeBookRepository {
 
-    suspend fun getClassGradeSummary(
+    override suspend fun getClassGradeSummary(
         token: String,
         classId: Int,
         bimester: Int,
     ): ClassGradeSummary =
         apiClient.getClassGradeSummary(token, classId, bimester).toDomain()
 
-    suspend fun sendBatchGrades(
+    override suspend fun sendBatchGrades(
         token: String,
         classId: Int,
         bimester: Int,

@@ -6,12 +6,12 @@ import com.escolaapp.core.data.remote.gateway.ApiClient
 import com.escolaapp.features.teacher.domain.model.AttendanceSummary
 import com.escolaapp.features.teacher.data.mapper.toDomain
 
-class AttendanceSummaryRepository(private val apiClient: ApiClient) {
+class AttendanceSummaryRepository(private val apiClient: ApiClient) : IAttendanceSummaryRepository {
 
-    suspend fun getSummary(token: String, classId: Int, date: String): AttendanceSummary =
+    override suspend fun getSummary(token: String, classId: Int, date: String): AttendanceSummary =
         apiClient.getAttendanceSummary(token, classId, date).toDomain()
 
-    suspend fun sendBatchAttendance(
+    override suspend fun sendBatchAttendance(
         token: String,
         classId: Int,
         date: String,

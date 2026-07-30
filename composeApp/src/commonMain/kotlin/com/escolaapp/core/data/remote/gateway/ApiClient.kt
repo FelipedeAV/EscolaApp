@@ -76,7 +76,7 @@ class ApiClient(
 
     private val json = jsonConfig
 
-    private suspend fun HttpResponse.validate(): HttpResponse {
+    private suspend fun HttpResponse.validate(fallbackMessage: String = "Erro na requisição"): HttpResponse {
         if (status.value !in 200..299) {
             val rawBody = bodyAsText()
             val message = runCatching {
@@ -84,32 +84,17 @@ class ApiClient(
                     .jsonObject["message"]
                     ?.jsonPrimitive
                     ?.content
-            }.getOrNull() ?: "Erro na requisição"
+            }.getOrNull() ?: fallbackMessage
             throw ApiException(status.value, message)
         }
         return this
     }
 
-    suspend fun login(email: String, password: String): LoginResponse {
-        val response = client.post("$baseUrl/auth/login") {
+    suspend fun login(email: String, password: String): LoginResponse =
+        client.post("$baseUrl/auth/login") {
             contentType(ContentType.Application.Json)
             setBody(LoginRequest(email, password))
-        }
-
-        return if (response.status.value in 200..299) {
-            response.body()
-        } else {
-            val rawBody = response.bodyAsText()
-            val message = runCatching {
-                json.parseToJsonElement(rawBody)
-                    .jsonObject["message"]
-                    ?.jsonPrimitive
-                    ?.content
-            }.getOrNull() ?: "Falha ao fazer login"
-
-            throw ApiException(response.status.value, message)
-        }
-    }
+        }.validate("Falha ao fazer login").body()
 
     suspend fun getUsers(token: String): List<UserResponse> =
         client.get("$baseUrl/users") {

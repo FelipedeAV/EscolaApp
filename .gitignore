@@ -1,5 +1,4 @@
 *.iml
-proguard-rules.pro
 .kotlin
 .gradle
 **/build/
@@ -18,4 +17,3 @@ captures
 !*.xcworkspace/contents.xcworkspacedata
 **/xcshareddata/WorkspaceSettings.xcsettings
 node_modules/
-proguard-rules.pro

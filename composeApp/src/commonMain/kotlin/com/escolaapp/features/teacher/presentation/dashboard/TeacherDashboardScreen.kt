@@ -188,9 +188,6 @@ private fun TeacherDashboardContent(
                 )
             }
 
-            // TODO: Implementar seção de aulas atribuídas no futuro
-            //teacherAssignedClassesSection(classes = uiState.classes)
-
             item { Spacer(Modifier.height(8.dp)) }
         }
     }

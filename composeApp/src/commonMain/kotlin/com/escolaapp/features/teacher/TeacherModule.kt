@@ -19,7 +19,7 @@ import com.escolaapp.features.teacher.presentation.notice.AddNoticeViewModel
 import org.koin.dsl.module
 
 val teacherModule = module {
-    // Repositories
+    // Repositórios
     single { ClassRepository(get()) }
     single<IAttendanceSummaryRepository> { AttendanceSummaryRepository(get()) }
     single<IGradeBookRepository> { GradeBookRepository(get()) }

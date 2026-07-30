@@ -61,13 +61,13 @@ kotlin {
             implementation(libs.koin.compose)
             implementation(libs.koin.compose.viewmodel)
 
-            // Serialization
+            // Serialização
             implementation(libs.kotlinx.serialization.json)
 
             // Lyricist
             implementation(libs.lyricist)
 
-            // Navigation
+            // Navegação
             implementation(libs.voyager.navigator)
             implementation(libs.voyager.koin)
             implementation(libs.voyager.transitions)

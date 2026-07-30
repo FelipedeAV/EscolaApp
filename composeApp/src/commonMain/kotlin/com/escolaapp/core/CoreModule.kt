@@ -18,21 +18,21 @@ val coreModule = module {
     // ApiClient
     single { ApiClient(baseUrl = apiBaseUrl()) }
 
-    // i18n
+    // Internacionalização
     single<AppStrings> { PtStrings }
 
-    // Session
+    // Sessão
     single { SessionManager() }
 
-    // Core Repositories
+    // Repositórios principais
     single { StudentRepository(get()) }
     single { UserRepository(get()) }
     single { NoticeRepository(get()) }
 
-    // Navigation
+    // Navegação
     single<AppEventNavigator> { NavigationViewModel() }
 
-    // Shared ViewModels
+    // ViewModels compartilhados
     factory { ProfileViewModel(userRepository = get(), appEventNavigator = get(), sessionManager = get()) }
     factory { ProfileSettingsViewModel(userRepository = get(), appEventNavigator = get(), sessionManager = get(), strings = get()) }
 }

@@ -8,7 +8,7 @@ import com.escolaapp.features.coordinator.presentation.studentRegistration.Stude
 import org.koin.dsl.module
 
 val coordinatorModule = module {
-    // Repository
+    // Repositórios
     single { CoordinatorRepository(get()) }
     single { StudentRegistrationRepository(get()) }
 

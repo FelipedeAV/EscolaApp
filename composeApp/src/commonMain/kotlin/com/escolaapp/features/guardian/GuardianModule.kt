@@ -9,7 +9,7 @@ import com.escolaapp.features.guardian.presentation.notices.NoticesViewModel
 import org.koin.dsl.module
 
 val guardianModule = module {
-    // Repositories
+    // Repositórios
     single { AttendanceRepository(get()) }
     single { GradeRepository(get()) }
 
